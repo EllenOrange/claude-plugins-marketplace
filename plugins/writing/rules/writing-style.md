@@ -1,9 +1,10 @@
 # Writing Style
 
-Canonical draft of the always-on writing-style rule. Install as
-`~/.claude/rules/writing-style.md` and load it with an `@~/` line in
-`CLAUDE.md`. The `writing` plugin's skills reference the installed
-copy.
+The always-on writing-style rule. This copy ships with the `writing`
+plugin but is inert here — Claude Code does not load a plugin's
+`rules/` directory. Run the plugin's `install-rule.sh` to copy it to
+`~/.claude/rules/writing-style.md`, then load it with an `@~/` line in
+`CLAUDE.md`. The plugin's skills reference the installed copy.
 
 ## Scope
 
