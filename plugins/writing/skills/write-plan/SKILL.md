@@ -5,8 +5,8 @@ description: Write a technical spec and implementation plan for an issue and pos
 
 # write-plan
 
-Produce a technical spec and implementation plan for one issue, and
-post it as a comment on that issue. Write all prose per the
+Produce an implementation plan for one issue, and post it as a
+comment on that issue. Write all prose per the
 writing-style rule: the installed copy at
 `~/.claude/rules/writing-style.md` if present, else the plugin's
 bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
@@ -31,34 +31,40 @@ Do not manufacture questions you can settle by reading the repo.
 
 ## 3. Write
 
-Write the spec and plan as an inverted pyramid:
+Write the plan in Markdown, with four sections and nothing else:
 
 1. **Problem** — one sentence naming the problem this work solves.
    Then at most one paragraph on the sub-problems it decomposes into.
    Every later section answers to this sentence.
-2. **Decision** — what will be built, in one short paragraph.
-3. **Why** — the constraints that picked this design, including
-   alternatives rejected and the reason each lost.
-4. **Design** — the components, interfaces, and data changes, and the
-   change surface the work touches.
-5. **Plan** — ordered implementation steps.
-6. **Risks and open questions** — only ones that survived the
-   interview.
+2. **Solution** — what will be built, in at most one paragraph.
+3. **Plan** — the work as an outline.
+4. **Open questions** — only ones that survived the interview.
 
 Include only what changes the implementer's next decision.
 
-### Plan steps
+Leave out rationale and history. Do not argue for the solution, do not
+list the alternatives you rejected, and do not recount how the design
+arrived where it did. Leave risk assessment to the reviewers — a plan
+that pre-empts their judgment gets it deferred to rather than tested.
 
-Each step is one action with one verification:
+### The plan is an outline
 
-- **One action per step.** "Add the field and migrate the callers and
-  update the tests" is three steps.
+Write the Plan section as a nested outline, not a flat list of steps.
+The top level names the units of work; each one decomposes into the
+actions that deliver it. The shape carries information a flat list
+destroys: which actions belong together, which can land as one commit,
+and where a unit can be dropped whole.
+
+Every leaf of the outline is one action:
+
+- **One action per leaf.** "Add the field and migrate the callers and
+  update the tests" is three leaves.
 - **Name the verification.** Give the command or the test that shows
-  the step landed. A step nobody can check is not a step.
+  the action landed. A leaf nobody can check is not a leaf.
 - **No placeholders.** Write the actual names, signatures, and
   commands. "Add error handling" and "update the relevant tests" name
   no work; delete them or replace them with the specific case.
-- **Order by dependency.** A step may rely only on steps above it.
+- **Order by dependency.** An item may rely only on items above it.
 
 ### Write for the implementer
 
@@ -67,7 +73,7 @@ the repo runs the sdlc plugin — or the engineer in that seat. It reads
 the issue, opens the tree, and derives its own locations. So the plan
 carries what that reader cannot derive:
 
-- The design decision and why the alternatives lost.
+- The solution it is to build.
 - Scope boundaries, and anything ruled out of scope for this issue.
 - The bar the work has to clear: which tests must pass, which
   commands must run clean.
@@ -85,12 +91,14 @@ Review the draft yourself before anyone else sees it. Check:
 
 - **Problem against the issue.** Does the one-sentence problem match
   what the issue actually reports? A plan that solves a different
-  problem is wrong however good the design.
-- **Plan against the problem.** Does every sub-problem get a step?
-  Does every step serve the problem, or has scope crept in?
-- **Placeholders.** Any step that names no specific work.
-- **Contradictions.** Steps that undo each other, or a step that
-  contradicts the Design section.
+  problem is wrong however good the solution.
+- **Plan against the problem.** Does every sub-problem get a unit of
+  work? Does every unit serve the problem, or has scope crept in?
+- **Placeholders.** Any leaf that names no specific work.
+- **Contradictions.** Actions that undo each other, or an action that
+  contradicts the Solution paragraph.
+- **Rationale and risk.** Any argument for the solution, rejected
+  alternative, or risk assessment that crept back in. Cut it.
 
 Fix what you find, then review the fixed draft again. Repeat until a
 pass turns up nothing.
@@ -102,6 +110,6 @@ it. Apply the changes they ask for, then show it again.
 
 ## 6. Post
 
-Post the approved spec as a comment on the issue. Prefer an installed
+Post the approved plan as a comment on the issue. Prefer an installed
 issue skill (for example `/issues:issue-comment`); otherwise use
 `gh issue comment`. Then report the comment URL to the user.
