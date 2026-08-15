@@ -1,19 +1,24 @@
 ---
 name: findings-summary
-description: Report findings as a prioritized numbered list with triage verdicts. Use whenever presenting the results of a code review, audit, investigation, or debugging session to the user.
+description: Report findings as a prioritized numbered list with triage verdicts. Use whenever presenting the results of a code review, audit, investigation, or debugging session to the user — including when they only ask "what's wrong", "what did you find", or "any issues?" without naming a review.
 ---
 
 # findings-summary
 
 Emit the findings from the current review, audit, or investigation as
-a prioritized list. Write all prose per
-`~/.claude/rules/writing-style.md`.
+a prioritized list. Write all prose per the writing-style rule: the
+installed copy at `~/.claude/rules/writing-style.md` if present, else
+the plugin's bundled copy at
+`${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
 
 ## Before you write: push back
 
-Drop any finding that a reasonable senior engineer could figure out
-alone. This applies especially to omissions and wording ambiguities.
-A finding earns its place only if the reader would act on it.
+Drop any finding the reader would dismiss on sight. A cheap-to-state
+fact the reader likely has not noticed still earns a line. When the
+findings review an implementation plan or spec, prune harder: drop
+anything a reasonable senior engineer could figure out alone,
+especially omissions and wording ambiguities. A finding earns its
+place only if the reader would act on it.
 
 ## Format
 

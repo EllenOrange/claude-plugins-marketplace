@@ -1,12 +1,14 @@
 ---
 name: critique-plan
-description: Critique a plan or spec — list decisions that fall short or cause problems elsewhere, and list gaps. Use whenever the user asks to critique, review, or red-team a plan, spec, or design doc.
+description: Critique a plan or spec — list decisions that fall short or cause problems elsewhere, and list gaps. Use whenever the user asks to critique, review, red-team, poke holes in, or find problems with a plan, spec, design doc, brief, or RFC, even when they don't use the word "critique".
 ---
 
 # critique-plan
 
 Critique one plan or spec against the problems it claims to solve.
-Write all prose per `~/.claude/rules/writing-style.md`.
+Write all prose per the writing-style rule: the installed copy at
+`~/.claude/rules/writing-style.md` if present, else the plugin's
+bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
 
 ## 1. Read
 
@@ -40,5 +42,5 @@ Emit two lists, most important first:
    concrete consequence.
 2. **Gaps** — for each: what is missing and what breaks without it.
 
-If the user has the `findings-summary` skill installed, format both
-lists with it. Do not rewrite the plan; report and stop.
+Format both lists with the `writing:findings-summary` skill, which
+ships in this plugin. Do not rewrite the plan; report and stop.
