@@ -1,0 +1,11 @@
+{
+  "name": "ellenorange",
+  "description": "Ellen Orange's Claude Code plugins: concise technical writing based on ASD-STE100, with response-template skills for findings, plans, and plan critiques.",
+  "owner": {
+    "name": "Ellen Orange",
+    "email": "eleanoruniverse+claude-plugins-marketplace@gmail.com"
+  },
+  "plugins": [
+    { "name": "writing", "source": "./plugins/writing" }
+  ]
+}
