@@ -20,6 +20,17 @@ anything a reasonable senior engineer could figure out alone,
 especially omissions and wording ambiguities. A finding earns its
 place only if the reader would act on it.
 
+## While you write
+
+The list is the emission, so there is no draft to revise. Apply the
+writing-style rule as you write each line, not after:
+
+- One sentence for Problem. Keep it to about 20 words.
+- One term per concept across the whole list. Use the words the
+  reviewed work uses.
+- Name the defect, not its category. "The count says four and the
+  list has five" beats "a consistency issue".
+
 ## Format
 
 Order findings by priority, most important first. Emit each as:
