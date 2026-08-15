@@ -2,11 +2,20 @@
 # Install the writing-style rule shipped with this plugin into
 # ~/.claude/rules/, where Claude Code's CLAUDE.md can load it.
 #
-# Idempotent: no-op when the installed copy already matches; refuses
-# to clobber a diverged copy unless run with --force.
+# Idempotent: no-op when the installed copy already matches and
+# CLAUDE.md already loads it; refuses to clobber a diverged copy
+# unless run with --force. Appends the CLAUDE.md line when missing.
 set -euo pipefail
 
-plugin_root="$(cd "$(dirname "$0")" && pwd)"
+force=0
+for arg in "$@"; do
+  case "$arg" in
+    --force) force=1 ;;
+    *) echo "usage: $0 [--force]" >&2; exit 2 ;;
+  esac
+done
+
+plugin_root="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 src="$plugin_root/rules/writing-style.md"
 dst="$HOME/.claude/rules/writing-style.md"
 line='@~/.claude/rules/writing-style.md'
@@ -17,7 +26,7 @@ claude_md="$HOME/.claude/CLAUDE.md"
 if [ -f "$dst" ]; then
   if cmp -s "$src" "$dst"; then
     echo "Already installed and up to date: $dst"
-  elif [ "${1:-}" = "--force" ]; then
+  elif [ "$force" = 1 ]; then
     cp "$src" "$dst"
     echo "Overwrote diverged copy: $dst"
   else
@@ -32,10 +41,15 @@ else
   echo "Installed: $dst"
 fi
 
-if [ -f "$claude_md" ] && grep -qxF "$line" "$claude_md"; then
-  echo "CLAUDE.md already loads it."
+if [ -f "$claude_md" ]; then
+  if grep -qxF "$line" "$claude_md"; then
+    echo "CLAUDE.md already loads it."
+  else
+    printf '%s\n' "$line" >> "$claude_md"
+    echo "Added to $claude_md: $line"
+  fi
 else
-  echo
-  echo "Not done yet: add this line to $claude_md so the rule loads:"
-  echo "  $line"
+  echo "Not done yet: $claude_md does not exist. Create it with this line so the rule loads:" >&2
+  echo "  $line" >&2
+  exit 1
 fi
