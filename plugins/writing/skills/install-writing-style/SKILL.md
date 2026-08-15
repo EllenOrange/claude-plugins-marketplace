@@ -27,3 +27,23 @@ Install the plugin's writing-style rule so it loads always-on.
    local and where it landed, so they can commit it upstream.
 4. Confirm: the rule file exists, `CLAUDE.md` contains the line, and
    the rule takes effect in the next session.
+
+## If the harness denies a step
+
+If permission to run the script or edit `~/.claude/` is denied, do
+not retry or work around the denial. Give the user the exact command
+to run themselves with the `!` prefix, with `<plugin-root>` expanded
+to the real path:
+
+```text
+! bash <plugin-root>/install-rule.sh
+```
+
+If only the `CLAUDE.md` edit is denied, give this instead:
+
+```text
+! echo '@~/.claude/rules/writing-style.md' >> ~/.claude/CLAUDE.md
+```
+
+Tell the user the output will land in the conversation, and verify
+the result once it does.
