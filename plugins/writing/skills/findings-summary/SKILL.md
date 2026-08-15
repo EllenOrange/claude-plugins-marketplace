@@ -6,8 +6,10 @@ description: Report findings as a prioritized numbered list with triage verdicts
 # findings-summary
 
 Emit the findings from the current review, audit, or investigation as
-a prioritized list. Write all prose per
-`~/.claude/rules/writing-style.md`.
+a prioritized list. Write all prose per the writing-style rule: the
+installed copy at `~/.claude/rules/writing-style.md` if present, else
+the plugin's bundled copy at
+`${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
 
 ## Before you write: push back
 
