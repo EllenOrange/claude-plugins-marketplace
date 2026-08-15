@@ -47,20 +47,30 @@ Judge each decision in the plan against two failure modes:
 Then hunt for gaps: identified problems no decision addresses, and
 steps the plan needs but does not contain.
 
-Drop any point a reasonable senior engineer could figure out alone.
-Keep only points the plan's author would act on.
+## 4. Collect
 
-## 4. Report
+Write every candidate finding down as rough notes. No format, no
+priority order, no verdicts — those come next, and assigning them now
+costs you the finding you would otherwise have cut.
 
-Emit three lists, most important first:
+Collect a superset. Include the marginal points and the ones you
+suspect the author already knows; the report step decides what
+survives, and it decides better over a wide set than a narrow one.
+Note for each: the problem definition, decision, or gap it concerns,
+and the concrete consequence.
 
-1. **Problem definition** — any drift between the plan's problem and
-   the issue, and any sub-problem no decision addresses. Omit this
-   list when the problem definition holds.
-2. **Failing decisions** — for each: the decision, the failure mode
-   (does not fully address / causes a problem elsewhere), and the
-   concrete consequence.
-3. **Gaps** — for each: what is missing and what breaks without it.
+## 5. Report
 
-Format every list with the `writing:findings-summary` skill, which
-ships in this plugin. Do not rewrite the plan; report and stop.
+Hand the collected notes to the `writing:findings-summary` skill,
+which ships in this plugin. It prunes, ranks, and formats them into
+one prioritized list.
+
+Two constraints on that pass:
+
+- **Synthesize only from the notes.** It may drop a finding, merge
+  two, or reorder them. It may not invent one you did not collect.
+- **One list, not three.** A single priority order is what the reader
+  acts on. The category still shows in each finding's own sentence,
+  and a problem-definition finding sorts to the top on severity.
+
+Do not rewrite the plan; report and stop.
