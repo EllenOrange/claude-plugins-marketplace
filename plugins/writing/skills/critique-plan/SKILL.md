@@ -1,6 +1,6 @@
 ---
 name: critique-plan
-description: Critique a plan or spec — list decisions that fall short or cause problems elsewhere, and list gaps. Use whenever the user asks to critique, review, or red-team a plan, spec, or design doc.
+description: Critique a plan or spec — list decisions that fall short or cause problems elsewhere, and list gaps. Use whenever the user asks to critique, review, red-team, poke holes in, or find problems with a plan, spec, design doc, brief, or RFC, even when they don't use the word "critique".
 ---
 
 # critique-plan

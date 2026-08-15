@@ -1,6 +1,6 @@
 ---
 name: write-plan
-description: Write a technical spec and implementation plan for an issue and post it as an issue comment. Use whenever the user asks to plan, spec, or design the work for an issue or ticket.
+description: Write a technical spec and implementation plan for an issue and post it as an issue comment. Use whenever the user asks to plan, spec out, design, or scope the work for an issue, ticket, or feature request — any phrasing that means "figure out how to build this and write it down on the tracker".
 allowed-tools: Bash(gh issue view*)
 ---
 
