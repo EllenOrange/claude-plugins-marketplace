@@ -14,12 +14,29 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
 
 - Read the plan in full — from the file, issue comment, or text the
   user points at.
-- Read the project's foundational docs: `CLAUDE.md`, `README.md`,
-  design docs under `docs/`, and anything the plan references.
+- Read the originating issue, if the plan has one. It is the source
+  the plan's problem definition answers to.
+- Read `CLAUDE.md` and `README.md`. Then read the docs under `docs/`
+  that cover the area the plan touches, and anything the plan
+  references. Do not read the whole `docs/` tree.
 - Read the code the plan touches. A critique built only on the plan's
   own text repeats the plan's blind spots.
 
-## 2. Critique
+## 2. Check the problem definition
+
+Do this first. A plan aimed at the wrong problem fails whatever its
+design, so the rest of the critique is worthless until this passes.
+
+- **Does the plan define the problem at all?** A plan that opens on a
+  solution has skipped the step that makes it judgeable.
+- **Does the problem match the issue?** Compare the plan's problem
+  statement against what the originating issue reports. Name any
+  drift: a narrower problem silently descopes the issue, a wider one
+  smuggles in work nobody asked for.
+- **Does the plan solve the problem it states?** Every sub-problem
+  needs a decision that addresses it.
+
+## 3. Critique
 
 Judge each decision in the plan against two failure modes:
 
@@ -33,14 +50,17 @@ steps the plan needs but does not contain.
 Drop any point a reasonable senior engineer could figure out alone.
 Keep only points the plan's author would act on.
 
-## 3. Report
+## 4. Report
 
-Emit two lists, most important first:
+Emit three lists, most important first:
 
-1. **Failing decisions** — for each: the decision, the failure mode
+1. **Problem definition** — any drift between the plan's problem and
+   the issue, and any sub-problem no decision addresses. Omit this
+   list when the problem definition holds.
+2. **Failing decisions** — for each: the decision, the failure mode
    (does not fully address / causes a problem elsewhere), and the
    concrete consequence.
-2. **Gaps** — for each: what is missing and what breaks without it.
+3. **Gaps** — for each: what is missing and what breaks without it.
 
-Format both lists with the `writing:findings-summary` skill, which
+Format every list with the `writing:findings-summary` skill, which
 ships in this plugin. Do not rewrite the plan; report and stop.
