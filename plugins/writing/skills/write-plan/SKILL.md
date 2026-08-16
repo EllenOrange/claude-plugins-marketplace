@@ -29,11 +29,30 @@ understanding with plain questions, one at a time; reserve
 multiple-choice forms for bounded decisions among known options.
 Do not manufacture questions you can settle by reading the repo.
 
-## 3. Write
+## 3. Propose
+
+After the interview, propose the framing in conversation before you
+draft anything. Show the user:
+
+1. **The problem framing** — the one-sentence problem, in the form
+   the plan's Problem section will use.
+2. **The scope summary** — a high-level summary of what the work
+   covers and what it rules out.
+3. **Proposed solutions** — each in the one-paragraph solution
+   format. Propose one solution when one is obviously right. When
+   viable options exist, propose each, and follow each paragraph with
+   a bullet list of its relative pros and cons.
+
+Stop and let the user pick a solution and correct the framing. The
+chosen solution and framing feed the plan; the rejected options and
+their pros and cons stay in the conversation and never enter the
+plan file.
+
+## 4. Write
 
 Write the plan in Markdown, as a file. Draft it to the session
 scratchpad if the harness gave you one, else to `.claude/tmp/`. You
-revise this file in step 4 and post it from step 6, so the reader
+revise this file in step 5 and post it from step 7, so the reader
 never sees a draft you have already rejected.
 
 The plan has five sections and nothing else:
@@ -99,7 +118,7 @@ implementer derives locations more accurately by reading it. Name the
 change surface at the component level — enough to scope the work and
 to tell whether it collides with another issue — and stop there.
 
-## 4. Self-review
+## 5. Self-review
 
 Read the file back and check it. This is the step the file exists
 for: the draft is not yet in front of anyone, so a defect you find
@@ -122,12 +141,12 @@ here costs an edit rather than a correction.
 Edit the file to fix what you find, then read it back again. Repeat
 until a pass turns up nothing.
 
-## 5. Human review
+## 6. Human review
 
 Show the user the file and stop. Do not post until they approve it.
 Apply the changes they ask for to the file, then show it again.
 
-## 6. Post
+## 7. Post
 
 Post the approved file as a comment on the issue. Prefer an installed
 issue skill (for example `/issues:issue-comment`), which reads the
