@@ -22,14 +22,15 @@ errors before commit.
 
 This repo's own Markdown follows the writing-style rule it ships at
 `plugins/writing/rules/writing-style.md`. Read that file before
-writing prose here. The two rules that bite most often:
+writing prose here. The rule that bites most often is the ban on
+parentheticals. Do not set prose off with parentheses, paired
+hyphens, or paired dashes. Write the content into the sentence, give
+it a sentence of its own, or delete it. Parentheses that carry
+technical meaning stay, such as function-call syntax or a unit.
 
-- No parentheticals. Do not set prose off with parentheses, paired
-  hyphens, or paired dashes. Write the content into the sentence,
-  give it a sentence of its own, or delete it. Parentheses that carry
-  technical meaning stay, such as function-call syntax or a unit.
-- No count in front of a self-counting list. Write "The plan has
-  these sections:", not "The plan has five sections:".
+This repo adds a convention of its own, on top of the shipped rule:
+no count in front of a self-counting list. Write "The plan has these
+sections:", not "The plan has five sections:".
 
 Quoted material is exempt, including the user prompts in
 `plugins/writing/EVAL.md`.
