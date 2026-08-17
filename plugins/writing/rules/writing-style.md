@@ -28,7 +28,7 @@ not change what the reader does next, omit it. Length is a cost, but
 cutting the wrong things costs more: keep complete sentences and cut
 whole details instead. Never compress into telegraphic fragments.
 
-## Writing rules (from ASD-STE100)
+## Writing rules from ASD-STE100
 
 These are targets, not word-count ceilings to game. When a rule and
 clarity conflict, clarity wins.

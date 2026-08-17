@@ -1,6 +1,6 @@
 {
   "name": "writing",
-  "description": "Concise technical writing helpers. Skills that emit prioritized findings summaries, inverted-pyramid plans, and plan critiques, all styled per the ASD-STE100-based writing-style rule.",
+  "description": "Concise technical writing helpers. Skills that emit prioritized findings summaries, inverted-pyramid plans, and plan critiques, and that promote an approved plan into its issue body, all styled per the ASD-STE100-based writing-style rule.",
   "version": "0.5.0",
   "author": {
     "name": "Ellen Orange",

@@ -17,8 +17,8 @@ skill correctly does **not** trigger on the negative cases.
    prose restatement after the list.
 2. "Audit our error handling in `src/server/` and report what you
    find."
-   Expect: the skill triggers; low-value findings (obvious omissions,
-   wording nits) are dropped.
+   Expect: the skill triggers; low-value findings such as obvious
+   omissions and wording nits are dropped.
 3. Negative: "What does this function do?"
    Expect: the skill does not trigger; a plain explanation is fine.
 
@@ -26,9 +26,9 @@ skill correctly does **not** trigger on the negative cases.
 
 1. "Red-team this design doc: `docs/cache-design.md`."
    Expect: the skill triggers; Claude reads the doc, project docs, and
-   touched code; output is two lists in the findings-summary format,
-   one of failing decisions and one of gaps; the plan is not
-   rewritten.
+   touched code; output is one prioritized list in the
+   findings-summary format, carrying both the failing decisions and
+   the gaps; the plan is not rewritten.
 2. "Here's my migration plan, poke holes in it." with the plan pasted
    inline.
    Expect: the skill triggers on inline text, not only on files.

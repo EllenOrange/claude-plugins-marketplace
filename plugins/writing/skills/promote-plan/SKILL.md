@@ -60,7 +60,7 @@ must sit below that header. Add one `#` to every heading in the plan
 text. A plan whose sections are `##` becomes `###`, and its unit
 headers become `####`.
 
-Two constraints on the shift:
+Constraints on the shift:
 
 - Leave headings inside fenced code blocks alone. A `#` line inside a
   fence is code or a comment, not a heading.

@@ -55,7 +55,7 @@ scratchpad if the harness gave you one, else to `.claude/tmp/`. You
 revise this file in step 5 and post it from step 7, so the reader
 never sees a draft you have already rejected.
 
-The plan has five sections and nothing else:
+The plan has these sections and nothing else:
 
 1. **Problem.** Name the problem this work solves in one sentence.
    Then write at most one paragraph on the sub-problems it decomposes
@@ -86,7 +86,7 @@ component that will change. A problem statement that presupposes its
 solution cannot be judged: the reader can no longer ask whether a
 different solution serves the same problem better.
 
-Two tests catch the failure:
+These tests catch the failure:
 
 - Read the problem sentence alone. If it already tells you what to
   build, rewrite it.

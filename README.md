@@ -1,7 +1,7 @@
 # claude-plugins-marketplace
 
-Ellen Orange's Claude Code plugin marketplace. One marketplace
-(`ellenorange`), one plugin (`writing`).
+Ellen Orange's Claude Code plugin marketplace `ellenorange`. It
+carries one plugin, `writing`.
 
 ## Install
 
@@ -49,9 +49,10 @@ Skills:
   comment.
 - **promote-plan**: move an approved plan out of its issue comment
   and into the bottom of the issue body, under a `## Plan` header.
-- **critique-plan**: read a plan and the foundational docs; list
-  decisions that fail to fully address the identified problems or
-  cause problems elsewhere, and list gaps.
+- **critique-plan**: read a plan and the foundational docs, then
+  report one prioritized list carrying both the decisions that fail
+  to fully address the identified problems or cause problems
+  elsewhere and the gaps.
 
 ## License
 
