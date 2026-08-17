@@ -31,14 +31,15 @@ ASD-STE100, Simplified Technical English, Issue 9, 2025. The rule
 ships with the plugin at
 [`plugins/writing/rules/writing-style.md`](plugins/writing/rules/writing-style.md),
 where it is inert. The `install-writing-style` skill copies it to
-`~/.claude/rules/writing-style.md` and wires it into `CLAUDE.md` so it
-loads always-on. Running `plugins/writing/install-rule.sh` directly
-does the same thing.
+`~/.claude/rules/writing-style.md` and wires it into
+`~/.claude/CLAUDE.md` so it loads always-on. Running
+`plugins/writing/install-rule.sh` directly does the same thing.
 
 Skills:
 
 - **install-writing-style**: install the shipped writing-style rule
-  into `~/.claude/rules/` and add the `@~/` load line to `CLAUDE.md`.
+  into `~/.claude/rules/` and add the `@~/` load line to
+  `~/.claude/CLAUDE.md`.
 - **findings-summary**: emit review or investigation findings as a
   prioritized list: title, one-sentence problem, a triage verdict of
   `fix`, `respond`, or `discuss`, and a proposed solution of 1 to 3
