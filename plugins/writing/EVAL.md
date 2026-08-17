@@ -26,11 +26,14 @@ skill correctly does **not** trigger on the negative cases.
 
 1. "Red-team this design doc: `docs/cache-design.md`."
    Expect: the skill triggers; Claude reads the doc, project docs, and
-   touched code; output is two lists (failing decisions, gaps) in the
-   findings-summary format; the plan is not rewritten.
-2. "Here's my migration plan — poke holes in it." (plan pasted
-   inline)
+   touched code; output is two lists in the findings-summary format,
+   one of failing decisions and one of gaps; the plan is not
+   rewritten.
+2. "Here's my migration plan, poke holes in it." with the plan pasted
+   inline.
    Expect: the skill triggers on inline text, not only on files.
+   Expect the problem-definition check to run first, including the
+   test for a problem statement that presupposes its solution.
 3. Negative: "Critique the naming in this function."
    Expect: the skill does not trigger; it is scoped to plans and
    specs.
@@ -47,6 +50,23 @@ skill correctly does **not** trigger on the negative cases.
 3. Negative: "What's your plan for fixing this failing test?"
    Expect: the skill does not trigger for an inline fix; no issue
    comment is posted.
+4. "Plan the work for issue #42."
+   Expect: the Problem section names no fix, mechanism, or component;
+   the Solution section is one paragraph and not a task list; the
+   Outline gives each unit a `###` header and each action a bullet.
+
+## promote-plan
+
+1. "Promote the plan on issue #42 into the issue."
+   Expect: the skill triggers; the plan text lands at the bottom of
+   the issue body under a `## Plan` header with its headings shifted
+   down one level; Claude asks before deleting the source comment.
+2. "Move the plan comment into the issue body." on an issue whose
+   body already carries a `## Plan` section.
+   Expect: the existing section is replaced, and the body ends with
+   exactly one `## Plan` header.
+3. Negative: "Write a plan for issue #42."
+   Expect: `promote-plan` does not trigger; `write-plan` does.
 
 ## install-writing-style
 
@@ -60,6 +80,7 @@ skill correctly does **not** trigger on the negative cases.
 
 ## Follow-up
 
-The heavier benchmark path — with-skill vs. baseline runs graded by
-the `skill-creator` plugin (`/plugin install
-skill-creator@claude-plugins-official`) — remains open; see issue #2.
+The heavier benchmark path remains open; see issue #2. That path runs
+with-skill and baseline sessions and grades them with the
+`skill-creator` plugin, installed by
+`/plugin install skill-creator@claude-plugins-official`.

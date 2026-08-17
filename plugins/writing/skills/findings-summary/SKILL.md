@@ -1,6 +1,6 @@
 ---
 name: findings-summary
-description: Report findings as a prioritized numbered list with triage verdicts. Use whenever presenting the results of a code review, audit, investigation, or debugging session to the user — including when they only ask "what's wrong", "what did you find", or "any issues?" without naming a review.
+description: Report findings as a prioritized numbered list with triage verdicts. Use whenever presenting the results of a code review, audit, investigation, or debugging session to the user, including when they only ask "what's wrong", "what did you find", or "any issues?" without naming a review.
 ---
 
 # findings-summary
@@ -39,20 +39,21 @@ Order findings by priority, most important first. Emit each as:
 #N. Title
 Problem: one sentence.
 Triage: fix | respond | discuss
-Proposed Solution: 1–3 sentences.
+Proposed Solution: 1 to 3 sentences.
 ```
 
-- **Title** — a specific, short name for the finding. Not a category.
-- **Problem** — one sentence stating the defect and its consequence.
-- **Triage** — pick one:
-  - `fix` — the finding is correct and the change is mechanical;
+- **Title**: a specific, short name for the finding. Not a category.
+- **Problem**: one sentence stating the defect and its consequence.
+- **Triage**: pick one.
+  - `fix`: the finding is correct and the change is mechanical;
     apply it.
-  - `respond` — the finding rests on a wrong premise or a defensible
+  - `respond`: the finding rests on a wrong premise or a defensible
     choice; answer it, change nothing.
-  - `discuss` — a legitimate design issue that needs discussion with
+  - `discuss`: a legitimate design issue that needs discussion with
     the user before anyone acts.
-- **Proposed Solution** — 1–3 sentences. For `respond`, the response
-  itself. For `discuss`, the question to put to the user.
+- **Proposed Solution**: 1 to 3 sentences. For `respond`, give the
+  response itself. For `discuss`, give the question to put to the
+  user.
 
 ## After the list
 

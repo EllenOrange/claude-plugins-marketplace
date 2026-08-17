@@ -22,9 +22,9 @@ Install the plugin's writing-style rule so it loads always-on.
    @~/.claude/rules/writing-style.md
    ```
 
-   If the script (or you) changed `CLAUDE.md` and `~/.claude` is a
-   git checkout, tell the user the change is local and where it
-   landed, so they can commit it upstream.
+   If the script or you changed `CLAUDE.md`, and `~/.claude` is a git
+   checkout, tell the user the change is local and where it landed,
+   so they can commit it upstream.
 3. Confirm: the rule file exists, `CLAUDE.md` contains the line, and
    the rule takes effect in the next session.
 

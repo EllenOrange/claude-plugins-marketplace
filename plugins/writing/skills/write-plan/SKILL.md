@@ -1,6 +1,6 @@
 ---
 name: write-plan
-description: Write an implementation plan for an issue and post it as an issue comment. Use whenever the user asks to plan, spec out, design, or scope the work for an issue, ticket, or feature request — any phrasing that means "figure out how to build this and write it down on the tracker".
+description: Write an implementation plan for an issue and post it as an issue comment. Use whenever the user asks to plan, spec out, design, or scope the work for an issue, ticket, or feature request, in any phrasing that means "figure out how to build this and write it down on the tracker".
 ---
 
 # write-plan
@@ -13,8 +13,8 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
 
 ## 1. Read
 
-- Read the issue. If the user has issue skills installed (for example
-  `/issues:issue-view`), use them; they dispatch to the repo's
+- Read the issue. If the user has issue skills installed, for example
+  `/issues:issue-view`, use them; they dispatch to the repo's
   configured tracker. Otherwise use `gh issue view`.
 - Read `CLAUDE.md` and `README.md`. Then read the docs under `docs/`
   that cover the area the issue touches, and any file the issue
@@ -34,14 +34,14 @@ Do not manufacture questions you can settle by reading the repo.
 After the interview, propose the framing in conversation before you
 draft anything. Show the user:
 
-1. **The problem framing** — the one-sentence problem, in the form
-   the plan's Problem section will use.
-2. **The scope summary** — a high-level summary of what the work
-   covers and what it rules out.
-3. **Proposed solutions** — each in the one-paragraph solution
-   format. Propose one solution when one is obviously right. When
-   viable options exist, propose each, and follow each paragraph with
-   a bullet list of its relative pros and cons.
+1. **The problem framing.** State the one-sentence problem, in the
+   form the plan's Problem section will use.
+2. **The scope summary.** Summarize what the work covers and what it
+   rules out.
+3. **Proposed solutions.** Write each one in the one-paragraph
+   solution format. Propose one solution when one is obviously right.
+   When viable options exist, propose each, and follow each paragraph
+   with a bullet list of its relative pros and cons.
 
 Stop and let the user pick a solution and correct the framing. The
 chosen solution and framing feed the plan; the rejected options and
@@ -57,14 +57,16 @@ never sees a draft you have already rejected.
 
 The plan has five sections and nothing else:
 
-1. **Problem** — one sentence naming the problem this work solves.
-   Then at most one paragraph on the sub-problems it decomposes into.
-   Every later section answers to this sentence.
-2. **Scope** — at most one paragraph. What this work covers, its
-   boundaries, and anything ruled out of scope for this issue.
-3. **Solution** — what will be built, in at most one paragraph.
-4. **Outline** — the work, decomposed.
-5. **Open questions** — only ones that survived the interview.
+1. **Problem.** Name the problem this work solves in one sentence.
+   Then write at most one paragraph on the sub-problems it decomposes
+   into. Every later section answers to this sentence.
+2. **Scope.** Write at most one paragraph. Give what this work
+   covers, its boundaries, and anything ruled out of scope for this
+   issue.
+3. **Solution.** Say what will be built, in at most one paragraph.
+4. **Outline.** Decompose the work.
+5. **Open questions.** Keep only the ones that survived the
+   interview.
 
 Include only what changes the implementer's next decision.
 
@@ -76,17 +78,62 @@ Leave out rationale and history:
 - Do not assess risk. That is the reviewers' judgment, and a plan
   that pre-empts it gets it deferred to rather than tested.
 
+### The problem states no solution
+
+Write the Problem section in terms of the current behavior and what
+it costs the reader. Do not name the fix, the mechanism, or the
+component that will change. A problem statement that presupposes its
+solution cannot be judged: the reader can no longer ask whether a
+different solution serves the same problem better.
+
+Two tests catch the failure:
+
+- Read the problem sentence alone. If it already tells you what to
+  build, rewrite it.
+- Ask whether a second, genuinely different solution could answer the
+  same sentence. If none could, the sentence is a solution in
+  disguise.
+
+### The solution matches the problem's altitude
+
+Write the Solution section at the same level of abstraction as the
+Problem section. Name the shape of the thing you will build, and say
+how that shape answers the problem. One paragraph is the whole
+budget.
+
+The Solution section is not a list of tasks. Every "then do X" belongs
+in the Outline, which carries the work. A Solution section that reads
+as steps has taken the Outline's job and left the reader with no
+statement of what is being built.
+
 ### The outline
 
-Write the Outline section as a nested outline, not a flat list. The
-top level names the units of work; each unit decomposes into the
-actions that deliver it. The shape carries information a flat list
-destroys: which actions belong together, which land as one commit,
-and where a unit can be dropped whole.
+Write the Outline section as headed sections, not as a flat list.
+Give each unit of work its own Markdown section header, and write
+each action as a bullet under that header. The shape carries
+information a flat list destroys: which actions belong together,
+which land as one commit, and where a unit can be dropped whole.
 
-The outline has two levels and two terms. A **unit** is a top-level
-entry. An **action** is one thing the implementer does, nested under
-its unit. Every action obeys:
+The outline has two terms. A **unit** is a section header, named for
+the work it delivers. An **action** is one thing the implementer
+does, written as a bullet under its unit. Head the Outline section
+itself with `##`, so each unit header is `###`:
+
+```markdown
+## Outline
+
+### Add the retry budget to the client
+
+- Add the `retry_budget` field to `ClientConfig`.
+- Verify with `pytest tests/test_config.py`.
+
+### Migrate the callers
+
+- Pass `retry_budget` from `build_client()`.
+- Verify with `pytest tests/test_client.py`.
+```
+
+Every action obeys:
 
 - **One action per line.** "Add the field and migrate the callers and
   update the tests" is three actions.
@@ -100,10 +147,11 @@ its unit. Every action obeys:
 
 ### Write for the implementer
 
-The reader is an implementation agent — `sdlc:issue-developer` when
-the repo runs the sdlc plugin — or the engineer in that seat. It reads
-the issue, opens the tree, and derives its own locations. So the plan
-carries what that reader cannot derive:
+The reader is an implementation agent or the engineer in that seat.
+On a repo that runs the sdlc plugin, that agent is
+`sdlc:issue-developer`. The reader reads the issue, opens the tree,
+and derives its own locations. So the plan carries what that reader
+cannot derive:
 
 - The solution it is to build.
 - The scope, and anything ruled out of scope for this issue.
@@ -115,8 +163,8 @@ carries what that reader cannot derive:
 Leave out the search you already ran. An exhaustive file inventory or
 a line-level edit list goes stale against the tree, and the
 implementer derives locations more accurately by reading it. Name the
-change surface at the component level — enough to scope the work and
-to tell whether it collides with another issue — and stop there.
+change surface at the component level and stop there. That is enough
+to scope the work and to tell whether it collides with another issue.
 
 ## 5. Self-review
 
@@ -127,6 +175,14 @@ here costs an edit rather than a correction.
 - **Problem against the issue.** Does the one-sentence problem match
   what the issue actually reports? A plan that solves a different
   problem is wrong however good the solution.
+- **Problem against the solution.** Does the problem sentence
+  presuppose the solution? Apply both tests under "The problem states
+  no solution".
+- **Solution altitude.** Does the Solution paragraph sit at the
+  Problem section's level of abstraction, or has it decayed into a
+  list of tasks the Outline already carries?
+- **Outline shape.** Is every unit a section header, and every action
+  a bullet under its unit?
 - **Outline against the problem.** Does every sub-problem get a unit?
   Does every unit serve the problem, or has scope crept in?
 - **Placeholders.** Any action that names no specific work.
@@ -136,7 +192,7 @@ here costs an edit rather than a correction.
   alternative, or risk assessment that crept back in. Cut it.
 - **Writing style.** Read the file against the writing-style rule.
   Check sentence length, one instruction per sentence, one term per
-  concept, and vertical lists for parallel items.
+  concept, vertical lists for parallel items, and no parentheticals.
 
 Edit the file to fix what you find, then read it back again. Repeat
 until a pass turns up nothing.
@@ -149,6 +205,9 @@ Apply the changes they ask for to the file, then show it again.
 ## 7. Post
 
 Post the approved file as a comment on the issue. Prefer an installed
-issue skill (for example `/issues:issue-comment`), which reads the
+issue skill, for example `/issues:issue-comment`, which reads the
 body from a file; otherwise use `gh issue comment --body-file`. Then
 report the comment URL to the user.
+
+Once the user approves the plan, `writing:promote-plan` moves it from
+the comment into the bottom of the issue body.

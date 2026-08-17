@@ -1,6 +1,6 @@
 ---
 name: critique-plan
-description: Critique a plan — list the parts that fall short or cause problems elsewhere, and list gaps. Use whenever the user asks to critique, review, red-team, poke holes in, or find problems with a plan, spec, design doc, brief, or RFC, even when they don't use the word "critique".
+description: Critique a plan by listing the parts that fall short or cause problems elsewhere, then listing the gaps. Use whenever the user asks to critique, review, red-team, poke holes in, or find problems with a plan, spec, design doc, brief, or RFC, even when they don't use the word "critique".
 ---
 
 # critique-plan
@@ -12,7 +12,7 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
 
 ## 1. Read
 
-- Read the plan in full — from the file, issue comment, or text the
+- Read the plan in full, from the file, issue comment, or text the
   user points at.
 - Read the originating issue, if the plan has one. It is the source
   the plan's problem definition answers to.
@@ -33,6 +33,12 @@ solution, so the rest of the critique is worthless until this passes.
   statement against what the originating issue reports. Name any
   drift: a narrower problem silently descopes the issue, a wider one
   smuggles in work nobody asked for.
+- **Does the problem presuppose the solution?** A problem statement
+  that names the fix, the mechanism, or the component to change
+  cannot be judged against any other solution. Test it: could a
+  second, genuinely different solution answer the same sentence? If
+  none could, the sentence is a solution in disguise, and the
+  critique starts by saying so.
 - **Does the plan solve the problem it states?** Every sub-problem
   needs a unit of work that addresses it.
 
@@ -52,7 +58,7 @@ needs but does not contain.
 ## 4. Collect
 
 Write every candidate finding down as rough notes. No format, no
-priority order, no verdicts — those come next, and assigning them now
+priority order, no verdicts. Those come next, and assigning them now
 costs you the finding you would otherwise have cut.
 
 Collect a superset. Include the marginal points and the ones you

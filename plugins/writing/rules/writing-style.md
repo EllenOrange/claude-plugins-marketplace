@@ -12,9 +12,10 @@ exists and fall back to the bundled copy otherwise.
 Applies to prose you write: responses to the user, docs, specs, issue
 and PR text, and prose in code comments.
 
-Does not apply to: code itself, quotations, exact technical references
-(error output, identifiers, commands), or word choice. Vocabulary is
-unrestricted; these rules control selection and structure only.
+Does not apply to: code itself, quotations, exact technical
+references such as error output, identifiers and commands, or word
+choice. Vocabulary is unrestricted; these rules control selection and
+structure only.
 
 ## Kernel: the inverted pyramid
 
@@ -47,6 +48,23 @@ clarity conflict, clarity wins.
   parallel items.
 - Write explicit subjects, verbs, and articles. Do not drop words to
   save space; no telegraphic fragments, no ellipsis-style terseness.
+
+## No parentheticals
+
+Do not set prose off from its sentence. A parenthetical is any span
+held apart by paired punctuation: parentheses, paired hyphens, or
+paired dashes of any width. Decide instead what the content is worth:
+
+- The content matters. Write it into the sentence, or give it a
+  sentence of its own.
+- The content does not matter. Delete it.
+
+Avoid the dash elsewhere too. A colon introduces, a comma separates,
+and a period ends. One of those three replaces almost every dash.
+
+This rule covers prose. Parentheses that carry technical meaning stay:
+function-call syntax, a citation, a unit of measure, and an option
+list inside a command.
 
 ## Composition with other guidance
 
