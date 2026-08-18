@@ -29,7 +29,32 @@ understanding with plain questions, one at a time; reserve
 multiple-choice forms for bounded decisions among known options.
 Do not manufacture questions you can settle by reading the repo.
 
-## 3. Propose
+### Sweep each ruling at decision time
+
+When the user rules on a design question, enumerate the ruling's
+cross-cutting consequences before you move on. Look for affected
+verification commands, doc files, scripts, sibling fields, and scope
+statements. Carry every consequence into the plan in the same pass. A
+ruling applied at one site and discovered at five others costs a
+critique round per site.
+
+## 3. Walk the dependencies
+
+Do this whenever the plan builds on another component, and especially
+when that component sits on an unmerged branch. Walk each intended
+outline action against the component's actual surface. Ask whether the
+API, doc, or schema the action relies on exists, and whether it
+expresses what the action needs.
+
+Read the dependency at the ref the plan will build on, not at main.
+The branch carries the surface the plan depends on; main does not
+carry it yet.
+
+Turn every gap you find into an interview question or into an
+explicitly named extension unit in the plan. The plan may not assert
+that it is built entirely on a component until this walk passes.
+
+## 4. Propose
 
 After the interview, propose the framing in conversation before you
 draft anything. Show the user:
@@ -48,14 +73,15 @@ chosen solution and framing feed the plan; the rejected options and
 their pros and cons stay in the conversation and never enter the
 plan file.
 
-## 4. Write
+## 5. Write
 
 Write the plan in Markdown, as a file. Draft it to the session
 scratchpad if the harness gave you one, else to `.claude/tmp/`. You
-revise this file in step 5 and post it from step 7, so the reader
-never sees a draft you have already rejected.
+revise this file during self-review and post it from the Post step, so
+the reader never sees a draft you have already rejected.
 
-The plan has these sections and nothing else:
+The plan has these sections and nothing else. Every section except
+References is required:
 
 1. **Problem.** Name the problem this work solves in one sentence.
    Then write at most one paragraph on the sub-problems it decomposes
@@ -66,7 +92,10 @@ The plan has these sections and nothing else:
 3. **Solution.** Say what will be built, in at most one paragraph.
 4. **Outline.** Decompose the work.
 5. **Open questions.** Keep only the ones that survived the
-   interview.
+   interview. List the questions themselves and nothing else. A
+   question the interview settled leaves this section entirely.
+6. **References.** Optional. Collect the citations that run too long
+   to sit inline in the body.
 
 Include only what changes the implementer's next decision.
 
@@ -75,8 +104,13 @@ Leave out rationale and history:
 - Do not argue for the solution.
 - Do not list the alternatives you rejected.
 - Do not recount how the solution arrived where it did.
+- Do not record which critique round found what, when a decision was
+  ratified, who ruled on it, or what the text used to say.
 - Do not assess risk. That is the reviewers' judgment, and a plan
   that pre-empts it gets it deferred to rather than tested.
+
+Citations are the one exception to that list. A citation serves the
+implementer rather than the argument, so it stays.
 
 ### The problem states no solution
 
@@ -114,7 +148,7 @@ each action as a bullet under that header. The shape carries
 information a flat list destroys: which actions belong together,
 which land as one commit, and where a unit can be dropped whole.
 
-The outline has two terms. A **unit** is a section header, named for
+The outline has these terms. A **unit** is a section header, named for
 the work it delivers. An **action** is one thing the implementer
 does, written as a bullet under its unit. Head the Outline section
 itself with `##`, so each unit header is `###`:
@@ -145,6 +179,31 @@ Every action obeys:
 - **Order by dependency.** An action may rely only on actions above
   it.
 
+### Cite the authority instead of restating it
+
+The plan carries decisions and obligations. It does not carry copies
+of facts the implementer can derive from a repo file, an authority
+doc, or a dependency's source. A copy can be wrong today and stale
+tomorrow, and every copy is critique surface.
+
+Name the authority instead, and keep the reference terse. A file path
+or a rule name in passing is enough inline. Move anything longer to
+the References section at the bottom, so the body stays clear,
+concise, and prescriptive.
+
+### Consult the authority for external usage
+
+Read the authority before you prescribe how to use an external
+dependency or service. This covers an SDK call pattern, a library's
+configuration surface, and a service's API or auth flow. The
+authority is the official docs, the dependency's source or type
+definitions, or the pinned version's README. Web search and WebFetch
+are fair game.
+
+A usage pattern written from memory is a guess, and the plan may not
+carry one. Cite the authority you consulted, so the prescription
+stays terse and the reference carries the detail.
+
 ### Write for the implementer
 
 The reader is an implementation agent or the engineer in that seat.
@@ -166,7 +225,7 @@ implementer derives locations more accurately by reading it. Name the
 change surface at the component level and stop there. That is enough
 to scope the work and to tell whether it collides with another issue.
 
-## 5. Self-review
+## 6. Self-review
 
 Read the file back and check it. This is the step the file exists
 for: the draft is not yet in front of anyone, so a defect you find
@@ -185,6 +244,18 @@ here costs an edit rather than a correction.
   a bullet under its unit?
 - **Outline against the problem.** Does every sub-problem get a unit?
   Does every unit serve the problem, or has scope crept in?
+- **Restatements.** Find every sentence that states a fact the
+  implementer can derive from a repo file, an authority doc, or a
+  dependency's source. Drop the restatement and name the authority
+  instead. Keep the inline reference terse, and move a long one to
+  the References section.
+- **Uncited external usage.** Any prescription for an external SDK,
+  library, or service that names no authority. Read the authority
+  now, then cite it.
+- **Open questions against the body.** Every question the body defers,
+  marks unresolved, or points elsewhere for appears in Open questions.
+  Open questions lists nothing the body treats as decided, and carries
+  no record of formerly open questions or how they were resolved.
 - **Placeholders.** Any action that names no specific work.
 - **Contradictions.** Actions that undo each other, or an action that
   contradicts the Solution paragraph.
@@ -197,17 +268,21 @@ here costs an edit rather than a correction.
 Edit the file to fix what you find, then read it back again. Repeat
 until a pass turns up nothing.
 
-## 6. Human review
+## 7. Human review
 
 Show the user the file and stop. Do not post until they approve it.
 Apply the changes they ask for to the file, then show it again.
 
-## 7. Post
+## 8. Post
 
 Post the approved file as a comment on the issue. Prefer an installed
 issue skill, for example `/issues:issue-comment`, which reads the
 body from a file; otherwise use `gh issue comment --body-file`. Then
 report the comment URL to the user.
+
+`writing:plan-converge` runs the critique-and-fix loop over the posted
+comment. Run it before promotion. The loop edits a comment, so a plan
+already promoted into the issue body needs demoting first.
 
 Once the user approves the plan, `writing:promote-plan` moves it from
 the comment into the bottom of the issue body.

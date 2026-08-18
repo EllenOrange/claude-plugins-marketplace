@@ -10,6 +10,23 @@ Write all prose per the writing-style rule: the installed copy at
 `~/.claude/rules/writing-style.md` if present, else the plugin's
 bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
 
+## Inputs
+
+The user names the plan. A caller running the critique inside a loop,
+such as `writing:plan-converge`, may also pass any of these:
+
+- **A decision ledger.** The rulings the user has already ratified.
+  Treat each one as a fixed constraint. Do not re-litigate a ratified
+  ruling, and do not report a finding that asks for a different
+  ruling.
+- **A known-open list.** The questions the caller already tracks as
+  open. Do not report one of them as a finding.
+- **A prior plan snapshot or diff.** The plan as it stood before the
+  caller's most recent fix round. Use it for the prior-round-text
+  label in the Collect step.
+
+Every input is optional. Without them, critique the plan as it stands.
+
 ## 1. Read
 
 - Read the plan in full, from the file, issue comment, or text the
@@ -55,6 +72,33 @@ failure modes:
 Then hunt for gaps: sub-problems no unit addresses, and actions a unit
 needs but does not contain.
 
+### Verify against the ref the plan builds on
+
+Verify every claim about the repo against the ref the plan names. When
+the plan states that it builds on a branch or a pull request, check
+the post-merge state at that ref, never at main. A confident finding
+verified at the wrong ref is false, and rejecting it costs the caller
+a whole round.
+
+### Verify external usage against the authority
+
+Verify the plan's stated usage of an external library, SDK, or service
+against the docs or source of the version the plan targets. Your own
+recollection is not an authority. Read the authority even when the
+usage looks familiar.
+
+The same rule runs in reverse. Flag any prescription for an external
+surface that carries no citation. An uncited usage pattern is where a
+guess hides.
+
+### Prescribe delete-and-cite for a wrong restatement
+
+When the plan restates a derivable fact and gets it wrong, prescribe
+deleting the restatement and citing the authority. Do not prescribe
+correcting the copy. A corrected copy preserves the surface that
+produced the finding, and it goes stale again on the next change to
+the authority.
+
 ## 4. Collect
 
 Write every candidate finding down as rough notes. No format, no
@@ -66,6 +110,22 @@ suspect the author already knows; the report step decides what
 survives, and it decides better over a wide set than a narrow one.
 Note for each: the problem definition, solution, unit, or gap it
 concerns, and the concrete consequence.
+
+Note these things per finding as well. They survive into the report.
+
+- **Provenance.** The file and the ref you verified the finding
+  against. For an external claim, the doc page or source file you
+  read. A finding with no provenance is labelled unverified.
+- **The build-changing label.** Mark the finding `build-changing`
+  when acting on it changes what the implementer builds, decides, or
+  verifies. Mark it `text-only` when acting on it changes the plan's
+  prose alone. A contradiction between two of the plan's own
+  statements is build-changing, because the implementer cannot know
+  which statement to follow.
+- **The prior-round-text label.** Mark the finding when it targets
+  text a prior fix round added. This needs the prior plan snapshot
+  from the Inputs section, so skip the label when the caller passed
+  none.
 
 ## 5. Report
 
@@ -80,5 +140,20 @@ Constrain that pass:
 - **Emit one list.** A single priority order is what the reader acts
   on. The category still shows in each finding's own sentence, and a
   problem-definition finding sorts to the top on severity.
+- **Carry both axes.** Axis one is the `findings-summary` triage
+  verdict of `fix`, `refute`, or `discuss`. Axis two is the
+  build-changing label. Both ride through `findings-summary` inside
+  each finding's own sentence.
+- **Skip the pruning under a loop.** When a caller such as
+  `writing:plan-converge` runs this critique, tell
+  `findings-summary` that the report feeds an automated verification
+  loop, so it emits every finding.
+
+State the provenance, the unverified label where it applies, and the
+prior-round-text label as the final clause of each finding's Problem
+sentence.
+
+Provenance, labels, and rulings belong to the report. Never add any of
+them to the plan.
 
 Do not rewrite the plan; report and stop.

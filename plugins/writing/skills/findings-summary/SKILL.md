@@ -20,6 +20,12 @@ anything a reasonable senior engineer could figure out alone,
 especially omissions and wording ambiguities. A finding earns its
 place only if the reader would act on it.
 
+Skip this step entirely when the caller states that the report feeds
+an automated verification loop rather than a human. Emit every
+finding in that mode. The loop verifies each finding itself and keys
+its own stopping rule on the full set, so a pruned finding costs it a
+signal rather than a reader's attention.
+
 ## While you write
 
 The list is the emission, so there is no draft to revise. Apply the
@@ -38,7 +44,7 @@ Order findings by priority, most important first. Emit each as:
 ```text
 #N. Title
 Problem: one sentence.
-Triage: fix | respond | discuss
+Triage: fix | refute | discuss
 Proposed Solution: 1 to 3 sentences.
 ```
 
@@ -47,12 +53,12 @@ Proposed Solution: 1 to 3 sentences.
 - **Triage**: pick one.
   - `fix`: the finding is correct and the change is mechanical;
     apply it.
-  - `respond`: the finding rests on a wrong premise or a defensible
+  - `refute`: the finding rests on a wrong premise or a defensible
     choice; answer it, change nothing.
   - `discuss`: a legitimate design issue that needs discussion with
     the user before anyone acts.
-- **Proposed Solution**: 1 to 3 sentences. For `respond`, give the
-  response itself. For `discuss`, give the question to put to the
+- **Proposed Solution**: 1 to 3 sentences. For `refute`, give the
+  refutation itself. For `discuss`, give the question to put to the
   user.
 
 ## After the list

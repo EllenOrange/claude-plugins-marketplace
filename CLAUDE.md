@@ -13,6 +13,35 @@ Installed plugins cache by version, under
 content change without a version bump can leave installed copies
 serving the old cached files after the marketplace updates.
 
+## Skill headings are quoted by sibling skills
+
+A skill may cite another skill's section heading verbatim as a prose
+pointer. `plan-converge` cites the write-plan heading "Sweep each
+ruling at decision time" and the write-plan self-review bullet
+"Restatements". Renaming a heading in one `SKILL.md` leaves a dangling
+reference in another, and nothing catches it. Treat a heading rename
+as an API change, and update every citation in the same commit as the
+rename.
+
+Search wrap-tolerantly, because a citation is prose and prose wraps.
+The plan-converge citation of "Sweep each ruling at decision time"
+sits across two lines today. A line-oriented grep for the whole
+heading text therefore matches only the heading it came from, and
+misses the citation you need to update. Grep instead for one
+distinctive word from the heading. A single word is the longest
+fragment a wrap can never split:
+
+```bash
+grep -rn "Sweep" plugins/*/skills/*/SKILL.md
+```
+
+When the heading has no distinctive single word, run a multiline
+search whose pattern tolerates the wrap:
+
+```bash
+rg -U --multiline-dotall 'Sweep\s+each\s+ruling\s+at\s+decision\s+time' plugins
+```
+
 ## Markdown
 
 Every Markdown file must pass `npx markdownlint-cli2 <file>` with zero
