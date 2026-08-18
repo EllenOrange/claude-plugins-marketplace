@@ -23,7 +23,7 @@ such as `writing:plan-converge`, may also pass any of these:
   open. Do not report one of them as a finding.
 - **A prior plan snapshot or diff.** The plan as it stood before the
   caller's most recent fix round. Use it for the prior-round-text
-  label in step 4.
+  label in the Collect step.
 
 Every input is optional. Without them, critique the plan as it stands.
 
@@ -111,8 +111,7 @@ survives, and it decides better over a wide set than a narrow one.
 Note for each: the problem definition, solution, unit, or gap it
 concerns, and the concrete consequence.
 
-Note these three things per finding as well. They survive into the
-report.
+Note these things per finding as well. They survive into the report.
 
 - **Provenance.** The file and the ref you verified the finding
   against. For an external claim, the doc page or source file you

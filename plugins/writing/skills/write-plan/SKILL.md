@@ -77,8 +77,8 @@ plan file.
 
 Write the plan in Markdown, as a file. Draft it to the session
 scratchpad if the harness gave you one, else to `.claude/tmp/`. You
-revise this file in step 6 and post it from step 8, so the reader
-never sees a draft you have already rejected.
+revise this file during self-review and post it from the Post step, so
+the reader never sees a draft you have already rejected.
 
 The plan has these sections and nothing else. Every section except
 References is required:

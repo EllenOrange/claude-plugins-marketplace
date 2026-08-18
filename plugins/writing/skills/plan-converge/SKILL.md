@@ -22,7 +22,8 @@ the plugin's bundled copy at
 
 The plan lives in the most recent plan comment on the issue. A plan
 comment carries the sections `write-plan` emits: Problem, Scope,
-Solution, Outline, and Open questions.
+Solution, Outline, and Open questions. A References section may follow
+them, and `write-plan` emits it only when the plan needs it.
 
 The loop edits a comment, so a plan already promoted into the issue
 body needs demoting first. When the issue body carries a `## Plan`
