@@ -148,7 +148,7 @@ each action as a bullet under that header. The shape carries
 information a flat list destroys: which actions belong together,
 which land as one commit, and where a unit can be dropped whole.
 
-The outline has two terms. A **unit** is a section header, named for
+The outline has these terms. A **unit** is a section header, named for
 the work it delivers. An **action** is one thing the implementer
 does, written as a bullet under its unit. Head the Outline section
 itself with `##`, so each unit header is `###`:
@@ -279,6 +279,10 @@ Post the approved file as a comment on the issue. Prefer an installed
 issue skill, for example `/issues:issue-comment`, which reads the
 body from a file; otherwise use `gh issue comment --body-file`. Then
 report the comment URL to the user.
+
+`writing:plan-converge` runs the critique-and-fix loop over the posted
+comment. Run it before promotion. The loop edits a comment, so a plan
+already promoted into the issue body needs demoting first.
 
 Once the user approves the plan, `writing:promote-plan` moves it from
 the comment into the bottom of the issue body.
