@@ -13,6 +13,16 @@ Installed plugins cache by version, under
 content change without a version bump can leave installed copies
 serving the old cached files after the marketplace updates.
 
+## Skill headings are quoted by sibling skills
+
+A skill may cite another skill's section heading verbatim as a prose
+pointer. `plan-converge` cites the write-plan heading "Sweep each
+ruling at decision time" and the write-plan self-review bullet
+"Restatements". Renaming a heading in one `SKILL.md` leaves a dangling
+reference in another, and nothing catches it. Treat a heading rename
+as an API change: grep `plugins/*/skills/*/SKILL.md` for the old text
+and update every citation in the same commit.
+
 ## Markdown
 
 Every Markdown file must pass `npx markdownlint-cli2 <file>` with zero

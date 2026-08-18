@@ -48,7 +48,8 @@ Skills:
 - **write-plan**: read an issue and the foundational docs, interview
   the user to resolve open design questions, write an
   inverted-pyramid technical spec and plan, and post it as an issue
-  comment.
+  comment. It walks the plan's dependencies at the ref the plan
+  builds on, and cites its authorities instead of restating them.
 - **promote-plan**: move an approved plan out of its issue comment
   and into the bottom of the issue body, under a `## Plan` header.
 - **critique-plan**: read a plan and the foundational docs, then
