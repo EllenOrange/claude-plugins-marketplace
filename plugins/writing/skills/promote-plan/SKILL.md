@@ -30,8 +30,8 @@ gh api repos/{owner}/{repo}/issues/<N>/comments \
 
 Pick the comment that carries the plan. A plan comment holds the
 sections `write-plan` emits: Problem, Scope, Solution, Outline, and
-Open questions. A References section may follow them, and `write-plan`
-emits it only when the plan needs it. Then act on what you found:
+Open questions. An optional References section may follow them. Then
+act on what you found:
 
 - **Exactly one plan comment.** Use it.
 - **Several plan comments.** Show the user the candidates with their

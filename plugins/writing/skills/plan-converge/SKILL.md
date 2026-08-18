@@ -22,8 +22,8 @@ the plugin's bundled copy at
 
 The plan lives in the most recent plan comment on the issue. A plan
 comment carries the sections `write-plan` emits: Problem, Scope,
-Solution, Outline, and Open questions. A References section may follow
-them, and `write-plan` emits it only when the plan needs it.
+Solution, Outline, and Open questions. An optional References section
+may follow them.
 
 The loop edits a comment, so a plan already promoted into the issue
 body needs demoting first. When the issue body carries a `## Plan`
@@ -113,7 +113,7 @@ that matches.
    at decision time" in `writing:write-plan`.
 3. **Churn.** A majority of the round's verified findings target text
    that prior fix rounds added. Do not run another critique round.
-   Run one altitude pass instead: apply the Restatements check from
+   Run one altitude pass instead: apply the "Restatements" item from
    `writing:write-plan`'s self-review to the whole plan and shrink it.
    Then resume the rounds.
 4. **Negative value.** The round produced more rejected findings than
