@@ -109,13 +109,13 @@ that matches.
 2. **Blocked.** Every verified build-changing finding is a discuss
    item. Pause, give the user the open-issues doc, and ask for
    rulings. Resume only once the rulings arrive. Write each ruling
-   into the ledger and sweep its consequences, per the decision sweep
-   in `writing:write-plan`.
+   into the ledger and sweep its consequences, per "Sweep each ruling
+   at decision time" in `writing:write-plan`.
 3. **Churn.** A majority of the round's verified findings target text
    that prior fix rounds added. Do not run another critique round.
-   Run one altitude pass instead: apply the restatement audit from
-   `writing:write-plan` to the whole plan and shrink it. Then resume
-   the rounds.
+   Run one altitude pass instead: apply the Restatements check from
+   `writing:write-plan`'s self-review to the whole plan and shrink it.
+   Then resume the rounds.
 4. **Negative value.** The round produced more rejected findings than
    verified build-changing ones. Stop and report. The marginal round
    costs more verification than it returns.

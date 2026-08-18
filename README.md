@@ -25,8 +25,9 @@ Then enable the plugin in `enabledPlugins`:
 
 ## The `writing` plugin
 
-Response-template skills for concise technical prose. Each skill
-styles its output per an always-on writing-style rule based on
+Response-template skills for concise technical prose, plus a bounded
+loop that drives a plan to convergence. Each skill styles its output
+per an always-on writing-style rule based on
 ASD-STE100, Simplified Technical English, Issue 9, 2025. The rule
 ships with the plugin at
 [`plugins/writing/rules/writing-style.md`](plugins/writing/rules/writing-style.md),
