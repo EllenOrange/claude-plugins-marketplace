@@ -20,8 +20,27 @@ pointer. `plan-converge` cites the write-plan heading "Sweep each
 ruling at decision time" and the write-plan self-review bullet
 "Restatements". Renaming a heading in one `SKILL.md` leaves a dangling
 reference in another, and nothing catches it. Treat a heading rename
-as an API change: grep `plugins/*/skills/*/SKILL.md` for the old text
-and update every citation in the same commit.
+as an API change, and update every citation in the same commit as the
+rename.
+
+Search wrap-tolerantly, because a citation is prose and prose wraps.
+The plan-converge citation of "Sweep each ruling at decision time"
+sits across two lines today. A line-oriented grep for the whole
+heading text therefore matches only the heading it came from, and
+misses the citation you need to update. Grep instead for one
+distinctive word from the heading. A single word is the longest
+fragment a wrap can never split:
+
+```bash
+grep -rn "Sweep" plugins/*/skills/*/SKILL.md
+```
+
+When the heading has no distinctive single word, run a multiline
+search whose pattern tolerates the wrap:
+
+```bash
+rg -U --multiline-dotall 'Sweep\s+each\s+ruling\s+at\s+decision\s+time' plugins
+```
 
 ## Markdown
 
