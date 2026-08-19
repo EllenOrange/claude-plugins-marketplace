@@ -1,6 +1,6 @@
 ---
 name: worktree-stale-remote-ref
-description: In this repo's subagent worktrees, plain `git fetch origin` can leave origin/<branch> stale, so the checked-out PR branch silently lags the real PR head.
+description: In this repo's subagent worktrees, plain `git fetch origin` can leave origin/<branch> stale or absent, so checkout lands on a lagging tip or fails outright.
 metadata:
   type: project
 ---
@@ -24,3 +24,17 @@ remote-tracking ref forward with an explicit refspec,
 `git fetch origin +refs/heads/<branch>:refs/remotes/origin/<branch>`,
 then `git merge --ff-only origin/<branch>`. Do not reach for
 `git reset --hard`; the harness blocks it in subagents.
+
+The same fetch gap also shows up harder: `git fetch origin` creates no
+remote-tracking ref at all, and `git checkout <branch>` then fails with
+`error: pathspec '<branch>' did not match any file(s) known to git`
+even though `git ls-remote --heads origin` lists the branch. Recover
+with an explicit branch fetch and a checkout off `FETCH_HEAD`:
+
+```bash
+git fetch origin <branch>
+git checkout -b <branch> FETCH_HEAD
+```
+
+Confirm the result the same way, by comparing `git rev-parse HEAD`
+against the PR's `headRefOid`.
