@@ -17,8 +17,9 @@ serving the old cached files after the marketplace updates.
 
 A skill may cite another skill's section heading verbatim as a prose
 pointer. `plan-converge` cites the write-plan heading "Sweep each
-ruling at decision time" and the write-plan self-review bullet
-"Restatements". Renaming a heading in one `SKILL.md` leaves a dangling
+ruling at decision time", the write-plan self-review bullet
+"Restatements", and the critique-plan Report bullet "Skip the pruning
+under a loop". Renaming a heading in one `SKILL.md` leaves a dangling
 reference in another, and nothing catches it. Treat a heading rename
 as an API change, and update every citation in the same commit as the
 rename.
