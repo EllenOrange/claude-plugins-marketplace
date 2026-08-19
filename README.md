@@ -59,7 +59,8 @@ Skills:
   carries a second label, `build-changing` or `text-only`.
 - **plan-converge**: run the critique-and-fix loop over a plan on an
   issue until a stopping rule ends it, keeping a decision ledger, an
-  open-issues doc, and per-round snapshots as durable state.
+  open-issues doc, and per-round snapshots as durable state. A round
+  budget caps how many critique rounds the loop runs.
 
 ## License
 
