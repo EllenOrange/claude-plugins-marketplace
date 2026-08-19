@@ -24,6 +24,12 @@ reference in another, and nothing catches it. Treat a heading rename
 as an API change, and update every citation in the same commit as the
 rename.
 
+A skill also cites its own headings. `plan-converge` points one step
+at another through the section names "Run a round", "The staleness
+guard", and "Check the stopping rules". A rename inside one file
+dangles just as silently, so sweep the file you renamed in as well as
+its siblings.
+
 Search wrap-tolerantly, because a citation is prose and prose wraps.
 The plan-converge citation of "Sweep each ruling at decision time"
 sits across two lines today. A line-oriented grep for the whole
