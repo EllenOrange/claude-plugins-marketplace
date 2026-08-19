@@ -73,8 +73,11 @@ reuse the ledger.
 
 The loop's own edits must not trip the guard. Write a fresh snapshot
 once the loop's edit lands on a blocked pause, and again after a churn
-consolidation pass. The resume comparison then flags only genuine
-outside edits.
+consolidation pass. Write it to `snapshot-<next round>.md`, so it is
+the newest snapshot the guard compares against. The next round's step
+1 rewrites that same file from the live comment, and the round that
+just ended keeps its own snapshot for the next critic to read. The
+resume comparison then flags only genuine outside edits.
 
 ## 3. Run a round
 
@@ -82,8 +85,9 @@ outside edits.
    `snapshot-<round>.md`.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
    and instruct it to load `writing:critique-plan`. Pass the plan
-   location, the decision ledger, the known-open list, and the
-   previous round's snapshot. Brief it with the materiality bar:
+   location, the ledger's rulings and open questions, the known-open
+   list, and the previous round's snapshot. Withhold the ledger's
+   loop facts. Brief it with the materiality bar:
    report a finding only when it is build-changing per the definition
    under "Check the stopping rules", or when the plan's existing
    class-level actions and verify commands do not already cover it.
@@ -143,14 +147,16 @@ that matches.
    not dry, and the blocked rule handles it. Stop and report after K
    consecutive dry rounds.
 3. **Blocked.** The round produced verified discuss findings. Pause
-   once the round's fixes are applied. Give the user the open-issues
-   doc and present the open items one at a time, each as a problem
-   statement, its options, and a recommendation. Resume only once
-   every item is ruled. Write each ruling into the ledger and sweep
-   its consequences, per "Sweep each ruling at decision time" in
-   `writing:write-plan`. Then evaluate the remaining rules against
-   this same round's tallies, so a churn firing in this round is still
-   recorded and acted on at resume.
+   once the round's fixes are applied. Write the fresh snapshot that
+   "The staleness guard" prescribes before you pause, so the resume
+   comparison does not flag those fixes. Give the user the
+   open-issues doc and present the open items one at a time, each as
+   a problem statement, its options, and a recommendation. Resume
+   only once every item is ruled. Write each ruling into the ledger
+   and sweep its consequences, per "Sweep each ruling at decision
+   time" in `writing:write-plan`. Then evaluate the remaining rules
+   against this same round's tallies, so a churn firing in this round
+   is still recorded and acted on at resume.
 4. **Churn.** A majority of the round's verified findings target text
    that prior fix rounds added. On the first firing, do not run
    another critique round. Run one consolidation pass instead:
@@ -158,7 +164,9 @@ that matches.
    actions with verify commands, applying the "Restatements" item from
    `writing:write-plan`'s self-review to the whole plan. Record the
    firing as a line in `ledger.md`, so a resumed loop still knows of
-   it. Then resume the rounds. On a second firing, stop and report.
+   it. Write the fresh snapshot that "The staleness guard" prescribes
+   once the consolidation edit lands. Then resume the rounds. On a
+   second firing, stop and report.
 5. **Negative value.** The round produced more rejected findings than
    accepted build-changing ones. Acceptance-bar rejections count
    toward the rejected total. Stop and report. The marginal round
