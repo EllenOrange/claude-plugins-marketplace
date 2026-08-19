@@ -133,7 +133,9 @@ already sweeps. Several rules below pivot on this term, so apply the
 significance bar before you tally a round's findings.
 
 Check these rules in order after each round, and act on the first one
-that matches.
+that matches, except where a rule says otherwise. The blocked rule
+says otherwise: it sends you back to the remaining rules once its
+pause resolves.
 
 1. **Budget spent.** The rounds run have reached the round budget N.
    Stop and report. Critique rounds alone consume budget. A
@@ -169,8 +171,12 @@ that matches.
    second firing, stop and report.
 5. **Negative value.** The round produced more rejected findings than
    accepted build-changing ones. Acceptance-bar rejections count
-   toward the rejected total. Stop and report. The marginal round
-   costs more verification than it returns.
+   toward the rejected total. The denominator is accepted rather than
+   verified on purpose: an acceptance-bar rejection would otherwise
+   raise the rejected total while the finding it rejected still
+   counted as build-changing, so the same finding would sit on both
+   sides of the comparison. Stop and report. The marginal round costs
+   more verification than it returns.
 
 ## 5. Report on stop
 

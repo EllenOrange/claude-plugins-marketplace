@@ -5,6 +5,8 @@ metadata:
   type: feedback
 ---
 
+# Resolving stated-guarantee contradictions
+
 When a review finds that a document states a guarantee and some other
 step contradicts it, narrow the contradicting step so it honors the
 guarantee. Do not delete or weaken the guarantee to make the

@@ -5,6 +5,8 @@ metadata:
   type: project
 ---
 
+# Stale origin ref in agent worktrees
+
 In a `.claude/worktrees/agent-*` worktree of this repo, a plain
 `git fetch origin` sometimes leaves `refs/remotes/origin/<branch>`
 pointing at an older commit than the remote actually carries.
