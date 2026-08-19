@@ -14,9 +14,8 @@ Checking the branch out then lands on a stale tip while
 `gh pr diff` returns the true PR head, so the diff and the working
 tree disagree.
 
-**Why:** it cost a doc-updater run on PR 12 real time. The diff
-showed edits the checked-out file did not contain, which reads like a
-failed write rather than a stale ref.
+**Why:** the diff shows edits the checked-out file does not contain,
+which reads like a failed write rather than a stale ref.
 
 **How to apply:** after checkout, compare `git rev-parse HEAD` against
 `gh pr view <PR> --json headRefOid`. When they differ, force the

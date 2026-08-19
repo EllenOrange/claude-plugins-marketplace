@@ -13,9 +13,8 @@ only. So `git fetch origin` brings back nothing but `main`, and
 `git checkout <pr-branch>` fails with "pathspec did not match any
 files".
 
-**Why:** it cost an issue-fixer run on PR 12 for issue #11 several
-turns of diagnosis, because the failure reads like a missing branch
-rather than a narrow refspec.
+**Why:** the failure reads like a missing branch rather than a narrow
+refspec, so it costs several turns of diagnosis.
 
 **How to apply:** fetch the branch by name into a local branch,
 `git fetch origin <branch>:<branch>`, then check it out. The local
