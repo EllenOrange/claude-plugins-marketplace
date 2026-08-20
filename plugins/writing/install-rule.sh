@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install the writing-style rule shipped with this plugin into
+# Install the communication-style rule shipped with this plugin into
 # ~/.claude/rules/, where Claude Code's CLAUDE.md can load it.
 #
 # Idempotent: no-op when the installed copy already matches and
@@ -16,9 +16,9 @@ for arg in "$@"; do
 done
 
 plugin_root="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-src="$plugin_root/rules/writing-style.md"
-dst="$HOME/.claude/rules/writing-style.md"
-line='@~/.claude/rules/writing-style.md'
+src="$plugin_root/rules/communication-style.md"
+dst="$HOME/.claude/rules/communication-style.md"
+line='@~/.claude/rules/communication-style.md'
 claude_md="$HOME/.claude/CLAUDE.md"
 
 [ -f "$src" ] || { echo "error: $src not found" >&2; exit 1; }

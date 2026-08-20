@@ -9,9 +9,9 @@ Move one plan from its issue comment into the bottom of the issue
 body, under a `## Plan` header. The comment is the draft surface and
 the body is the durable one, so a reader of the issue sees the plan
 without hunting the comment thread. Write all prose per the
-writing-style rule: the installed copy at
-`~/.claude/rules/writing-style.md` if present, else the plugin's
-bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
+communication-style rule: the installed copy at
+`~/.claude/rules/communication-style.md` if present, else the plugin's
+bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 The plan text itself moves verbatim. This skill relocates prose; it
 does not rewrite it. The one edit it makes is the heading shift in

@@ -27,18 +27,18 @@ Then enable the plugin in `enabledPlugins`:
 
 Response-template skills for concise technical prose, plus a bounded
 loop that drives a plan to convergence. Each skill styles its output
-per an always-on writing-style rule based on
+per an always-on communication-style rule based on
 ASD-STE100, Simplified Technical English, Issue 9, 2025. The rule
 ships with the plugin at
-[`plugins/writing/rules/writing-style.md`](plugins/writing/rules/writing-style.md),
+[`plugins/writing/rules/communication-style.md`](plugins/writing/rules/communication-style.md),
 where it is inert. The `install-writing-style` skill copies it to
-`~/.claude/rules/writing-style.md` and wires it into
+`~/.claude/rules/communication-style.md` and wires it into
 `~/.claude/CLAUDE.md` so it loads always-on. Running
 `plugins/writing/install-rule.sh` directly does the same thing.
 
 Skills:
 
-- **install-writing-style**: install the shipped writing-style rule
+- **install-writing-style**: install the shipped communication-style rule
   into `~/.claude/rules/` and add the `@~/` load line to
   `~/.claude/CLAUDE.md`.
 - **findings-summary**: emit review or investigation findings as a

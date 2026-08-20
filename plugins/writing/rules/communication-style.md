@@ -1,9 +1,9 @@
-# Writing Style
+# Communication Style
 
-The always-on writing-style rule, shipped with the `writing` plugin.
+The always-on communication-style rule, shipped with the `writing` plugin.
 Claude Code does not load a plugin's `rules/` directory, so the
 plugin's `install-rule.sh` copies this file to
-`~/.claude/rules/writing-style.md`, where an `@~/` line in `CLAUDE.md`
+`~/.claude/rules/communication-style.md`, where an `@~/` line in `CLAUDE.md`
 loads it always-on. The plugin's skills use the installed copy when it
 exists and fall back to the bundled copy otherwise.
 
@@ -65,6 +65,42 @@ and a period ends. One of those three replaces almost every dash.
 This rule covers prose. Parentheses that carry technical meaning stay:
 function-call syntax, a citation, a unit of measure, and an option
 list inside a command.
+
+## No derivable numbers
+
+Do not state a count, total, or percentage the reader can compute
+from what is already shown.
+
+The failure is not the arithmetic. It is the second copy: the number
+and the thing it counts drift apart the moment either is edited, and
+the prose then asserts something false. Instances:
+
+- A count in front of a list that enumerates its own members. Write
+  "The forbidden forms are:", not "The three forbidden forms are:",
+  and let the reader count.
+- A total under a table whose rows the reader can add up.
+- A percentage that restates a ratio already displayed.
+- "I changed 7 files" above a diff or a file list.
+
+A number that carries independent meaning is not derivable and is
+fine: "retry up to 3 times", "exactly one parent per issue", "the
+timeout is 30s". There the number is a constraint, not a tally of
+something already in view.
+
+## Audience calibration
+
+The same rules apply everywhere. Only the balance moves.
+
+In conversational replies, brevity wins. Say the thing and stop. Do
+not restate what the reader just said, do not recap a change the
+diff already shows, and do not append a summary to a short answer.
+
+In written artifacts such as issue bodies, docs, PR bodies, and
+commit messages, completeness wins, because the reader arrives
+without the conversation that produced the document. An artifact may
+legitimately be long. It may not be padded: the length must come
+from content a future reader needs, not from restating what the
+surrounding text already says.
 
 ## Composition with other guidance
 
