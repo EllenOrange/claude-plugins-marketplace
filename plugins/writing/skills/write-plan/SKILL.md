@@ -179,6 +179,52 @@ Every action obeys:
 - **Order by dependency.** An action may rely only on actions above
   it.
 
+### State the rule that generates each set
+
+A plan bullet often binds an obligation to a set: the rpcs a gate
+covers, the call sites of a helper, the writes an invariant
+constrains, the consumers a change affects. State the membership
+rule that generates the set, and write the obligation as a
+class-level sweep action: an action that names the class, instructs
+a sweep for every instance, and carries a verify command. A named
+site is an illustration, never the set. An implementer reads a bare
+list as exhaustive and frozen, and the members the list missed ship
+unbuilt and untested.
+
+Two cases bite hardest:
+
+- **A shared helper or single code path.** Every contract, test, and
+  doc obligation about it quantifies over the helper's call sites,
+  not over an example list in another bullet.
+- **An invariant.** State it as a property that binds every write
+  and read able to violate it, not as the consequence of one action.
+  Say what pins it: the test or check that fails when a later change
+  breaks it.
+
+`writing:plan-converge` accepts a critique finding as already
+covered only when the plan carries such a class-level sweep action
+with a verify command. A plan written this way clears that bar from
+the first round.
+
+### Mark every waiver
+
+Silence must be distinguishable from a waiver. Wherever the plan
+could be read as deliberately leaving something out, say which it
+is:
+
+- A sibling path without a pattern its twin spells out. Say whether
+  the sibling follows the pattern or is exempt, and why the
+  exemption holds.
+- A stated guarantee with no pinning test. Name the test, or say the
+  guarantee ships untested and why.
+- A check whose predicate is left to the reader. A bullet that pins
+  the order of checks also pins, or cites the authority for, what
+  each check evaluates.
+
+An implementer treats an unmarked silence as a decision. One
+explicit waiver elsewhere in the plan makes every other silence read
+as deliberate too.
+
 ### Cite the authority instead of restating it
 
 The plan carries decisions and obligations. It does not carry copies
@@ -190,6 +236,11 @@ Name the authority instead, and keep the reference terse. A file path
 or a rule name in passing is enough inline. Move anything longer to
 the References section at the bottom, so the body stays clear,
 concise, and prescriptive.
+
+The same rule governs text the plan itself authors. When the plan
+writes a derivation or contract text in full, name the single file
+that owns it. Every other site the plan touches cites the owner
+instead of carrying a second copy.
 
 ### Consult the authority for external usage
 
@@ -244,6 +295,18 @@ here costs an edit rather than a correction.
   a bullet under its unit?
 - **Outline against the problem.** Does every sub-problem get a unit?
   Does every unit serve the problem, or has scope crept in?
+- **Frozen sets.** Find every bullet that binds an obligation to a
+  list of sites, fields, or rpcs. Each one states the membership
+  rule and carries a class-level sweep action with a verify command,
+  per "State the rule that generates each set". Check each invariant
+  the same way: it binds every write and read able to violate it,
+  and names what pins it.
+- **Unmarked silences.** Sibling paths missing a pattern their twin
+  spells out, guarantees with no pinning test, and checks whose
+  predicate is left to the reader. Each says waiver or obligation,
+  per "Mark every waiver".
+- **Unowned text.** Every derivation or contract text the plan
+  authors names one owning file, and every other site cites it.
 - **Restatements.** Find every sentence that states a fact the
   implementer can derive from a repo file, an authority doc, or a
   dependency's source. Drop the restatement and name the authority

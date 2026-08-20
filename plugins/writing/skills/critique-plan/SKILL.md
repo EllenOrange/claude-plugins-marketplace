@@ -72,6 +72,34 @@ failure modes:
 Then hunt for gaps: sub-problems no unit addresses, and actions a unit
 needs but does not contain.
 
+### Derive each named set from the code
+
+When the plan binds an obligation to a list of sites, fields, or
+rpcs, derive the true set from the code and compare. Enumerate a
+shared helper's call sites, the writes and reads able to violate a
+stated invariant, and the files that restate a rule the plan
+changes. A list smaller than the derived set is a build-changing
+finding even when every listed member is correct. Prescribe stating
+the membership rule as a class-level sweep action with a verify
+command. Do not prescribe adding the missing member to the list: a
+grown list is still frozen, and it goes stale on the next change.
+
+### Treat consequential silence as a finding
+
+Compare sibling units the plan treats as parallel. A pattern spelled
+out in one and absent from the other is a finding unless the plan
+waives it explicitly. So is a stated guarantee with no pinning test,
+and an action that pins the order of checks but not what each check
+evaluates. These findings are build-changing: the implementer reads
+the silence as a decision and builds the gap.
+
+### Flag a rule stated twice with no owner
+
+When the plan writes the same rule or derivation into two sites,
+prescribe naming one owning site, with the other site citing it.
+This finding is text-only, and it is still worth reporting: every
+copy is critique surface, and copies drift apart.
+
 ### Verify against the ref the plan builds on
 
 Verify every claim about the repo against the ref the plan names. When
