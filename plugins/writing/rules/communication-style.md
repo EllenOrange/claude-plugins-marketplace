@@ -1,9 +1,9 @@
-# Writing Style
+# Communication Style
 
-The always-on writing-style rule, shipped with the `writing` plugin.
+The always-on communication-style rule, shipped with the `writing` plugin.
 Claude Code does not load a plugin's `rules/` directory, so the
 plugin's `install-rule.sh` copies this file to
-`~/.claude/rules/writing-style.md`, where an `@~/` line in `CLAUDE.md`
+`~/.claude/rules/communication-style.md`, where an `@~/` line in `CLAUDE.md`
 loads it always-on. The plugin's skills use the installed copy when it
 exists and fall back to the bundled copy otherwise.
 

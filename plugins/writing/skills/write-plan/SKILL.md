@@ -7,9 +7,9 @@ description: Write an implementation plan for an issue and post it as an issue c
 
 Produce an implementation plan for one issue, and post it as a
 comment on that issue. Write all prose per the
-writing-style rule: the installed copy at
-`~/.claude/rules/writing-style.md` if present, else the plugin's
-bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
+communication-style rule: the installed copy at
+`~/.claude/rules/communication-style.md` if present, else the plugin's
+bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 ## 1. Read
 
@@ -324,7 +324,7 @@ here costs an edit rather than a correction.
   contradicts the Solution paragraph.
 - **Rationale and risk.** Any argument for the solution, rejected
   alternative, or risk assessment that crept back in. Cut it.
-- **Writing style.** Read the file against the writing-style rule.
+- **Writing style.** Read the file against the communication-style rule.
   Check sentence length, one instruction per sentence, one term per
   concept, vertical lists for parallel items, and no parentheticals.
 

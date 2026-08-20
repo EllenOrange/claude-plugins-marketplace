@@ -56,8 +56,8 @@ errors before commit.
 
 ## Prose in this repo
 
-This repo's own Markdown follows the writing-style rule it ships at
-`plugins/writing/rules/writing-style.md`. Read that file before
+This repo's own Markdown follows the communication-style rule it ships at
+`plugins/writing/rules/communication-style.md`. Read that file before
 writing prose here. The rule that bites most often is the ban on
 parentheticals. Do not set prose off with parentheses, paired
 hyphens, or paired dashes. Write the content into the sentence, give

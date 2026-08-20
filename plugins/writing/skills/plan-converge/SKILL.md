@@ -7,10 +7,10 @@ description: Run a bounded critique-and-fix loop over a plan on an issue until i
 
 Run the critique-and-fix loop over one plan until a stopping rule
 ends it, then report. This skill wraps `writing:critique-plan` rather
-than restating it. Write all prose per the writing-style rule: the
-installed copy at `~/.claude/rules/writing-style.md` if present, else
+than restating it. Write all prose per the communication-style rule: the
+installed copy at `~/.claude/rules/communication-style.md` if present, else
 the plugin's bundled copy at
-`${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
+`${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 ## Inputs
 

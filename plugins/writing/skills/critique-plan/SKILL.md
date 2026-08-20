@@ -6,9 +6,9 @@ description: Critique a plan by listing the parts that fall short or cause probl
 # critique-plan
 
 Critique one plan against the problem it claims to solve.
-Write all prose per the writing-style rule: the installed copy at
-`~/.claude/rules/writing-style.md` if present, else the plugin's
-bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/writing-style.md`.
+Write all prose per the communication-style rule: the installed copy at
+`~/.claude/rules/communication-style.md` if present, else the plugin's
+bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 ## Inputs
 

@@ -1,12 +1,12 @@
 ---
 name: install-writing-style
-description: Install the writing-style rule shipped with this plugin into ~/.claude/rules/ and wire it into CLAUDE.md. Use when the user asks to install, set up, or update the writing-style rule.
+description: Install the communication-style rule shipped with this plugin into ~/.claude/rules/ and wire it into CLAUDE.md. Use when the user asks to install, set up, or update the communication-style rule.
 allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/install-rule.sh*)
 ---
 
 # install-writing-style
 
-Install the plugin's writing-style rule so it loads always-on.
+Install the plugin's communication-style rule so it loads always-on.
 
 ## Steps
 
@@ -19,7 +19,7 @@ Install the plugin's writing-style rule so it loads always-on.
    not exist, create that file with this line:
 
    ```text
-   @~/.claude/rules/writing-style.md
+   @~/.claude/rules/communication-style.md
    ```
 
    If the script or you changed `CLAUDE.md`, and `~/.claude` is a git
@@ -42,7 +42,7 @@ expanded to the real path:
 If only the `CLAUDE.md` edit is denied, give this instead:
 
 ```text
-! echo '@~/.claude/rules/writing-style.md' >> ~/.claude/CLAUDE.md
+! echo '@~/.claude/rules/communication-style.md' >> ~/.claude/CLAUDE.md
 ```
 
 Tell the user the output will land in the conversation, and verify
