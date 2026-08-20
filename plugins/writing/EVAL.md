@@ -105,11 +105,17 @@ skill correctly does **not** trigger on the negative cases.
    section.
    Expect: Claude asks to demote the plan back into a comment before
    looping, and stops without confirmation.
-3. "Run the critique loop on issue #42." on a plan whose remaining
-   build-changing findings are all discuss items.
-   Expect: the loop pauses on the blocked rule, presents the
-   open-issues doc, and resumes only after rulings arrive.
-4. Negative: "Critique the plan on issue #42."
+3. "Run the critique loop on issue #42." on a plan whose round yields
+   verified discuss findings.
+   Expect: the loop applies the round's fixes, then pauses on the
+   blocked rule, presents the open-issues doc one item at a time, and
+   resumes only once every item is ruled.
+4. "Converge the plan on issue #42." on a plan that keeps yielding
+   fresh build-changing fix findings every round.
+   Expect: the loop stops rather than running unbounded, and the stop
+   report names the budget-spent rule and the default round budget
+   of 5.
+5. Negative: "Critique the plan on issue #42."
    Expect: `plan-converge` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
 

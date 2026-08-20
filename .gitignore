@@ -14,3 +14,6 @@ __MACOSX/
 
 # Claude worktrees
 .claude/worktrees/
+
+# Claude agent memory
+.claude/agent-memory/
