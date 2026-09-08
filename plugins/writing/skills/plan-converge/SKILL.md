@@ -22,20 +22,59 @@ the plugin's bundled copy at
 
 ## 1. Locate the plan
 
-The plan lives in the most recent plan comment on the issue. A plan
-comment carries the sections `write-plan` emits: Problem, Scope,
-Solution, Outline, and Open questions. An optional References section
-may follow them.
+The plan lives on one of two surfaces: the most recent plan comment on
+the issue, or the issue body's `## Plan` section. A plan carries the
+sections `write-plan` emits: Problem, Scope, Acceptance criteria with
+its Invariants subsection, Solution, Outline, and Open questions. An
+optional References section may follow them.
 
-The loop edits a comment, so a plan already promoted into the issue
-body needs demoting first. When the issue body carries a `## Plan`
-section, ask the user to confirm the demotion. On confirmation, move
-that section back into a plan comment, remove it from the body, and
-run the loop on the comment. Offer `writing:promote-plan` at the end
-of the run. Without confirmation, stop and change nothing.
+When both surfaces exist, the body's section governs, because it is
+the surface the review reads. Name the leftover comment in the report.
 
 When the issue carries neither a plan comment nor a `## Plan` section,
 say so and stop. Writing a plan is `writing:write-plan`.
+
+### The body-surface guard
+
+Before the loop's first edit of a body surface, stop and report
+without editing when an open pull request or a remote branch carries
+the issue. A criterion under review must not move: the review
+regenerates its criterion theorems every round, and a changed
+criterion is a declared reversal, per `sdlc:theorem-based-pr-reviewer`
+→ "Declare a reversed criterion verdict". A comment surface needs no
+guard, because the review never reads it.
+
+Each check has the same shape: an enumeration with no item cap, a
+membership decision through the installed skill, and an over-firing
+fallback that needs no installed plugin. Use the fallback when the
+skill is absent or aborts.
+
+**The pull-request check.** Enumerate with:
+
+```bash
+gh pr list --state open --limit 1000 --json number
+```
+
+Decide membership through `github-prs:pr-closing-issues` per number.
+Fall back to:
+
+```bash
+gh pr list --state open --limit 1000 --search "<N>"
+```
+
+**The branch check.** Enumerate unmerged remote branches only, so a
+merged branch never blocks the loop:
+
+```bash
+git fetch origin
+git symbolic-ref refs/remotes/origin/HEAD
+git branch -r --no-merged origin/<default>
+```
+
+Restrict the result to `origin/` refs. Decide membership through
+`git-tools:git-issues-from-branch` per ref carrying the `issue-`
+marker. Fall back to any ref that carries the `issue-` marker and
+`<N>` as a hyphen-delimited token.
 
 ## 2. Set up the state
 
@@ -66,7 +105,7 @@ no round history.
 
 ### The staleness guard
 
-Compare the newest snapshot against the live plan comment when you
+Compare the newest snapshot against the live plan surface when you
 resume a paused loop. When they differ, someone edited the plan
 outside the loop. Show the user the difference and confirm before you
 reuse the ledger.
@@ -75,26 +114,27 @@ The loop's own edits must not trip the guard. Write a fresh snapshot
 once the loop's edit lands on a blocked pause, and again after a churn
 consolidation pass. Write it to `snapshot-<next round>.md`, so it is
 the newest snapshot the guard compares against. The next round's step
-1 rewrites that same file from the live comment, and the round that
+1 rewrites that same file from the live surface, and the round that
 just ended keeps its own snapshot for the next critic to read. The
 resume comparison then flags only genuine outside edits.
 
 ## 3. Run a round
 
-1. **Snapshot the plan.** Write the current plan comment to
-   `snapshot-<round>.md`.
+1. **Snapshot the plan.** Write the plan as the located surface
+   currently carries it to `snapshot-<round>.md`. That is the comment
+   body, or the text under `## Plan` with its headings as promoted.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
-   and instruct it to load `writing:critique-plan`. Pass the plan
-   location, the ledger's rulings and open questions, the known-open
-   list, and the previous round's snapshot. Withhold the ledger's
+   and instruct it to load `writing:critique-plan`. Pass the surface
+   the plan lives on, the ledger's rulings and open questions, the
+   known-open list, and the previous round's snapshot. Withhold the ledger's
    loop facts. Brief it with the materiality bar:
    report a finding only when it is build-changing per the definition
    under "Check the stopping rules", or when the plan's existing
    class-level actions and verify commands do not already cover it.
    Tell the critic that this bar overrides the "Skip the pruning under
-   a loop" item in `writing:critique-plan`'s Report step, and that the
-   significance definition governs the build-changing label in its
-   report. `writing:critique-plan` itself stays unchanged. Fresh
+   a loop" item in `writing:critique-plan`'s Report step, and that
+   `critique-plan` → "4. Collect" governs the build-changing label in
+   its report. `writing:critique-plan` itself stays unchanged. Fresh
    context is the point: the applier's accumulated assumptions are
    what the critic must not inherit.
 3. **Verify every finding in the main session.** Check each one
@@ -114,8 +154,14 @@ resume comparison then flags only genuine outside edits.
 5. **Append the verified `discuss` findings** to the open-issues doc,
    synthesizing them with the prior rounds' themes.
 6. **Update the plan's Open questions section** to match the ledger.
-7. **Edit the plan comment in place, once.** One edit per round, at
-   the end of the round. Never post a new comment.
+   Write it in the empty form `write-plan` → "5. Write" owns, so every
+   writer and every reader of the section share one form.
+7. **Edit the located surface in place, once.** One edit per round, at
+   the end of the round. Never post a new comment. On a body surface,
+   re-read the live body first, replace the text from `## Plan` to the
+   end per `promote-plan` → "4. Write the plan into the issue body",
+   and write the result, so everything above `## Plan` passes through
+   unchanged. Re-read the body after the write.
 
 ### Fixes carry no history
 
@@ -125,12 +171,11 @@ ruled on a question. Provenance and rulings stay in the state files.
 
 ## 4. Check the stopping rules
 
-A finding is **build-changing** when the artifact built from
-implementing the plan would change in a significant way. A finding
-that only rewords the plan is not build-changing. Neither is a finding
-that names one more site the plan's existing class-level action
-already sweeps. Several rules below pivot on this term, so apply the
-significance bar before you tally a round's findings.
+A finding is **build-changing** per `critique-plan` → "4. Collect",
+which owns the definition. A finding that names one more site the
+plan's existing class-level action already sweeps is not
+build-changing. Several rules below pivot on this term, so apply the
+bar before you tally a round's findings.
 
 Check these rules in order after each round, and act on the first one
 that matches, except where a rule says otherwise. The blocked rule
@@ -182,6 +227,8 @@ pause resolves.
 
 Give the user:
 
+- The surface the loop ran on: the plan comment, or the issue body's
+  `## Plan` section. Name the leftover comment when both existed.
 - The rule that ended the loop. Its value is a spent budget, K
   consecutive dry rounds, a second churn firing, or negative value.
 - The number of rounds run.
@@ -191,4 +238,5 @@ Give the user:
   that already covers the finding.
 - The open-issues doc, with a recommendation per item.
 
-The plan comment is already updated in place. Post nothing else.
+The plan is already updated in place on its surface, and the report
+names that surface. Post nothing else.

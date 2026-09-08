@@ -48,19 +48,30 @@ Skills:
 - **write-plan**: read an issue and the foundational docs, interview
   the user to resolve open design questions, write an
   inverted-pyramid technical spec and plan, and post it as an issue
-  comment. It walks the plan's dependencies at the ref the plan
-  builds on, and cites its authorities instead of restating them.
+  comment. The plan carries an Acceptance criteria section, with an
+  Invariants subsection, whose entries are class-quantified claims
+  about the merged result, each with the check that settles it and the
+  test that pins it. It walks the plan's dependencies at the ref the
+  plan builds on, derives its scope from the repo's sweep sections and
+  its neighboring issues, and cites its authorities instead of
+  restating them.
 - **promote-plan**: move an approved plan out of its issue comment
-  and into the bottom of the issue body, under a `## Plan` header.
+  and into the bottom of the issue body, under a `## Plan` header. It
+  asks first when the plan's Open questions section is not empty.
 - **critique-plan**: read a plan and the foundational docs, then
   report one prioritized list carrying both the decisions that fail
   to fully address the identified problems or cause problems
-  elsewhere and the gaps. Each finding states its provenance and
+  elsewhere and the gaps. It runs the sources of the review that will
+  grade the implementation against the plan, reading the style guides
+  that review enforces. Each finding states its provenance and
   carries a second label, `build-changing` or `text-only`.
 - **plan-converge**: run the critique-and-fix loop over a plan on an
   issue until a stopping rule ends it, keeping a decision ledger, an
-  open-issues doc, and per-round snapshots as durable state. A round
-  budget caps how many critique rounds the loop runs.
+  open-issues doc, and per-round snapshots as durable state. It loops
+  in place over the plan comment or over the promoted plan in the
+  issue body, and it refuses to edit a body an open branch or pull
+  request already carries. A round budget caps how many critique
+  rounds the loop runs.
 
 ## License
 

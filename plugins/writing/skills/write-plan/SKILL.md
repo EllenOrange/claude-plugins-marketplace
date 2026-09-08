@@ -20,6 +20,10 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
   that cover the area the issue touches, and any file the issue
   references. Do not read the whole `docs/` tree.
 - Read the code the issue touches before proposing changes to it.
+- Resolve the review's sources per
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
+  skill it names, or its fallback. Then read the style guides it names,
+  with the per-guide fallback it states.
 
 ## 2. Interview
 
@@ -28,6 +32,11 @@ Follow `~/.claude/rules/ask-vs-discuss.md` if present: build
 understanding with plain questions, one at a time; reserve
 multiple-choice forms for bounded decisions among known options.
 Do not manufacture questions you can settle by reading the repo.
+
+The interview settles every decision that
+`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` names as the decision
+set, before the draft. Resolve that set per the resolution order in
+that file, and enumerate none of it here.
 
 ### Sweep each ruling at decision time
 
@@ -63,7 +72,11 @@ draft anything. Show the user:
    form the plan's Problem section will use.
 2. **The scope summary.** Summarize what the work covers and what it
    rules out.
-3. **Proposed solutions.** Write each one in the one-paragraph
+3. **The acceptance criteria and invariants.** State them in the entry
+   shape "State the acceptance criteria" gives. They are the
+   definition of done, and every candidate solution below is measured
+   against them.
+4. **Proposed solutions.** Write each one in the one-paragraph
    solution format. Propose one solution when one is obviously right.
    When viable options exist, propose each, and follow each paragraph
    with a bullet list of its relative pros and cons.
@@ -72,6 +85,10 @@ Stop and let the user pick a solution and correct the framing. The
 chosen solution and framing feed the plan; the rejected options and
 their pros and cons stay in the conversation and never enter the
 plan file.
+
+The chosen solution makes one addition to the criteria: the draft adds
+the contract-level criteria that solution commits to. That is the only
+addition it makes.
 
 ## 5. Write
 
@@ -88,13 +105,21 @@ References is required:
    into. Every later section answers to this sentence.
 2. **Scope.** Write at most one paragraph. Give what this work
    covers, its boundaries, and anything ruled out of scope for this
-   issue.
-3. **Solution.** Say what will be built, in at most one paragraph.
-4. **Outline.** Decompose the work.
-5. **Open questions.** Keep only the ones that survived the
+   issue. Derive it per "Derive the scope".
+3. **Acceptance criteria.** State the claims the merged result must
+   satisfy, per "State the acceptance criteria". This section carries
+   an `### Invariants` subsection, always.
+4. **Solution.** Say what will be built, in at most one paragraph.
+5. **Outline.** Decompose the work.
+6. **Open questions.** Keep only the ones that survived the
    interview. List the questions themselves and nothing else. A
-   question the interview settled leaves this section entirely.
-6. **References.** Optional. Collect the citations that run too long
+   question the interview settled leaves this section entirely. This
+   section owns its empty form: a section with no question carries the
+   single line `None.` and no bullet, and a question is a bullet. The
+   Invariants subsection owns the same empty form: a subsection with
+   no contract to keep carries the single line `None.` followed by one
+   clause saying why the Outline touches no contract.
+7. **References.** Optional. Collect the citations that run too long
    to sit inline in the body.
 
 Include only what changes the implementer's next decision.
@@ -127,6 +152,55 @@ These tests catch the failure:
 - Ask whether a second, genuinely different solution could answer the
   same sentence. If none could, the sentence is a solution in
   disguise.
+
+### Derive the scope
+
+Scope is derived, not recalled.
+
+Read every sweep section in the sweep-carrying files that the
+codebase-consistency section of
+`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` names, recognised by
+the definition that section cites. For each mirrored fact the plan
+changes, Scope names the surfaces that restate it, and the Outline
+carries one class-level sweep action for it with a grep-shaped verify
+command.
+
+Editing any text in a file obliges every rule the repo states over
+touched text, not only over new text. So a file the plan edits at all
+brings its whole surface under those rules.
+
+Scope also names, by number, every issue whose work borders this one,
+and rules that work out. Read the borders from the issue's blocked-by,
+blocking, parent, sub-issue, and References edges, through the issue
+read that "1. Read" prescribes. With no issue skill installed, the
+edge set is the References lines of the issue body, and Scope says so.
+
+### State the acceptance criteria
+
+The Acceptance criteria section is the only plan text that survives
+into every round of the review that grades the implementation. Cite
+`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` for the bar a criterion
+clears.
+
+Each criterion is one bullet carrying these parts:
+
+- **The claim.** What the merged result satisfies, quantified over a
+  class with its membership rule stated. State what a consumer of the
+  merged result relies on.
+- **`Check:`** The command or the read that settles the claim.
+- **`Pinned by:` or `Waiver:`** Name the test the diff adds or
+  updates, or say why none exists.
+
+An action, an implementation step, or an exemplar to imitate is never
+a criterion. The review quotes whatever reads as a criterion and
+grades it against a High severity floor, so an instruction placed here
+is graded as a requirement of the merged result.
+
+The `### Invariants` subsection carries the existing contracts,
+consumers, and tests the change must leave intact. Each entry takes
+the same shape. An invariant binds every write and read able to
+violate it, not the consequence of one action. Every contract the
+Outline touches has an invariant or a waiver naming it.
 
 ### The solution matches the problem's altitude
 
@@ -178,6 +252,9 @@ Every action obeys:
   no work; delete them or replace them with the specific case.
 - **Order by dependency.** An action may rely only on actions above
   it.
+- **State the how, never the result.** An action that reads as a claim
+  about the merged result belongs in Acceptance criteria. The review
+  quotes it as a criterion wherever it sits.
 
 ### State the rule that generates each set
 
@@ -196,10 +273,8 @@ Two cases bite hardest:
 - **A shared helper or single code path.** Every contract, test, and
   doc obligation about it quantifies over the helper's call sites,
   not over an example list in another bullet.
-- **An invariant.** State it as a property that binds every write
-  and read able to violate it, not as the consequence of one action.
-  Say what pins it: the test or check that fails when a later change
-  breaks it.
+- **An invariant.** "State the acceptance criteria" defines it and
+  owns its shape.
 
 `writing:plan-converge` accepts a critique finding as already
 covered only when the plan carries such a class-level sweep action
@@ -237,10 +312,21 @@ or a rule name in passing is enough inline. Move anything longer to
 the References section at the bottom, so the body stays clear,
 concise, and prescriptive.
 
+When the plan cites an authority for a class, it does not enumerate
+the class's members beside the citation. A short enumeration reads as
+the class and wins over the authority it sits next to. Mark a named
+member as an illustration, per "State the rule that generates each
+set".
+
 The same rule governs text the plan itself authors. When the plan
 writes a derivation or contract text in full, name the single file
 that owns it. Every other site the plan touches cites the owner
 instead of carrying a second copy.
+
+Name the permitted-restatement set: the sites allowed to carry the
+fact. The verify command measures every spelling of the fact across
+the touched surfaces, not one phrase. A count of one phrase passes
+while the review counts the rest.
 
 ### Consult the authority for external usage
 
@@ -291,6 +377,30 @@ here costs an edit rather than a correction.
 - **Solution altitude.** Does the Solution paragraph sit at the
   Problem section's level of abstraction, or has it decayed into a
   list of tasks the Outline already carries?
+- **Criteria shape.** Does every criterion state a claim about the
+  merged result, quantified over a class with its membership rule?
+  Does each carry a `Check:` clause and a `Pinned by:` or `Waiver:`
+  clause, per "State the acceptance criteria"?
+- **Touched contracts.** Does every existing contract the Outline
+  touches have an invariant or a waiver naming it?
+- **Actions that read as results.** Any outline action stating a claim
+  about the merged result. Move it to Acceptance criteria, per "State
+  the how, never the result".
+- **Scope against the sweep sections.** Does Scope name the restating
+  surfaces of every mirrored fact the plan changes, and does Scope
+  name the neighboring issues by number, per "Derive the scope"?
+- **Enumeration beside a citation.** Any list of a class's members
+  written next to the citation of the authority for that class.
+- **Ownership.** Does the plan name the permitted-restatement set for
+  every fact it declares owned, and does the verify command measure
+  every spelling of that fact rather than one phrase?
+- **Style guides.** Check each outline action against each rule of the
+  style guides read in "1. Read". What counts as a rule comes from
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`.
+- **Decisions settled.** Is every decision the decision set names
+  settled in the body, rather than posed or implied? The set and its
+  resolution order come from
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`.
 - **Outline shape.** Is every unit a section header, and every action
   a bullet under its unit?
 - **Outline against the problem.** Does every sub-problem get a unit?
@@ -343,9 +453,17 @@ issue skill, for example `/issues:issue-comment`, which reads the
 body from a file; otherwise use `gh issue comment --body-file`. Then
 report the comment URL to the user.
 
-`writing:plan-converge` runs the critique-and-fix loop over the posted
-comment. Run it before promotion. The loop edits a comment, so a plan
-already promoted into the issue body needs demoting first.
+`writing:plan-converge` runs the critique-and-fix loop over the plan.
+It loops over the comment or over the promoted plan in the issue body,
+whichever the plan lives on.
 
-Once the user approves the plan, `writing:promote-plan` moves it from
-the comment into the bottom of the issue body.
+The review that grades the implementation reads the issue body and
+never its comments, per
+`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. So
+`writing:promote-plan` is the step that puts the plan in front of that
+review, and a plan left in a comment never reaches it. Promotion
+precedes `sdlc:orchestrate-ready` grooming, which is the last step
+before orchestration and which reads the promoted plan as part of the
+body it rewrites. On a plan whose Open questions section carries a
+bullet, promotion stops and asks, per `promote-plan` → "2. Read both
+texts verbatim".

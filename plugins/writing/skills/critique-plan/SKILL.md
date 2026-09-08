@@ -38,6 +38,13 @@ Every input is optional. Without them, critique the plan as it stands.
   references. Do not read the whole `docs/` tree.
 - Read the code the plan touches. A critique built only on the plan's
   own text repeats the plan's blind spots.
+- Resolve the review's sources per
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
+  skill it names, or its fallback. Then read the style guides it names,
+  with the per-guide fallback it states.
+- Read the neighboring issues the plan's Scope names, and the issue's
+  own edges. Read the edges as `write-plan` → "Derive the scope"
+  prescribes.
 
 ## 2. Check the problem definition
 
@@ -72,6 +79,20 @@ failure modes:
 Then hunt for gaps: sub-problems no unit addresses, and actions a unit
 needs but does not contain.
 
+An Open questions section that carries a bullet absent from the
+caller's known-open list is a build-changing finding. Its consequence
+is the implementer's stop. With no caller, every bullet counts. The
+section's empty form is the one `write-plan` → "5. Write" owns.
+
+### Run the review's sources
+
+Run each source the review works, per
+`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. For each source, ask
+its question of the plan and of the implementation the Outline
+prescribes, then report the finding that file names for a failing
+answer. That file owns the questions and the findings; restate neither
+here.
+
 ### Derive each named set from the code
 
 When the plan binds an obligation to a list of sites, fields, or
@@ -100,6 +121,12 @@ prescribe naming one owning site, with the other site citing it.
 This finding is text-only, and it is still worth reporting: every
 copy is critique surface, and copies drift apart.
 
+Check the plan's own actions against the plan's ownership rule. An
+action that prescribes a copy of a fact the plan declares owned
+elsewhere is a finding. So is a verify command that counts one phrase
+where the fact has more spellings: it reports a passing count while
+the review counts them all.
+
 ### Verify against the ref the plan builds on
 
 Verify every claim about the repo against the ref the plan names. When
@@ -108,12 +135,21 @@ the post-merge state at that ref, never at main. A confident finding
 verified at the wrong ref is false, and rejecting it costs the caller
 a whole round.
 
-### Verify external usage against the authority
+### Verify a cited authority
 
-Verify the plan's stated usage of an external library, SDK, or service
-against the docs or source of the version the plan targets. Your own
-recollection is not an authority. Read the authority even when the
-usage looks familiar.
+Read every authority the plan cites, in-repo or external, and verify
+it in both directions.
+
+- **The plan's restatement matches the authority.** A plan that cites
+  a repo rule and restates it short ships the short version, and the
+  implementation inherits it.
+- **The plan enumerates no list beside a citation without marking it
+  illustrative.** An enumeration next to a citation displaces the
+  authority it sits beside.
+
+For an external library, SDK, or service, read the docs or source of
+the version the plan targets. Your own recollection is not an
+authority. Read it even when the usage looks familiar.
 
 The same rule runs in reverse. Flag any prescription for an external
 surface that carries no citation. An uncited usage pattern is where a
@@ -144,12 +180,15 @@ Note these things per finding as well. They survive into the report.
 - **Provenance.** The file and the ref you verified the finding
   against. For an external claim, the doc page or source file you
   read. A finding with no provenance is labelled unverified.
-- **The build-changing label.** Mark the finding `build-changing`
-  when acting on it changes what the implementer builds, decides, or
-  verifies. Mark it `text-only` when acting on it changes the plan's
+- **The build-changing label.** This step owns the label's definition.
+  Mark the finding `build-changing` when acting on it changes what the
+  implementer builds, decides, or verifies, or what the reviewer
+  checks. Mark it `text-only` when acting on it changes the plan's
   prose alone. A contradiction between two of the plan's own
   statements is build-changing, because the implementer cannot know
-  which statement to follow.
+  which statement to follow. A missing or unfalsifiable criterion is
+  build-changing, because the reviewer checks the criteria the plan
+  carries.
 - **The prior-round-text label.** Mark the finding when it targets
   text a prior fix round added. This needs the prior plan snapshot
   from the Inputs section, so skip the label when the caller passed

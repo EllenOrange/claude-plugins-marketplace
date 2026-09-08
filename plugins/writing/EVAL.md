@@ -56,9 +56,33 @@ skill correctly does **not** trigger on the negative cases.
    Expect: no finding re-litigates a ratified ruling or re-reports a
    known-open question; each finding carries a `build-changing` or
    `text-only` label alongside its triage verdict.
-7. Negative: "Critique the naming in this function."
-   Expect: the skill does not trigger; it is scoped to plans and
-   specs.
+7. "Critique this plan." on a repo with the sdlc plugin installed.
+   Expect: Claude resolves the review's sources through
+   `docs/review-sources.md`, reads the installed
+   `sdlc:theorem-generation` skill, and asks each source's question of
+   the plan and of the implementation the outline prescribes.
+8. "Critique this plan." on a repo with no sdlc plugin installed, run
+   from a repo other than this one.
+   Expect: the locator returns nothing; Claude reads the bundled
+   `docs/review-sources.md` through `${CLAUDE_PLUGIN_ROOT}` and
+   proceeds with the fallback; no error and no invented style rule.
+9. "Critique this plan." on a plan whose outline prescribes a style
+   violation of a rule in the guides the review enforces.
+   Expect: a finding naming the violated rule heading, quoted rather
+   than paraphrased.
+10. "Critique this plan." on a plan that cites a repo rule and
+    restates it short.
+    Expect: a finding that the restatement does not match the
+    authority; the proposed solution deletes the restatement and cites
+    the rule.
+11. "Critique this plan." on a plan with no Acceptance criteria
+    section.
+    Expect: a finding labelled `build-changing` rather than
+    `text-only`, because a missing criterion changes what the reviewer
+    checks.
+12. Negative: "Critique the naming in this function."
+    Expect: the skill does not trigger; it is scoped to plans and
+    specs.
 
 ## write-plan
 
@@ -90,7 +114,32 @@ skill correctly does **not** trigger on the negative cases.
    renames a field.
    Expect: Claude enumerates the ruling's consequences at decision
    time, and the plan's Open questions section carries only questions
-   the body still leaves open.
+   the body still leaves open. An empty section reads `None.`.
+8. "Plan the work for issue #42."
+   Expect: the plan's sections are Problem, Scope, Acceptance
+   criteria, Solution, Outline, Open questions, and an optional
+   References; Acceptance criteria carries an Invariants subsection,
+   which reads `None.` plus one clause when the outline touches no
+   contract.
+9. "Plan the work for issue #42."
+   Expect: every acceptance criterion states a claim about the merged
+   result, quantified over a class with its membership rule, and
+   carries a `Check:` clause and a `Pinned by:` or `Waiver:` clause;
+   no criterion is an action or an exemplar to imitate.
+10. "Plan the work for issue #42."
+    Expect: the Propose step shows the acceptance criteria and
+    invariants between the scope summary and the proposed solutions,
+    as the definition of done each solution is measured against.
+11. "Plan the work for issue #42." on an issue whose work changes a
+    fact the repo's `CLAUDE.md` says several surfaces mirror.
+    Expect: Scope names those surfaces, the Outline carries one
+    class-level sweep action with a grep-shaped verify command, and
+    Scope names by number the issues whose work borders this one.
+12. "Plan the work for issue #42." on a machine with no sdlc plugin
+    installed.
+    Expect: Claude reads the bundled `docs/review-sources.md` for the
+    review's sources and the decision set, and proceeds with no
+    error.
 
 ## plan-converge
 
@@ -98,13 +147,14 @@ skill correctly does **not** trigger on the negative cases.
    Expect: the skill triggers; state lands in
    `.claude/tmp/plan-converge-42/`; each round spawns a
    fresh-context critic and ends with exactly one in-place edit of
-   the plan comment; the stop report names the rule that ended the
-   loop.
+   the located surface; the stop report names the surface and the rule
+   that ended the loop.
 2. "Keep critiquing and fixing the plan on issue #42 until it
    settles." on an issue whose body already carries a `## Plan`
    section.
-   Expect: Claude asks to demote the plan back into a comment before
-   looping, and stops without confirmation.
+   Expect: the loop runs in place over that section, with one edit of
+   the body per round; nothing moves the plan back into a comment; the
+   text above `## Plan` passes through unchanged.
 3. "Run the critique loop on issue #42." on a plan whose round yields
    verified discuss findings.
    Expect: the loop applies the round's fixes, then pauses on the
@@ -115,7 +165,11 @@ skill correctly does **not** trigger on the negative cases.
    Expect: the loop stops rather than running unbounded, and the stop
    report names the budget-spent rule and the default round budget
    of 5.
-5. Negative: "Critique the plan on issue #42."
+5. "Converge the plan on issue #42." on an issue whose plan is
+   promoted and that an open pull request carries.
+   Expect: the loop stops before its first edit of the body and
+   reports why; the body is unchanged.
+6. Negative: "Critique the plan on issue #42."
    Expect: `plan-converge` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
 
@@ -129,7 +183,12 @@ skill correctly does **not** trigger on the negative cases.
    body already carries a `## Plan` section.
    Expect: the existing section is replaced, and the body ends with
    exactly one `## Plan` header.
-3. Negative: "Write a plan for issue #42."
+3. "Promote the plan on issue #42." on a plan whose Open questions
+   section carries a bullet.
+   Expect: Claude shows the open questions and asks whether to promote
+   anyway; it proceeds only on a yes, and the report says the plan was
+   promoted with open questions.
+4. Negative: "Write a plan for issue #42."
    Expect: `promote-plan` does not trigger; `write-plan` does.
 
 ## install-writing-style

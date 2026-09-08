@@ -29,9 +29,10 @@ gh api repos/{owner}/{repo}/issues/<N>/comments \
 ```
 
 Pick the comment that carries the plan. A plan comment holds the
-sections `write-plan` emits: Problem, Scope, Solution, Outline, and
-Open questions. An optional References section may follow them. Then
-act on what you found:
+sections `write-plan` emits: Problem, Scope, Acceptance criteria with
+its Invariants subsection, Solution, Outline, and Open questions. An
+optional References section may follow them. Then act on what you
+found:
 
 - **Exactly one plan comment.** Use it.
 - **Several plan comments.** Show the user the candidates with their
@@ -53,6 +54,16 @@ gh api repos/{owner}/{repo}/issues/comments/<comment-id> \
 
 Write the working files to the session scratchpad if the harness gave
 you one, else to `.claude/tmp/`.
+
+Then read the plan's Open questions section, in the empty form
+`write-plan` → "5. Write" owns. When it carries a bullet, stop: show
+the user the questions and ask whether to promote anyway. Proceed only
+on a yes, and say in the report that the plan was promoted with open
+questions.
+
+An open question in a promoted plan stops the implementer. The
+implementer stops on a design decision the issue does not answer, and
+the promoted plan is part of the issue body it reads.
 
 ## 3. Shift the plan's headings down one level
 
@@ -107,4 +118,5 @@ plan is now in both places.
 ## 6. Report
 
 Give the user the issue URL and one sentence on what moved. Name the
-comment as deleted or as left in place.
+comment as deleted or as left in place. Say that the plan was promoted
+with open questions when it was.

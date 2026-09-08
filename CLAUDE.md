@@ -16,13 +16,23 @@ serving the old cached files after the marketplace updates.
 ## Skill headings are quoted by sibling skills
 
 A skill may cite another skill's section heading verbatim as a prose
-pointer. `plan-converge` cites the write-plan heading "Sweep each
-ruling at decision time", the write-plan self-review bullet
-"Restatements", and the critique-plan Report bullet "Skip the pruning
-under a loop". Renaming a heading in one `SKILL.md` leaves a dangling
+pointer. `plan-converge` cites the write-plan headings "Sweep each
+ruling at decision time" and "5. Write", the write-plan self-review
+bullet "Restatements", the critique-plan Report bullet "Skip the
+pruning under a loop", the critique-plan heading "4. Collect", and the
+promote-plan heading "4. Write the plan into the issue body".
+`critique-plan` cites the write-plan headings "Derive the scope" and
+"5. Write", and `promote-plan` cites "5. Write" as well. Renaming a
+heading in one `SKILL.md` leaves a dangling
 reference in another, and nothing catches it. Treat a heading rename
 as an API change, and update every citation in the same commit as the
 rename.
+
+A skill also cites a heading in another plugin. The citations of
+`sdlc:` and `cc-tools:` headings live in
+`plugins/writing/docs/review-sources.md` and in the skills that file
+serves. Resolve such a citation against the install path the locator
+in that file returns for the named plugin.
 
 A skill also cites its own headings. `plan-converge` points one step
 at another through the section names "Run a round", "The staleness
@@ -48,6 +58,12 @@ search whose pattern tolerates the wrap:
 ```bash
 rg -U --multiline-dotall 'Sweep\s+each\s+ruling\s+at\s+decision\s+time' plugins
 ```
+
+## The review's sources are mirrored by hand
+
+`plugins/writing/docs/review-sources.md` mirrors the sources section
+of `sdlc:theorem-generation` and is re-synced by hand. A change to
+that skill's sources leaves this file stale, and nothing catches it.
 
 ## Markdown
 
