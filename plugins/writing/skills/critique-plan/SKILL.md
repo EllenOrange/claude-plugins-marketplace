@@ -54,10 +54,10 @@ Do this first. A plan aimed at the wrong problem fails whatever its
 solution, so the rest of the critique is worthless until this passes.
 
 - **Does the plan define the problem at all?** A plan that opens on a
-  solution has skipped the step that makes it judgeable.
+  solution skips the step that makes it judgeable.
 - **Does the problem match the issue?** Compare the plan's problem
   statement against what the originating issue reports. Name any
-  drift: a narrower problem silently descopes the issue, a wider one
+  drift. A narrower problem silently descopes the issue. A wider one
   smuggles in work nobody asked for.
 - **Does the problem presuppose the solution?** A problem statement
   that names the fix, the mechanism, or the component to change
@@ -98,24 +98,31 @@ here.
 ### Derive each named set from the code
 
 When the plan binds an obligation to a list of sites, fields, or
-rpcs, derive the true set from the code and compare. Enumerate a
-shared helper's call sites, the writes and reads able to violate a
-stated invariant per `write-plan` → "State the acceptance criteria",
-and the files that restate a rule the plan changes. A list smaller
-than the derived set is a build-changing finding even when every
-listed member is correct. Prescribe stating
-the membership rule as a class-level sweep action with a verify
-command. Do not prescribe adding the missing member to the list: a
-grown list is still frozen, and it goes stale on the next change.
+rpcs, derive the true set from the code and compare. Enumerate:
+
+- a shared helper's call sites
+- the writes and reads able to violate a stated invariant per
+  `write-plan` → "State the acceptance criteria"
+- the files that restate a rule the plan changes
+
+A list smaller than the derived set is a build-changing finding even
+when every listed member is correct. Prescribe stating the membership
+rule as a class-level sweep action with a verify command. Do not
+prescribe adding the missing member to the list: a grown list is
+still frozen, and it goes stale on the next change.
 
 ### Treat consequential silence as a finding
 
-Compare sibling units the plan treats as parallel. A pattern spelled
-out in one and absent from the other is a finding unless the plan
-waives it explicitly. So is a stated guarantee with no pinning test,
-and an action that pins the order of checks but not what each check
-evaluates. These findings are build-changing: the implementer reads
-the silence as a decision and builds the gap.
+Compare sibling units the plan treats as parallel. Each of these is
+a finding unless the plan waives it explicitly:
+
+- a pattern spelled out in one sibling unit and absent from the other
+- a stated guarantee with no pinning test
+- an action that pins the order of checks but not what each check
+  evaluates
+
+These findings are build-changing: the implementer reads the silence
+as a decision and builds the gap.
 
 ### Flag a rule stated twice with no owner
 
@@ -170,12 +177,13 @@ the authority.
 
 ## 4. Collect
 
-Write every candidate finding down as rough notes. No format, no
-priority order, no verdicts. Those come next, and assigning them now
-costs you the finding you would otherwise have cut.
+Write every candidate finding down as rough notes. Leave them
+unformatted, unordered, and without verdicts. Order and verdicts come
+next, and assigning them now costs you the finding you would
+otherwise have cut.
 
 Collect a superset. Include the marginal points and the ones you
-suspect the author already knows; the report step decides what
+suspect the author already knows. The report step decides what
 survives, and it decides better over a wide set than a narrow one.
 Note for each: the problem definition, solution, unit, or gap it
 concerns, and the concrete consequence.
@@ -183,8 +191,8 @@ concerns, and the concrete consequence.
 Note these things per finding as well. They survive into the report.
 
 - **Provenance.** The file and the ref you verified the finding
-  against. For an external claim, the doc page or source file you
-  read. A finding with no provenance is labelled unverified.
+  against. For an external claim, note the doc page or source file
+  you read. Label a finding with no provenance unverified.
 - **The build-changing label.** This step owns the label's definition.
   Mark the finding `build-changing` when acting on it changes what the
   implementer builds, decides, or verifies, or what the reviewer

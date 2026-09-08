@@ -1,29 +1,39 @@
 # The review's sources
 
-This file mirrors the sources section of `sdlc:theorem-generation`. A
-change there is re-synced here by hand.
+The sources the review works, in order, and the question a critic
+asks of a plan for each one. This file mirrors the sources section of
+`sdlc:theorem-generation`. Sync a change there into this file by hand.
 
-The skills in this plugin cite this file for the resolution order, the
-locator command, the per-source question a critic asks of a plan, the
-finding a failing answer yields, the style-guide fallback order, and
-the bar a criterion must clear. They restate none of those facts.
+The skills in this plugin cite this file for these facts, and restate
+none of them:
+
+- The resolution order.
+- The locator command.
+- The per-source question a critic asks of a plan.
+- The finding a failing answer yields.
+- The style-guide fallback order.
+- The bar a criterion must clear.
 
 On a repo that runs the sdlc plugin, the review that grades the
 implementation is the theorem pipeline. It works the sources below in
-order. The first source is exempt from the pipeline's stakes bar, it
-carries a High severity floor, and its theorems are re-attacked every
-round. So the plan's acceptance criteria are the only plan text
-that survives into every review round.
+order. The pipeline treats the first source apart from the rest:
+
+- It exempts the source from its stakes bar.
+- It gives the source a High severity floor.
+- It re-attacks the source's theorems every round.
+
+So the plan's acceptance criteria are the only plan text that survives
+into every review round.
 
 ## Resolution order
 
 The installed sdlc skill a citation names is the authority for the
 cited fact when it is present. This file's own summary of that fact is
-the fallback. Read the installed skill first, and select the fallback
+the fallback. Read the installed skill first. Select the fallback
 silently when the locator returns nothing or the file is absent.
 
-The per-source questions below are this file's own. They are read in
-both cases.
+The per-source questions below are this file's own. Read them in both
+cases.
 
 ### The facts this plugin cites from sdlc
 
@@ -38,15 +48,15 @@ The membership rule: every `sdlc:` citation in this file and under
   decision set" below.
 - **That the pipeline reads each member issue through `/issue-view`**,
   from `sdlc:theorem-generation` → "Workflow". Fallback: "The pipeline
-  reads the body" below, which is also where the body-only read this
-  plugin builds on that fact is stated and justified as this file's
-  own claim.
+  reads the body" below. That section also states the body-only read
+  this plugin builds on that fact, and justifies it as this file's own
+  claim.
 - **That a criterion theorem is re-attacked every round, and that a
   disposition contradicting the carried record is a declared
   reversal**, from `sdlc:theorem-based-pr-reviewer` → "Declare a
   reversed criterion verdict". Fallback: the same two facts, stated
   here. Moving a criterion under review is one way to make this
-  round's disposition contradict the carried record, which is why the
+  round's disposition contradict the carried record. That is why the
   loop guards a body surface.
 - **Who reads the plan**, from `sdlc:issue-developer`. Fallback: the
   reader is an implementation agent or the engineer in that seat.
@@ -66,9 +76,9 @@ jq -r --arg p "<plugin>@" '.plugins | to_entries[] | select(.key | startswith($p
 
 The first line wins when more than one marketplace carries the plugin.
 
-The `.value[0].installPath` shape was read against the install
-record's own `version` field, which reads `2`. The sibling reader of
-the same file is `cc-tools:cc-suggest-topics` → "What it reads".
+The `.value[0].installPath` shape comes from an install record whose
+own `version` field reads `2`. The sibling reader of the same file is
+`cc-tools:cc-suggest-topics` → "What it reads".
 
 The sdlc resolution calls the locator with `sdlc` and reads
 `<installPath>/skills/theorem-generation/SKILL.md`. An empty result or
@@ -80,7 +90,7 @@ the locator with the plugin a citation names.
 The pipeline reads each member issue through `/issue-view`. The output
 block that `issues:issue-view` → "Output" enumerates carries the issue
 body and its fields, and no comment. So the body is the only plan text
-the review sees, and whatever in it reads as a criterion is what the
+the review sees. Whatever in it reads as a criterion is what the
 review quotes and grades. No installed skill states that conjunction,
 so it is this file's own claim. Check it by reading
 `sdlc:theorem-generation` → "Workflow" and `issues:issue-view` →
@@ -147,9 +157,16 @@ implementer a claim it must assert without evidence.
 ## 3. Codebase consistency
 
 Mirrors `sdlc:theorem-generation` → "3. Codebase consistency". For
-every interface, contract, name, file path, config key, or convention
-the diff touches, the review claims that no other consumer or
-restatement in the repo still assumes the old behavior.
+everything the diff touches, the review claims that no other consumer
+or restatement in the repo still assumes the old behavior. The things
+the diff touches are:
+
+- Interfaces.
+- Contracts.
+- Names.
+- File paths.
+- Config keys.
+- Conventions.
 
 A **sweep section** is a section that names a fact and the surfaces
 that restate it. The sweep-carrying files are the ones
@@ -164,8 +181,8 @@ A sweep section warrants a theorem only when the change alters the
 fact the section says is mirrored. Touching a file the section names
 is not the trigger.
 
-Ask of the plan: for every mirrored fact the plan changes, does Scope
-name the surfaces that restate it, and does the Outline carry one
+Ask of the plan, for every mirrored fact the plan changes: does Scope
+name the surfaces that restate it? Does the Outline carry one
 class-level sweep action with a grep-shaped verify command?
 
 The finding a failing answer yields: a mirrored fact the plan changes
@@ -174,9 +191,11 @@ whose restating surfaces Scope omits.
 ## 4. Design shape
 
 Mirrors `sdlc:theorem-generation` → "4. Design shape". The review
-claims that the change sits where the codebase already puts this kind
-of logic, that it creates no second source of truth, and that it stays
-within the union of the member issues' scopes.
+claims that:
+
+- The change sits where the codebase already puts this kind of logic.
+- The change creates no second source of truth.
+- The change stays within the union of the member issues' scopes.
 
 Ask of the plan: does the plan settle placement, ownership, and
 boundary against its neighbors?
@@ -210,14 +229,14 @@ rule heading.
 ### The fallback per guide
 
 - **The documentation guide.** It falls back to the
-  communication-style rule, read through this plugin's existing
-  lookup: the installed copy at `~/.claude/rules/communication-style.md`
-  if present, else the bundled copy at
-  `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`. Read as rules,
-  each `##` section from "Kernel: the inverted pyramid" through
-  "Audience calibration" is one rule. The sections before and after
-  them are not rules. Waiver: this fallback checks what the review
-  does not. Every plan this plugin writes is written under the
+  communication-style rule. Read that rule through this plugin's
+  existing lookup: the installed copy at
+  `~/.claude/rules/communication-style.md` when present, else the
+  bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
+  Read as rules, each `##` section from "Kernel: the inverted pyramid"
+  through "Audience calibration" is one rule. The sections before and
+  after them are not rules. Waiver: this fallback checks what the
+  review does not. Every plan this plugin writes is written under the
   communication-style rule, so a violation is a defect whether or not
   the review catches it.
 - **The code guide.** An absent file yields no check. Waiver: the
