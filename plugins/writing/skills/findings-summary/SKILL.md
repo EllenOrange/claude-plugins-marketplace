@@ -6,16 +6,16 @@ description: Report findings as a prioritized numbered list with triage verdicts
 # findings-summary
 
 Emit the findings from the current review, audit, or investigation as
-a prioritized list. Write all prose per the communication-style rule: the
-installed copy at `~/.claude/rules/communication-style.md` if present, else
-the plugin's bundled copy at
+a prioritized list. Write all prose per the communication-style rule.
+Use the installed copy at `~/.claude/rules/communication-style.md` if
+present. Otherwise use the plugin's bundled copy at
 `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 ## Before you write: push back
 
 Drop any finding the reader would dismiss on sight. A cheap-to-state
 fact the reader likely has not noticed still earns a line. When the
-findings review an implementation plan or spec, prune harder: drop
+findings review an implementation plan or spec, prune harder. Drop
 anything a reasonable senior engineer could figure out alone,
 especially omissions and wording ambiguities. A finding earns its
 place only if the reader would act on it.
@@ -23,8 +23,8 @@ place only if the reader would act on it.
 Skip this step entirely when the caller states that the report feeds
 an automated verification loop rather than a human. Emit every
 finding in that mode. The loop verifies each finding itself and keys
-its own stopping rule on the full set, so a pruned finding costs it a
-signal rather than a reader's attention.
+its own stopping rule on the full set. A pruned finding therefore
+costs the loop a signal rather than a reader's attention.
 
 ## While you write
 
@@ -63,5 +63,5 @@ Proposed Solution: 1 to 3 sentences.
 
 ## After the list
 
-Stop. Do not restate the findings in prose, and do not apply any
-`fix` items unless the user asks.
+Stop. Do not restate the findings in prose. Do not apply any `fix`
+items unless the user asks.
