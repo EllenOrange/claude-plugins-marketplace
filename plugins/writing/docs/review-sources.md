@@ -82,8 +82,9 @@ block that `issues:issue-view` → "Output" enumerates carries the issue
 body and its fields, and no comment. So the body is the only plan text
 the review sees, and whatever in it reads as a criterion is what the
 review quotes and grades. No installed skill states that conjunction,
-so it is this file's own claim. Check it by reading the two sections
-named here.
+so it is this file's own claim. Check it by reading
+`sdlc:theorem-generation` → "Workflow" and `issues:issue-view` →
+"Output".
 
 ## The decision set
 

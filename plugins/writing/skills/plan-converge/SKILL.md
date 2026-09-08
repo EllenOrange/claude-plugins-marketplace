@@ -22,8 +22,8 @@ the plugin's bundled copy at
 
 ## 1. Locate the plan
 
-The plan lives on one of two surfaces: the most recent plan comment on
-the issue, or the issue body's `## Plan` section. A plan carries the
+The plan lives on one of these surfaces: the most recent plan comment
+on the issue, or the issue body's `## Plan` section. A plan carries the
 sections `write-plan` emits: Problem, Scope, Acceptance criteria with
 its Invariants subsection, Solution, Outline, and Open questions. An
 optional References section may follow them.
@@ -127,16 +127,15 @@ resume comparison then flags only genuine outside edits.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
    and instruct it to load `writing:critique-plan`. Pass the surface
    the plan lives on, the ledger's rulings and open questions, the
-   known-open list, and the previous round's snapshot. Withhold the ledger's
-   loop facts. Brief it with the materiality bar:
-   report a finding only when it is build-changing per
-   `critique-plan` → "4. Collect", or when the plan's existing
-   class-level actions and verify commands do not already cover it.
-   Tell the critic that this bar overrides the "Skip the pruning under
-   a loop" item in `writing:critique-plan`'s Report step.
-   `writing:critique-plan` itself stays unchanged. Fresh
-   context is the point: the applier's accumulated assumptions are
-   what the critic must not inherit.
+   known-open list, and the previous round's snapshot. Withhold the
+   ledger's loop facts. Brief it with the materiality bar: report a
+   finding only when it is build-changing per `critique-plan` →
+   "4. Collect", or when the plan's existing class-level actions and
+   verify commands do not already cover it. Tell the critic that this
+   bar overrides the "Skip the pruning under a loop" item in
+   `writing:critique-plan`'s Report step. `writing:critique-plan`
+   itself stays unchanged. Fresh context is the point: the applier's
+   accumulated assumptions are what the critic must not inherit.
 3. **Verify every finding in the main session.** Check each one
    against the ref the plan builds on, per `critique-plan`. Record
    each rejected finding with its rejection reason. Act only on

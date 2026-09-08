@@ -23,26 +23,24 @@ pruning under a loop", the critique-plan heading "4. Collect", and the
 promote-plan heading "4. Write the plan into the issue body".
 `critique-plan` cites the write-plan headings "Derive the scope" and
 "5. Write", `promote-plan` cites "5. Write" as well, and `write-plan`
-cites the promote-plan heading "2. Read both texts verbatim".
-Renaming a heading in one `SKILL.md` leaves a dangling
-reference in another, and nothing catches it. Treat a heading rename
-as an API change, and update every citation in the same commit as the
-rename.
+cites the promote-plan heading "2. Read both texts verbatim". Renaming
+a heading in one `SKILL.md` leaves a dangling reference in another,
+and nothing catches it. Treat a heading rename as an API change, and
+update every citation in the same commit as the rename.
 
 A skill also cites a heading in another plugin. Every such citation,
-whichever plugin it names, lives in
-`plugins/writing/docs/review-sources.md` and in the skills that file
-serves. Resolve such a citation against the install path the locator
-in that file returns for the named plugin.
+whichever plugin it names, sits in
+`plugins/writing/docs/review-sources.md` or under
+`plugins/writing/skills/`. Resolve it against the install path the
+locator in `review-sources.md` returns for the named plugin.
 
 A skill also cites its own headings. `plan-converge` points one step
-at another through the section names "Run a round", "The staleness
-guard", and "Check the stopping rules", and `write-plan`'s Write step
-and self-review point at its own subsections, among them "Derive the
-scope", "State the acceptance criteria", "State the rule that
-generates each set", and "Mark every waiver". A rename inside one file
-dangles just as silently, so sweep the file you renamed in as well as
-its siblings.
+at another through the section names "Run a round" and "The staleness
+guard", and `write-plan`'s Propose step, Write step, and self-review
+point at its own subsections, among them "Derive the scope", "State
+the acceptance criteria", "State the rule that generates each set",
+and "Mark every waiver". A rename inside one file dangles just as
+silently, so sweep the file you renamed in as well as its siblings.
 
 Search wrap-tolerantly, because a citation is prose and prose wraps.
 The plan-converge citation of "Sweep each ruling at decision time"

@@ -270,7 +270,7 @@ site is an illustration, never the set. An implementer reads a bare
 list as exhaustive and frozen, and the members the list missed ship
 unbuilt and untested.
 
-Two cases bite hardest:
+These cases bite hardest:
 
 - **A shared helper or single code path.** Every contract, test, and
   doc obligation about it quantifies over the helper's call sites,

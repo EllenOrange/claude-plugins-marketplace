@@ -52,10 +52,9 @@ Skills:
   Invariants subsection, whose entries are class-quantified claims
   about the merged result, each with the check that settles it and
   either the test that pins it or a waiver saying why none exists. It
-  walks the plan's dependencies at the ref the
-  plan builds on, derives its scope from the repo's sweep sections and
-  its neighboring issues, and cites its authorities instead of
-  restating them.
+  walks the plan's dependencies at the ref the plan builds on, derives
+  its scope from the repo's sweep sections and its neighboring issues,
+  and cites its authorities instead of restating them.
 - **promote-plan**: move an approved plan out of its issue comment
   and into the bottom of the issue body, under a `## Plan` header. It
   asks first when the plan's Open questions section is not empty.
@@ -70,9 +69,9 @@ Skills:
   issue until a stopping rule ends it, keeping a decision ledger, an
   open-issues doc, and per-round snapshots as durable state. It loops
   in place over the plan comment or over the promoted plan in the
-  issue body, and it refuses to edit a body an open branch or pull
-  request already carries. A round budget caps how many critique
-  rounds the loop runs.
+  issue body, and it refuses to edit a body when an open pull request
+  or an unmerged remote branch already carries the issue. A round
+  budget caps how many critique rounds the loop runs.
 
 ## License
 
