@@ -11,8 +11,8 @@ the bar a criterion must clear. They restate none of those facts.
 On a repo that runs the sdlc plugin, the review that grades the
 implementation is the theorem pipeline. It works the sources below in
 order. The first source is exempt from the pipeline's stakes bar, it
-carries a High severity floor, and it is regenerated and re-attacked
-every round. So the plan's acceptance criteria are the only plan text
+carries a High severity floor, and its theorems are re-attacked every
+round. So the plan's acceptance criteria are the only plan text
 that survives into every review round.
 
 ## Resolution order
@@ -27,7 +27,7 @@ both cases.
 
 ### The facts this plugin cites from sdlc
 
-The membership rule: every `sdlc:` citation under
+The membership rule: every `sdlc:` citation in this file and under
 `plugins/writing/skills`. Known members:
 
 - **What each theorem source means, and the emission bar**, from
@@ -40,8 +40,8 @@ The membership rule: every `sdlc:` citation under
   Fallback: "The pipeline reads the body" below.
 - **Why a criterion under review must not move**, from
   `sdlc:theorem-based-pr-reviewer` → "Declare a reversed criterion
-  verdict". Fallback: criterion theorems regenerate every round, so a
-  criterion changed mid-review is a declared reversal.
+  verdict". Fallback: a criterion theorem is re-attacked every round,
+  so a criterion changed mid-review is a declared reversal.
 - **Who reads the plan**, from `sdlc:issue-developer`. Fallback: the
   reader is an implementation agent or the engineer in that seat.
 - **When grooming runs**, from `sdlc:orchestrate-ready`. Fallback:

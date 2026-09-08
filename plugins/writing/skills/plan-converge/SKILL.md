@@ -39,7 +39,7 @@ say so and stop. Writing a plan is `writing:write-plan`.
 Before the loop's first edit of a body surface, stop and report
 without editing when an open pull request or a remote branch carries
 the issue. A criterion under review must not move: the review
-regenerates its criterion theorems every round, and a changed
+re-attacks its criterion theorems every round, and a changed
 criterion is a declared reversal, per `sdlc:theorem-based-pr-reviewer`
 → "Declare a reversed criterion verdict". A comment surface needs no
 guard, because the review never reads it.

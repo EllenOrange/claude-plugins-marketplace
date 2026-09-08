@@ -50,8 +50,9 @@ Skills:
   inverted-pyramid technical spec and plan, and post it as an issue
   comment. The plan carries an Acceptance criteria section, with an
   Invariants subsection, whose entries are class-quantified claims
-  about the merged result, each with the check that settles it and the
-  test that pins it. It walks the plan's dependencies at the ref the
+  about the merged result, each with the check that settles it and
+  either the test that pins it or a waiver saying why none exists. It
+  walks the plan's dependencies at the ref the
   plan builds on, derives its scope from the repo's sweep sections and
   its neighboring issues, and cites its authorities instead of
   restating them.
