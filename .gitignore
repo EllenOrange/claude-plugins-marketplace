@@ -17,3 +17,7 @@ __MACOSX/
 
 # Claude agent memory
 .claude/agent-memory/
+designs/reference
+
+# Claude scratch
+.claude/tmp/
