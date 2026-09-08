@@ -36,12 +36,18 @@ The membership rule: every `sdlc:` citation in this file and under
 - **The decision set an issue must settle**, from
   `sdlc:orchestrate-ready` → "The readiness bar". Fallback: "The
   decision set" below.
-- **The body-only read**, from `sdlc:theorem-generation` → "Workflow".
-  Fallback: "The pipeline reads the body" below.
-- **Why a criterion under review must not move**, from
-  `sdlc:theorem-based-pr-reviewer` → "Declare a reversed criterion
-  verdict". Fallback: a criterion theorem is re-attacked every round,
-  so a criterion changed mid-review is a declared reversal.
+- **That the pipeline reads each member issue through `/issue-view`**,
+  from `sdlc:theorem-generation` → "Workflow". Fallback: "The pipeline
+  reads the body" below, which is also where the body-only read this
+  plugin builds on that fact is stated and justified as this file's
+  own claim.
+- **That a criterion theorem is re-attacked every round, and that a
+  disposition contradicting the carried record is a declared
+  reversal**, from `sdlc:theorem-based-pr-reviewer` → "Declare a
+  reversed criterion verdict". Fallback: the same two facts, stated
+  here. Moving a criterion under review is one way to make this
+  round's disposition contradict the carried record, which is why the
+  loop guards a body surface.
 - **Who reads the plan**, from `sdlc:issue-developer`. Fallback: the
   reader is an implementation agent or the engineer in that seat.
 - **When grooming runs**, from `sdlc:orchestrate-ready`. Fallback:
@@ -71,10 +77,13 @@ the locator with the plugin a citation names.
 
 ## The pipeline reads the body
 
-The pipeline reads each member issue through `/issue-view`, which
-prints the issue body and never its comments. So the body is the only
-plan text the review sees, and whatever in it reads as a criterion is
-what the review quotes and grades.
+The pipeline reads each member issue through `/issue-view`. The output
+block that `issues:issue-view` → "Output" enumerates carries the issue
+body and its fields, and no comment. So the body is the only plan text
+the review sees, and whatever in it reads as a criterion is what the
+review quotes and grades. No installed skill states that conjunction,
+so it is this file's own claim. Check it by reading the two sections
+named here.
 
 ## The decision set
 

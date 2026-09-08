@@ -24,6 +24,8 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
   skill it names, or its fallback. Then read the style guides it names,
   with the per-guide fallback it states.
+  Its hardest rule: the acceptance-criteria source is exempt from the
+  review's stakes bar and carries a High severity floor.
 
 ## 2. Interview
 
@@ -409,8 +411,8 @@ here costs an edit rather than a correction.
   list of sites, fields, or rpcs. Each one states the membership
   rule and carries a class-level sweep action with a verify command,
   per "State the rule that generates each set". Check each invariant
-  the same way: it binds every write and read able to violate it,
-  and names what pins it.
+  the same way, against the shape "State the acceptance criteria"
+  gives it.
 - **Unmarked silences.** Sibling paths missing a pattern their twin
   spells out, guarantees with no pinning test, and checks whose
   predicate is left to the reader. Each says waiver or obligation,
@@ -429,6 +431,12 @@ here costs an edit rather than a correction.
   marks unresolved, or points elsewhere for appears in Open questions.
   Open questions lists nothing the body treats as decided, and carries
   no record of formerly open questions or how they were resolved.
+- **The empty form.** An Open questions section with no question reads
+  the single line `None.` and carries no bullet. An Invariants
+  subsection with no invariant reads `None.` followed by its one
+  clause saying why the Outline touches no contract. Both forms are
+  the ones "5. Write" owns, and every reader of the sections keys on
+  them.
 - **Placeholders.** Any action that names no specific work.
 - **Contradictions.** Actions that undo each other, or an action that
   contradicts the Solution paragraph.

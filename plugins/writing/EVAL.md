@@ -75,12 +75,18 @@ skill correctly does **not** trigger on the negative cases.
     Expect: a finding that the restatement does not match the
     authority; the proposed solution deletes the restatement and cites
     the rule.
-11. "Critique this plan." on a plan with no Acceptance criteria
+11. "Critique this plan." on a plan that cites an authority for a
+    class and enumerates some of the class's members beside the
+    citation, with no member marked illustrative.
+    Expect: a finding that the enumeration displaces the authority it
+    sits beside; the proposed solution states the membership rule or
+    marks the named members as illustrations.
+12. "Critique this plan." on a plan with no Acceptance criteria
     section.
     Expect: a finding labelled `build-changing` rather than
     `text-only`, because a missing criterion changes what the reviewer
     checks.
-12. Negative: "Critique the naming in this function."
+13. Negative: "Critique the naming in this function."
     Expect: the skill does not trigger; it is scoped to plans and
     specs.
 

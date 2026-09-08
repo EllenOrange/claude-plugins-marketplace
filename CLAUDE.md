@@ -29,8 +29,8 @@ reference in another, and nothing catches it. Treat a heading rename
 as an API change, and update every citation in the same commit as the
 rename.
 
-A skill also cites a heading in another plugin. The citations of
-`sdlc:` and `cc-tools:` headings live in
+A skill also cites a heading in another plugin. Every such citation,
+whichever plugin it names, lives in
 `plugins/writing/docs/review-sources.md` and in the skills that file
 serves. Resolve such a citation against the install path the locator
 in that file returns for the named plugin.

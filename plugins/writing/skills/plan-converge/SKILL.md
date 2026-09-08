@@ -39,10 +39,11 @@ say so and stop. Writing a plan is `writing:write-plan`.
 Before the loop's first edit of a body surface, stop and report
 without editing when an open pull request or a remote branch carries
 the issue. A criterion under review must not move: the review
-re-attacks its criterion theorems every round, and a changed
-criterion is a declared reversal, per `sdlc:theorem-based-pr-reviewer`
-→ "Declare a reversed criterion verdict". A comment surface needs no
-guard, because the review never reads it.
+re-attacks its criterion theorems every round, and a disposition that
+contradicts the carried record is a declared reversal, per
+`sdlc:theorem-based-pr-reviewer` → "Declare a reversed criterion
+verdict". Editing the criterion mid-review is a way to cause one. A
+comment surface needs no guard, because the review never reads it.
 
 Each check has the same shape: an enumeration with no item cap, a
 membership decision through the installed skill, and an over-firing
@@ -128,13 +129,12 @@ resume comparison then flags only genuine outside edits.
    the plan lives on, the ledger's rulings and open questions, the
    known-open list, and the previous round's snapshot. Withhold the ledger's
    loop facts. Brief it with the materiality bar:
-   report a finding only when it is build-changing per the definition
-   under "Check the stopping rules", or when the plan's existing
+   report a finding only when it is build-changing per
+   `critique-plan` → "4. Collect", or when the plan's existing
    class-level actions and verify commands do not already cover it.
    Tell the critic that this bar overrides the "Skip the pruning under
-   a loop" item in `writing:critique-plan`'s Report step, and that
-   `critique-plan` → "4. Collect" governs the build-changing label in
-   its report. `writing:critique-plan` itself stays unchanged. Fresh
+   a loop" item in `writing:critique-plan`'s Report step.
+   `writing:critique-plan` itself stays unchanged. Fresh
    context is the point: the applier's accumulated assumptions are
    what the critic must not inherit.
 3. **Verify every finding in the main session.** Check each one
