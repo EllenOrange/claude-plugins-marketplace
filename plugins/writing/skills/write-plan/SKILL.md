@@ -200,9 +200,11 @@ is graded as a requirement of the merged result.
 
 The `### Invariants` subsection carries the existing contracts,
 consumers, and tests the change must leave intact. Each entry takes
-the same shape. An invariant binds every write and read able to
-violate it, not the consequence of one action. Every contract the
-Outline touches has an invariant or a waiver naming it.
+the parts a criterion takes, so every invariant names its own
+`Check:` clause and its own `Pinned by:` or `Waiver:` clause. An
+invariant binds every write and read able to violate it, not the
+consequence of one action. Every contract the Outline touches has an
+invariant or a waiver naming it.
 
 ### The solution matches the problem's altitude
 
@@ -382,7 +384,9 @@ here costs an edit rather than a correction.
 - **Criteria shape.** Does every criterion state a claim about the
   merged result, quantified over a class with its membership rule?
   Does each carry a `Check:` clause and a `Pinned by:` or `Waiver:`
-  clause, per "State the acceptance criteria"?
+  clause, per "State the acceptance criteria"? Is any criterion an
+  action, an implementation step, or an exemplar to imitate wearing
+  those clauses? Move that one into the Outline.
 - **Touched contracts.** Does every existing contract the Outline
   touches have an invariant or a waiver naming it?
 - **Actions that read as results.** Any outline action stating a claim
@@ -435,8 +439,12 @@ here costs an edit rather than a correction.
   the single line `None.` and carries no bullet. An Invariants
   subsection with no invariant reads `None.` followed by its one
   clause saying why the Outline touches no contract. Both forms are
-  the ones "5. Write" owns, and every reader of the sections keys on
-  them.
+  the ones "5. Write" owns. The sibling skills that cite the owner key
+  on the Open questions form. The Invariants subsection has a second
+  reader that does not. The acceptance-criteria source in
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` asks instead whether
+  every contract the Outline touches carries an invariant or a waiver.
+  So a well-formed `None.` still fails when the Outline touches one.
 - **Placeholders.** Any action that names no specific work.
 - **Contradictions.** Actions that undo each other, or an action that
   contradicts the Solution paragraph.

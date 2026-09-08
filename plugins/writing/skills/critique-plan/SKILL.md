@@ -100,9 +100,10 @@ here.
 When the plan binds an obligation to a list of sites, fields, or
 rpcs, derive the true set from the code and compare. Enumerate a
 shared helper's call sites, the writes and reads able to violate a
-stated invariant, and the files that restate a rule the plan
-changes. A list smaller than the derived set is a build-changing
-finding even when every listed member is correct. Prescribe stating
+stated invariant per `write-plan` → "State the acceptance criteria",
+and the files that restate a rule the plan changes. A list smaller
+than the derived set is a build-changing finding even when every
+listed member is correct. Prescribe stating
 the membership rule as a class-level sweep action with a verify
 command. Do not prescribe adding the missing member to the list: a
 grown list is still frozen, and it goes stale on the next change.
@@ -147,7 +148,9 @@ it in both directions.
   implementation inherits it.
 - **The plan enumerates no list beside a citation without marking it
   illustrative.** An enumeration next to a citation displaces the
-  authority it sits beside.
+  authority it sits beside. Prescribe marking the named members as
+  illustrations, or stating the membership rule as "Derive each named
+  set from the code" prescribes.
 
 For an external library, SDK, or service, read the docs or source of
 the version the plan targets. Your own recollection is not an

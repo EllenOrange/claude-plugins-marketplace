@@ -36,13 +36,16 @@ say so and stop. Writing a plan is `writing:write-plan`.
 
 ### The body-surface guard
 
-Before the loop's first edit of a body surface, stop and report
-without editing when an open pull request or a remote branch carries
-the issue. A criterion under review must not move: the review
-re-attacks its criterion theorems every round, and a disposition that
-contradicts the carried record is a declared reversal, per
-`sdlc:theorem-based-pr-reviewer` → "Declare a reversed criterion
-verdict". Editing the criterion mid-review is a way to cause one. A
+Before every edit of a body surface, stop and report without editing
+when an open pull request or an unmerged remote branch carries the
+issue. Run the checks again each round, and again on every resumed
+run. A loop pauses for rulings and outlives its session. A pull
+request that opens during the pause blocks the next edit as firmly as
+one that was open at the start. A criterion under review must not
+move: the review re-attacks its criterion theorems every round, and a
+disposition that contradicts the carried record is a declared
+reversal, per `sdlc:theorem-based-pr-reviewer` → "Declare a reversed
+criterion verdict". Editing the criterion mid-review is a way to cause one. A
 comment surface needs no guard, because the review never reads it.
 
 Each check has the same shape: an enumeration with no item cap, a
@@ -157,10 +160,11 @@ resume comparison then flags only genuine outside edits.
    writer and every reader of the section share one form.
 7. **Edit the located surface in place, once.** One edit per round, at
    the end of the round. Never post a new comment. On a body surface,
-   re-read the live body first, replace the text from `## Plan` to the
-   end per `promote-plan` → "4. Write the plan into the issue body",
-   and write the result, so everything above `## Plan` passes through
-   unchanged. Re-read the body after the write.
+   run "The body-surface guard" first, then re-read the live body,
+   replace the text from `## Plan` to the end per `promote-plan` →
+   "4. Write the plan into the issue body", and write the result, so
+   everything above `## Plan` passes through unchanged. Re-read the
+   body after the write.
 
 ### Fixes carry no history
 

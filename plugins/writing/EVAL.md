@@ -175,7 +175,12 @@ skill correctly does **not** trigger on the negative cases.
    promoted and that an open pull request carries.
    Expect: the loop stops before its first edit of the body and
    reports why; the body is unchanged.
-6. Negative: "Critique the plan on issue #42."
+6. "Resume the converge loop on issue #42." on a promoted plan whose
+   loop paused for rulings with no pull request open, and that a pull
+   request opened during the pause now carries.
+   Expect: the resumed run re-runs the body-surface guard before its
+   next edit, stops, and reports why; the body is unchanged.
+7. Negative: "Critique the plan on issue #42."
    Expect: `plan-converge` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
 
