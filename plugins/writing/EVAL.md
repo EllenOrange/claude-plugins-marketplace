@@ -158,6 +158,15 @@ skill correctly does **not** trigger on the negative cases.
     Expect: Claude reads the bundled `docs/review-sources.md` for the
     review's sources and the decision set, and proceeds with no
     error.
+13. "Plan the work for issue #42." on an issue whose solution states
+    a two-step write with no completion rule.
+    Expect: Claude reads the repo for a class rule for that kind of
+    write before it turns the gap into a question. Claude walks the
+    write against that rule, or against the walk's test, before the
+    interview closes. Each unanswered question becomes an interview
+    question. A behavior the human review adds is walked before the
+    post. The posted plan answers every question, or carries it under
+    Open questions.
 
 ## plan-converge
 
@@ -176,8 +185,8 @@ skill correctly does **not** trigger on the negative cases.
    byte unchanged.
 3. "Run the critique loop on issue #42." on a plan whose round yields
    verified discuss findings.
-   Expect: the loop applies the round's fixes, then pauses on the
-   blocked rule. It presents the open-issues doc one item at a time,
+   Expect: the loop pauses on the blocked rule before it applies the
+   round's fixes. It presents the open-issues doc one item at a time,
    and resumes only once every item carries a ruling.
 4. "Converge the plan on issue #42." on a plan that keeps yielding
    fresh build-changing fix findings every round.
@@ -196,6 +205,14 @@ skill correctly does **not** trigger on the negative cases.
 7. Negative: "Critique the plan on issue #42."
    Expect: `plan-converge` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
+8. "Converge the plan on issue #42." on a plan whose round yields a
+   discuss finding, and whose ruling on that finding changes which
+   step decides the outcome.
+   Expect: the loop pauses before it applies the round's fixes. After
+   the ruling, the walk runs over the changed behavior before any
+   prose edit. The fixes and the ruling's consequences land in one
+   edit. The next critic's brief carries no previous snapshot. The
+   churn rule does not fire in that round.
 
 ## promote-plan
 

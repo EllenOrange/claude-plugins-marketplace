@@ -19,10 +19,11 @@ A skill may cite another skill's section heading verbatim as a prose
 pointer. The current citations are:
 
 - `plan-converge` cites the write-plan headings "Sweep each ruling at
-  decision time" and "5. Write", the write-plan self-review bullet
-  "Restatements", the critique-plan Report bullet "Skip the pruning
-  under a loop", the critique-plan heading "4. Collect", and the
-  promote-plan heading "4. Write the plan into the issue body".
+  decision time", "Walk each stated behavior", and "5. Write", the
+  write-plan self-review bullet "Restatements", the critique-plan
+  Report bullet "Skip the pruning under a loop", the critique-plan
+  headings "Inputs" and "4. Collect", and the promote-plan heading
+  "4. Write the plan into the issue body".
 - `critique-plan` cites the write-plan headings "Derive the scope",
   "5. Write", and "State the acceptance criteria".
 - `promote-plan` cites the write-plan heading "5. Write".
@@ -43,34 +44,42 @@ A skill also cites its own headings:
 
 - `plan-converge` points one step at another through the section
   names "Run a round", "The staleness guard", and "The body-surface
-  guard".
+  guard". Its round step 3 also names the stopping rule "Blocked",
+  which is a bold list item rather than a heading.
 - `write-plan`'s Propose step, Write step, and self-review point at
   its own subsections, among them "Derive the scope", "State the
   acceptance criteria", "State the rule that generates each set", and
-  "Mark every waiver".
+  "Mark every waiver". Its Propose step, its self-review, its human
+  review step, and its ruling sweep also point at
+  "Walk each stated behavior", and that subsection in turn points at
+  "Cite the authority instead of restating it".
 - `critique-plan` points one section at another through the name
-  "Derive each named set from the code".
+  "Derive each named set from the code". Its Collect step also names
+  the "Inputs" section, and that section names the Collect step by
+  that word rather than by the numbered heading "4. Collect". The
+  Collect step names the Report step by that word too, rather than by
+  the numbered heading "5. Report".
 
 A rename inside one file dangles just as silently. Sweep the file you
 renamed in as well as its siblings.
 
 Search wrap-tolerantly, because a citation is prose and prose wraps.
-The plan-converge citation of "Sweep each ruling at decision time"
-sits across two lines today. A line-oriented grep for the whole
-heading text therefore matches only the heading it came from, and
-misses the citation you need to update. Grep instead for one
-distinctive word from the heading. A single word is the longest
-fragment a wrap can never split:
+The plan-converge citation of "Skip the pruning under a loop" sits
+across two lines today. A line-oriented grep for the whole cited text
+therefore matches only the bullet it came from, and misses the
+citation you need to update. Grep instead for one distinctive word
+from the cited text. A single word is the longest fragment a wrap can
+never split:
 
 ```bash
-grep -rn "Sweep" plugins/*/skills/*/SKILL.md
+grep -rn "pruning" plugins/*/skills/*/SKILL.md
 ```
 
-When the heading has no distinctive single word, run a multiline
+When the cited text has no distinctive single word, run a multiline
 search whose pattern tolerates the wrap:
 
 ```bash
-rg -U --multiline-dotall 'Sweep\s+each\s+ruling\s+at\s+decision\s+time' plugins
+rg -U --multiline-dotall 'Skip\s+the\s+pruning\s+under\s+a\s+loop' plugins
 ```
 
 ## The review's sources are mirrored by hand

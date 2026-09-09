@@ -43,8 +43,13 @@ that file. Enumerate none of it here.
 ### Sweep each ruling at decision time
 
 When the user rules on a design question, enumerate the ruling's
-cross-cutting consequences before you move on. Look for these
-affected surfaces:
+cross-cutting consequences before you move on.
+
+Run "Walk each stated behavior" over each behavior the ruling
+changes, before you edit any prose. Every answer lands in the plan at
+one owning site. The walk writes nowhere else.
+
+Then look for these affected surfaces:
 
 - verification commands
 - doc files
@@ -55,6 +60,29 @@ affected surfaces:
 Carry every consequence into the plan in the same pass. A ruling
 applied at one site and discovered at five others costs a critique
 round per site.
+
+### Walk each stated behavior
+
+Run this walk before the interview closes. Walk every behavior the
+plan's Solution or Outline states. A behavior is anything the plan
+says happens after the code ships. Anything the implementer does is
+not a behavior.
+
+Ask first what class rule the target repo states for that kind of
+behavior. When such a rule exists, walk the behavior against it.
+
+When no class rule covers the behavior, apply this test. If the plan
+describes behavior, verify that it specifies enough to implement the
+behavior on every path, including each way it fails to complete. If
+the behavior is conditional, verify that it names the decider and the
+information the decision needs. If another part of the plan relies on
+the behavior, verify that what it relies on is stated.
+
+An unanswered question becomes an interview question. It never
+becomes a plan sentence.
+
+Each answer lands at one owning site, per "Cite the authority instead
+of restating it".
 
 ## 3. Walk the dependencies
 
@@ -86,9 +114,10 @@ draft anything. Show the user:
    definition of done, and you measure every candidate solution below
    against them.
 4. **Proposed solutions.** Write each one in the one-paragraph
-   solution format. Propose one solution when one is obviously right.
-   When viable options exist, propose each. Follow each paragraph
-   with a bullet list of its relative pros and cons.
+   solution format. Each proposed solution has passed "Walk each
+   stated behavior". Propose one solution when one is obviously
+   right. When viable options exist, propose each. Follow each
+   paragraph with a bullet list of its relative pros and cons.
 
 Stop and let the user pick a solution and correct the framing. The
 chosen solution and framing feed the plan. The rejected options and
@@ -412,6 +441,9 @@ here costs an edit rather than a correction.
 - **Solution altitude.** Does the Solution paragraph sit at the
   Problem section's level of abstraction, or is it a list of tasks
   the Outline already carries?
+- **Stated behavior.** Run "Walk each stated behavior" over the
+  drafted Solution and Outline. Every behavior passes the walk's
+  test, or the question it fails on sits under Open questions.
 - **Criteria shape.** Does every criterion state a claim about the
   merged result, quantified over a class with its membership rule?
   Does each carry a `Check:` clause and a `Pinned by:` or `Waiver:`
@@ -496,7 +528,12 @@ until a pass turns up nothing.
 ## 7. Human review
 
 Show the user the file and stop. Do not post until they approve it.
-Apply the changes they ask for to the file, then show it again.
+Apply the changes they ask for to the file.
+
+Run "Walk each stated behavior" over every behavior those changes add
+or alter, before you show the file again. Walk those behaviors alone.
+Self-review already walked the rest, and no change since then touched
+them. Then show the file again.
 
 ## 8. Post
 
