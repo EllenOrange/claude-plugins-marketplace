@@ -48,8 +48,8 @@ A skill also cites its own headings:
 
 - `converge-plan` points one step at another through the section
   names "Run a round", "The staleness guard", and "The body-surface
-  guard". Its round step 3 also names the stopping rule "Blocked",
-  which is a bold list item rather than a heading.
+  guard". Its round steps 3 and 4 both name the stopping rule
+  "Blocked", which is a bold list item rather than a heading.
 - `write-plan`'s Propose step, Write step, and self-review point at
   its own subsections, among them "Derive the scope", "State the
   acceptance criteria", "State the rule that generates each set", and
@@ -64,6 +64,8 @@ A skill also cites its own headings:
   that word rather than by the numbered heading "4. Collect". The
   Collect step names the Report step by that word too, rather than by
   the numbered heading "5. Report".
+- `sweep-plan`'s one-change agenda points at its own "Output" section
+  for the routing of an unanswered question.
 
 A rename inside one file dangles just as silently. Sweep the file you
 renamed in as well as its siblings.
