@@ -168,11 +168,12 @@ skill correctly does **not** trigger on the negative cases.
    surface. The stop report names the surface and the rule that ended
    the loop.
 2. "Keep critiquing and fixing the plan on issue #42 until it
-   settles." on an issue whose body already carries a `## Plan`
-   section.
-   Expect: the loop runs in place over that section, with one edit of
-   the body per round. Nothing moves the plan back into a comment.
-   The text above `## Plan` passes through unchanged.
+   settles." on an issue whose body already carries a promoted plan
+   and a trailing `## Notes` section.
+   Expect: the loop runs in place over the body's plan sections, with
+   one edit of the body per round. Nothing moves the plan back into a
+   comment. The `## Notes` section passes through each round byte for
+   byte unchanged.
 3. "Run the critique loop on issue #42." on a plan whose round yields
    verified discuss findings.
    Expect: the loop applies the round's fixes, then pauses on the
@@ -199,19 +200,26 @@ skill correctly does **not** trigger on the negative cases.
 ## promote-plan
 
 1. "Promote the plan on issue #42 into the issue."
-   Expect: the skill triggers. The plan text lands at the bottom of
-   the issue body under a `## Plan` header with its headings shifted
-   down one level. Claude asks before deleting the source comment.
+   Expect: the skill triggers. The plan becomes the issue body, whose
+   first heading is `## Problem`. Whatever the old body carried that
+   the plan does not state lands under a trailing `## Notes` section.
+   Claude asks one question covering both the body write and the
+   comment deletion, and asks nothing further before deleting.
 2. "Move the plan comment into the issue body." on an issue whose
-   body already carries a `## Plan` section.
-   Expect: Claude replaces the existing section, and the body ends
-   with exactly one `## Plan` header.
-3. "Promote the plan on issue #42." on a plan whose Open questions
+   body already carries a promoted plan.
+   Expect: Claude replaces the whole body with the new plan, and
+   carries the existing `## Notes` section's leftovers forward into
+   the new body's `## Notes`.
+3. "Promote this plan into issue #42." on a plan comment already
+   nested under a level-two Plan header, whose own sections are `###`.
+   Expect: Claude drops that header line and promotes the plan with
+   `##` sections and `###` unit headers. No heading gains a level.
+4. "Promote the plan on issue #42." on a plan whose Open questions
    section carries a bullet.
    Expect: Claude shows the open questions and asks whether to promote
    anyway. It proceeds only on a yes, and the report says the plan was
    promoted with open questions.
-4. Negative: "Write a plan for issue #42."
+5. Negative: "Write a plan for issue #42."
    Expect: `promote-plan` does not trigger; `write-plan` does.
 
 ## install-writing-style

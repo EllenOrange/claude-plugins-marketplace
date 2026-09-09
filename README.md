@@ -56,8 +56,10 @@ Skills:
   builds on. It derives the plan's scope from the repo's sweep
   sections and its neighboring issues. It cites its authorities
   instead of restating them.
-- **promote-plan**: move an approved plan out of its issue comment
-  and into the bottom of the issue body, under a `## Plan` header. It
+- **promote-plan**: move an approved plan out of its issue comment and
+  make it the issue body. Whatever the old body carried that the plan
+  does not state lands under a trailing `## Notes` section. One
+  question covers the body write and the comment deletion together. It
   asks first when the plan's Open questions section is not empty.
 - **critique-plan**: read a plan and the foundational docs, then
   report one prioritized list. The list carries the decisions that
@@ -71,7 +73,8 @@ Skills:
   issue until a stopping rule ends it. The loop keeps a decision
   ledger, an open-issues doc, and per-round snapshots as durable
   state. It loops in place over the plan comment or over the promoted
-  plan in the issue body. It refuses to edit a body when an open pull
+  plan in the issue body, leaving that body's `## Notes` section
+  unchanged. It refuses to edit a body when an open pull
   request or an unmerged remote branch already carries the issue. A
   round budget caps how many critique rounds the loop runs.
 

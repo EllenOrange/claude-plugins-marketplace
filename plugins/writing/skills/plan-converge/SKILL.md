@@ -23,8 +23,10 @@ present, else the plugin's bundled copy at
 ## 1. Locate the plan
 
 The plan lives on one of these surfaces: the most recent plan comment
-on the issue, or the issue body's `## Plan` section. A plan carries the
-sections `write-plan` emits:
+on the issue, or the issue body itself. A promoted body is the plan,
+per `promote-plan` → "4. Write the plan into the issue body", so its
+first heading is `## Problem`. A plan carries the sections `write-plan`
+emits:
 
 - Problem
 - Scope
@@ -35,11 +37,11 @@ sections `write-plan` emits:
 
 An optional References section may follow them.
 
-When both surfaces exist, the body's section governs, because it is
-the surface the review reads. Name the leftover comment in the report.
+When both surfaces exist, the body governs, because it is the surface
+the review reads. Name the leftover comment in the report.
 
-When the issue carries neither a plan comment nor a `## Plan` section,
-say so and stop. Writing a plan is `writing:write-plan`.
+When the issue carries neither a plan comment nor a promoted plan in
+its body, say so and stop. Writing a plan is `writing:write-plan`.
 
 ### The body-surface guard
 
@@ -141,17 +143,21 @@ resume comparison then flags only genuine outside edits.
 
 1. **Snapshot the plan.** Write the plan as the located surface
    currently carries it to `snapshot-<round>.md`. That is the comment
-   body, or the text under `## Plan` with its headings as promoted.
+   body, or the promoted body from `## Problem` through the end of the
+   last plan section, stopping before `## Notes`.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
    and instruct it to load `writing:critique-plan`. Pass it:
+   - the round's snapshot as the plan text
    - the surface the plan lives on
    - the ledger's rulings and open questions
    - the known-open list
    - the previous round's snapshot
 
-   Withhold the ledger's loop facts. Brief it with the materiality
-   bar. Under that bar, the critic reports a finding only when one of
-   these holds:
+   Withhold the ledger's loop facts. Tell the critic that a promoted
+   body's `## Notes` section is not plan and yields no finding, which
+   the snapshot already excludes. Brief it with the materiality bar.
+   Under that bar, the critic reports a finding only when one of these
+   holds:
    - the finding is build-changing per `critique-plan` → "4. Collect"
    - the plan's existing class-level actions and verify commands do
      not already cover the finding
@@ -184,9 +190,11 @@ resume comparison then flags only genuine outside edits.
    the end of the round. Never post a new comment. On a body surface:
    1. Run "The body-surface guard".
    2. Re-read the live body.
-   3. Replace the text from `## Plan` to the end per `promote-plan` →
-      "4. Write the plan into the issue body", so everything above
-      `## Plan` passes through unchanged.
+   3. Replace the text from `## Problem` to the line before
+      `## Notes`, or to the end of the body when it carries no
+      `## Notes`, per `promote-plan` → "4. Write the plan into the
+      issue body". `## Notes` and everything after it passes through
+      byte for byte unchanged.
    4. Write the result.
    5. Re-read the body after the write.
 
@@ -266,8 +274,8 @@ pause resolves.
 
 Give the user:
 
-- The surface the loop ran on: the plan comment, or the issue body's
-  `## Plan` section. Name the leftover comment when both existed.
+- The surface the loop ran on: the plan comment, or the promoted plan
+  in the issue body. Name the leftover comment when both existed.
 - The rule that ended the loop. Its value is one of:
   - a spent budget
   - K consecutive dry rounds
