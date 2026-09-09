@@ -60,22 +60,22 @@ A rename inside one file dangles just as silently. Sweep the file you
 renamed in as well as its siblings.
 
 Search wrap-tolerantly, because a citation is prose and prose wraps.
-The plan-converge citation of "Sweep each ruling at decision time"
-sits across two lines today. A line-oriented grep for the whole
-heading text therefore matches only the heading it came from, and
-misses the citation you need to update. Grep instead for one
-distinctive word from the heading. A single word is the longest
-fragment a wrap can never split:
+The plan-converge citation of "Skip the pruning under a loop" sits
+across two lines today. A line-oriented grep for the whole cited text
+therefore matches only the bullet it came from, and misses the
+citation you need to update. Grep instead for one distinctive word
+from the cited text. A single word is the longest fragment a wrap can
+never split:
 
 ```bash
-grep -rn "Sweep" plugins/*/skills/*/SKILL.md
+grep -rn "pruning" plugins/*/skills/*/SKILL.md
 ```
 
-When the heading has no distinctive single word, run a multiline
+When the cited text has no distinctive single word, run a multiline
 search whose pattern tolerates the wrap:
 
 ```bash
-rg -U --multiline-dotall 'Sweep\s+each\s+ruling\s+at\s+decision\s+time' plugins
+rg -U --multiline-dotall 'Skip\s+the\s+pruning\s+under\s+a\s+loop' plugins
 ```
 
 ## The review's sources are mirrored by hand
