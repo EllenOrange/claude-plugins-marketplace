@@ -73,7 +73,7 @@ unapplied, with the conflict named.
 
 ## Output
 
-Report two lists:
+Report these lists:
 
 - the instructions applied
 - the instructions left unapplied, each with its conflict named
