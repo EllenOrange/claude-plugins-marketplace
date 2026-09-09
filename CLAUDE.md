@@ -90,6 +90,21 @@ search whose pattern tolerates the wrap:
 rg -U --multiline-dotall 'Skip\s+the\s+pruning\s+under\s+a\s+loop' plugins
 ```
 
+Write a word boundary with `git grep -P`, never `git grep -E`. The
+extended-regex engine reads `\b` as a literal `b`, so an `-E` pattern
+carrying a boundary matches nothing and reports a clean sweep whether
+or not the references are still there. The boundary is load-bearing
+whenever a bare skill name also sits inside a longer word, because
+without it the grep reports that longer word as a hit:
+
+```bash
+git grep -nP 'sweep-plan\b'
+```
+
+Run such a check once before the rename and confirm it matches. A
+zero-hit result afterwards means something only if you have seen the
+same command produce hits.
+
 ## The review's sources are mirrored by hand
 
 `plugins/writing/docs/review-sources.md` mirrors the sources section
