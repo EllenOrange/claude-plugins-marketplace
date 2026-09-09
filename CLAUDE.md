@@ -44,7 +44,8 @@ A skill also cites its own headings:
 
 - `plan-converge` points one step at another through the section
   names "Run a round", "The staleness guard", and "The body-surface
-  guard".
+  guard". Its round step 3 also names the stopping rule "Blocked",
+  which is a bold list item rather than a heading.
 - `write-plan`'s Propose step, Write step, and self-review point at
   its own subsections, among them "Derive the scope", "State the
   acceptance criteria", "State the rule that generates each set", and

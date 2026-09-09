@@ -54,9 +54,10 @@ Skills:
   and either the test that pins it or a waiver saying why none
   exists. The skill walks the plan's dependencies at the ref the plan
   builds on, and walks every behavior the plan states against the
-  repo's rule for that kind of behavior. It derives the plan's scope
-  from the repo's sweep sections and its neighboring issues. It cites
-  its authorities instead of restating them.
+  repo's rule for that kind of behavior, or against a completeness
+  test of its own where the repo states no such rule. It derives the
+  plan's scope from the repo's sweep sections and its neighboring
+  issues. It cites its authorities instead of restating them.
 - **promote-plan**: move an approved plan out of its issue comment and
   make it the issue body. Whatever the old body carried that the plan
   does not state lands under a trailing `## Notes` section. One
