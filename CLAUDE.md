@@ -56,8 +56,9 @@ A skill also cites its own headings:
   "Mark every waiver". Its Propose step and its self-review also point
   at "Walk each stated behavior", and that subsection in turn points at
   "Cite the authority instead of restating it". Its self-review and its
-  human review step point at "7. Style pipeline". Its ruling sweep
-  points at "5. Write".
+  human review step point at "7. Style pipeline". Its ruling sweep and
+  its self-review point at "5. Write". Its "Derive the scope"
+  subsection and its self-review point at "1. Read".
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code". Its Collect step also names
   the "Inputs" section, and that section names the Collect step by
