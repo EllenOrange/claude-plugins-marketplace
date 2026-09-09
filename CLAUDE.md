@@ -56,7 +56,9 @@ A skill also cites its own headings:
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code". Its Collect step also names
   the "Inputs" section, and that section names the Collect step by
-  that word rather than by the numbered heading "4. Collect".
+  that word rather than by the numbered heading "4. Collect". The
+  Collect step names the Report step by that word too, rather than by
+  the numbered heading "5. Report".
 
 A rename inside one file dangles just as silently. Sweep the file you
 renamed in as well as its siblings.
