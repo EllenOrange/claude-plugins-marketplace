@@ -61,22 +61,6 @@ Carry every consequence into the plan in the same pass. A ruling
 applied at one site and discovered at five others costs a critique
 round per site.
 
-## 3. Walk the dependencies
-
-Do this whenever the plan builds on another component, and especially
-when that component sits on an unmerged branch. Walk each intended
-outline action against the component's actual surface. Ask whether the
-API, doc, or schema the action relies on exists, and whether it
-expresses what the action needs.
-
-Read the dependency at the ref the plan will build on, not at main.
-The branch carries the surface the plan depends on; main does not
-carry it yet.
-
-Turn every gap you find into an interview question or into an
-explicitly named extension unit in the plan. The plan may not assert
-that it is built entirely on a component until this walk passes.
-
 ### Walk each stated behavior
 
 Run this walk before the interview closes. Walk every behavior the
@@ -99,6 +83,22 @@ becomes a plan sentence.
 
 Each answer lands at one owning site, per "Cite the authority instead
 of restating it".
+
+## 3. Walk the dependencies
+
+Do this whenever the plan builds on another component, and especially
+when that component sits on an unmerged branch. Walk each intended
+outline action against the component's actual surface. Ask whether the
+API, doc, or schema the action relies on exists, and whether it
+expresses what the action needs.
+
+Read the dependency at the ref the plan will build on, not at main.
+The branch carries the surface the plan depends on; main does not
+carry it yet.
+
+Turn every gap you find into an interview question or into an
+explicitly named extension unit in the plan. The plan may not assert
+that it is built entirely on a component until this walk passes.
 
 ## 4. Propose
 
