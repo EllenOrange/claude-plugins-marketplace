@@ -530,6 +530,11 @@ until a pass turns up nothing.
 Show the user the file and stop. Do not post until they approve it.
 Apply the changes they ask for to the file, then show it again.
 
+Run "Walk each stated behavior" over every behavior those changes add
+or alter, before you show the file again. Walk those behaviors alone.
+Self-review already walked the rest, and no change since then touched
+them.
+
 ## 8. Post
 
 Post the approved file as a comment on the issue. Prefer an installed

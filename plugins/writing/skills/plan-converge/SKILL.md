@@ -268,6 +268,11 @@ pause resolves.
       once the consolidation edit lands.
    4. Resume the rounds.
 
+   The consolidation pass runs outside a round, so its edit is the one
+   edit of the plan's surface that no round carries. It lands through
+   the procedure "Run a round" step 7 owns. That step stays the one
+   place that describes an edit of the plan's surface.
+
    The round after a ruling cannot fire this rule. Its critic
    receives no previous snapshot, per "Run a round" step 2, so no
    finding carries the prior-round-text label. The round's ordinary

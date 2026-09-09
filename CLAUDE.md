@@ -49,10 +49,10 @@ A skill also cites its own headings:
 - `write-plan`'s Propose step, Write step, and self-review point at
   its own subsections, among them "Derive the scope", "State the
   acceptance criteria", "State the rule that generates each set", and
-  "Mark every waiver". Its Propose step, its self-review, and its
-  ruling sweep also point at "Walk each stated behavior", and that
-  subsection in turn points at "Cite the authority instead of
-  restating it".
+  "Mark every waiver". Its Propose step, its self-review, its human
+  review step, and its ruling sweep also point at
+  "Walk each stated behavior", and that subsection in turn points at
+  "Cite the authority instead of restating it".
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code".
 
