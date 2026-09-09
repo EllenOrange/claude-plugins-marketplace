@@ -237,8 +237,8 @@ snapshot, because the round pauses before it edits anything.
 
 ### Fixes carry no history
 
-Rewrite the plan as if the text had always been right. The plan never
-records any of these:
+Every instruction leaves the plan reading as if the text had always
+been right. The plan never records any of these:
 
 - which round found what
 - what the text used to say
