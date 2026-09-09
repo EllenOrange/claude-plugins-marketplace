@@ -164,10 +164,9 @@ skill correctly does **not** trigger on the negative cases.
     write before it turns the gap into a question. Claude walks the
     write against that rule, or against the walk's test, before the
     interview closes. Each unanswered question becomes an interview
-    question.
-    A behavior the human review adds is walked before the post. The
-    posted plan answers every question, or carries it under Open
-    questions.
+    question. A behavior the human review adds is walked before the
+    post. The posted plan answers every question, or carries it under
+    Open questions.
 
 ## plan-converge
 

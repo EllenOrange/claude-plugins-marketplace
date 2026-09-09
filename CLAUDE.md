@@ -54,7 +54,9 @@ A skill also cites its own headings:
   "Walk each stated behavior", and that subsection in turn points at
   "Cite the authority instead of restating it".
 - `critique-plan` points one section at another through the name
-  "Derive each named set from the code".
+  "Derive each named set from the code". Its Collect step also names
+  the "Inputs" section, and that section names the Collect step by
+  that word rather than by the numbered heading "4. Collect".
 
 A rename inside one file dangles just as silently. Sweep the file you
 renamed in as well as its siblings.
