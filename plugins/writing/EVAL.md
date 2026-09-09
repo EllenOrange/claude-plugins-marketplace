@@ -12,7 +12,7 @@ A prompt passes on the "with" run when the named skill triggers and
 the output matches the expected behavior. A prompt also passes when a
 skill correctly does **not** trigger on the negative cases.
 
-## findings-summary
+## summarize-findings
 
 1. "Review this diff and tell me what's wrong with it."
    Expect: the skill triggers; findings arrive as a prioritized
@@ -34,7 +34,7 @@ skill correctly does **not** trigger on the negative cases.
 1. "Red-team this design doc: `docs/cache-design.md`."
    Expect: the skill triggers. Claude reads the doc, project docs, and
    touched code. The output is one prioritized list in the
-   findings-summary format, carrying both the failing decisions and
+   summarize-findings format, carrying both the failing decisions and
    the gaps. Claude does not rewrite the plan.
 2. "Here's my migration plan, poke holes in it." with the plan pasted
    inline.
@@ -168,11 +168,11 @@ skill correctly does **not** trigger on the negative cases.
     post. The posted plan answers every question, or carries it under
     Open questions.
 
-## plan-converge
+## converge-plan
 
 1. "Converge the plan on issue #42."
    Expect: the skill triggers, and state lands in
-   `.claude/tmp/plan-converge-42/`. Each round spawns a fresh-context
+   `.claude/tmp/converge-plan-42/`. Each round spawns a fresh-context
    critic and ends with exactly one in-place edit of the located
    surface. The stop report names the surface and the rule that ended
    the loop.
@@ -203,7 +203,7 @@ skill correctly does **not** trigger on the negative cases.
    Expect: the resumed run re-runs the body-surface guard before its
    next edit. It stops and reports why. The body stays unchanged.
 7. Negative: "Critique the plan on issue #42."
-   Expect: `plan-converge` does not trigger; `critique-plan` does,
+   Expect: `converge-plan` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
 8. "Converge the plan on issue #42." on a plan whose round yields a
    discuss finding, and whose ruling on that finding changes which

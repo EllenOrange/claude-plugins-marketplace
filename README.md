@@ -41,7 +41,7 @@ Skills:
 - **install-writing-style**: install the shipped communication-style rule
   into `~/.claude/rules/` and add the `@~/` load line to
   `~/.claude/CLAUDE.md`.
-- **findings-summary**: emit review or investigation findings as a
+- **summarize-findings**: emit review or investigation findings as a
   prioritized list. Each finding carries a title, a one-sentence
   problem, a triage verdict of `fix`, `refute`, or `discuss`, and a
   proposed solution of 1 to 3 sentences.
@@ -71,7 +71,7 @@ Skills:
   It reads the style guides that review enforces. Each finding states
   its provenance and carries a second label, `build-changing` or
   `text-only`.
-- **plan-converge**: run the critique-and-fix loop over a plan on an
+- **converge-plan**: run the critique-and-fix loop over a plan on an
   issue until a stopping rule ends it. The loop keeps a decision
   ledger, an open-issues doc, and per-round snapshots as durable
   state. It loops in place over the plan comment or over the promoted

@@ -18,7 +18,7 @@ copies serving the old cached files after the marketplace updates.
 A skill may cite another skill's section heading verbatim as a prose
 pointer. The current citations are:
 
-- `plan-converge` cites the write-plan headings "Sweep each ruling at
+- `converge-plan` cites the write-plan headings "Sweep each ruling at
   decision time", "Walk each stated behavior", and "5. Write", the
   write-plan self-review bullet "Restatements", the critique-plan
   Report bullet "Skip the pruning under a loop", the critique-plan
@@ -42,7 +42,7 @@ locator in `review-sources.md` returns for the named plugin.
 
 A skill also cites its own headings:
 
-- `plan-converge` points one step at another through the section
+- `converge-plan` points one step at another through the section
   names "Run a round", "The staleness guard", and "The body-surface
   guard". Its round step 3 also names the stopping rule "Blocked",
   which is a bold list item rather than a heading.
@@ -64,7 +64,7 @@ A rename inside one file dangles just as silently. Sweep the file you
 renamed in as well as its siblings.
 
 Search wrap-tolerantly, because a citation is prose and prose wraps.
-The plan-converge citation of "Skip the pruning under a loop" sits
+The converge-plan citation of "Skip the pruning under a loop" sits
 across two lines today. A line-oriented grep for the whole cited text
 therefore matches only the bullet it came from, and misses the
 citation you need to update. Grep instead for one distinctive word

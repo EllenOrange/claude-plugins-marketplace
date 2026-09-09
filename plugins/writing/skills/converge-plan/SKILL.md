@@ -1,9 +1,9 @@
 ---
-name: plan-converge
+name: converge-plan
 description: Run a bounded critique-and-fix loop over a plan on an issue until it converges, then report. Use when the user asks to converge a plan, run the critique loop, iterate a plan until it settles, or keep critiquing and fixing a plan until there is nothing left to find.
 ---
 
-# plan-converge
+# converge-plan
 
 Run the critique-and-fix loop over one plan until a stopping rule
 ends it, then report. This skill wraps `writing:critique-plan` rather
@@ -96,7 +96,7 @@ marker. Fall back to any ref that carries the `issue-` marker and
 
 ## 2. Set up the state
 
-Keep the loop's state in `.claude/tmp/plan-converge-<issue>/`. Never
+Keep the loop's state in `.claude/tmp/converge-plan-<issue>/`. Never
 use the session scratchpad for it. A loop that pauses for rulings can
 outlive the session, and the state has to survive that pause.
 

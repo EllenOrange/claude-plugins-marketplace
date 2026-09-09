@@ -332,7 +332,7 @@ These cases bite hardest:
 - **An invariant.** "State the acceptance criteria" defines it and
   owns its shape.
 
-`writing:plan-converge` accepts a critique finding as already
+`writing:converge-plan` accepts a critique finding as already
 covered only when the plan carries such a class-level sweep action
 with a verify command. A plan written this way clears that bar from
 the first round.
@@ -542,7 +542,7 @@ issue skill, for example `/issues:issue-comment`, which reads the
 body from a file. Otherwise use `gh issue comment --body-file`. Then
 report the comment URL to the user.
 
-`writing:plan-converge` runs the critique-and-fix loop over the plan.
+`writing:converge-plan` runs the critique-and-fix loop over the plan.
 It loops over the comment or over the promoted plan in the issue body,
 whichever the plan lives on.
 
