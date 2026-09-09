@@ -42,24 +42,15 @@ that file. Enumerate none of it here.
 
 ### Sweep each ruling at decision time
 
-When the user rules on a design question, enumerate the ruling's
-cross-cutting consequences before you move on.
+When the user rules on a design question, sweep the ruling's
+cross-cutting consequences before you move on. Spawn a general-purpose
+subagent, instruct it to load `writing:sweep-plan` under the one-change
+agenda, and pass it the ruling and the interview's earlier rulings.
+That skill owns the sweep, including the behavior walk it runs.
 
-Run "Walk each stated behavior" over each behavior the ruling
-changes, before you edit any prose. Every answer lands in the plan at
-one owning site. The walk writes nowhere else.
-
-Then look for these affected surfaces:
-
-- verification commands
-- doc files
-- scripts
-- sibling fields
-- scope statements
-
-Carry every consequence into the plan in the same pass. A ruling
-applied at one site and discovered at five others costs a critique
-round per site.
+Hold the instructions it emits until "5. Write" drafts the file. They
+target the plan-to-be's sections by the fixed section names that step
+owns. A question it raises becomes an interview question.
 
 ### Walk each stated behavior
 
@@ -384,6 +375,17 @@ fact. The verify command measures every spelling of the fact across
 the touched surfaces, not one phrase. A count of one phrase passes
 while the review counts the rest.
 
+### Name the sibling instead of mirroring its mechanism
+
+A mechanism the plan states in full lives at one owning site. Where a
+later unit mirrors a sibling contract, that unit names the sibling and
+states what differs from it. It restates none of the mechanism.
+
+This reading reaches prose, not only enumerated lists. A mechanism
+paragraph that reads as fresh prose still restates the sibling it
+mirrors, and the restatement multiplies the sites each later ruling has
+to edit. Every such site is fresh surface for the next critic.
+
 ### Consult the authority for external usage
 
 Read the authority before you prescribe how to use an external
@@ -514,28 +516,47 @@ here costs an edit rather than a correction.
   contradicts the Solution paragraph.
 - **Rationale and risk.** Any argument for the solution, rejected
   alternative, or risk assessment that crept back in. Cut it.
-- **Writing style.** Read the file against the communication-style rule.
-  Check each of these:
-  - sentence length
-  - one instruction per sentence
-  - one term per concept
-  - vertical lists for parallel items
-  - no parentheticals
+- **Writing style.** Leave this to "7. Style pipeline", which owns the
+  style pass over the whole file.
 
 Edit the file to fix what you find, then read it back again. Repeat
 until a pass turns up nothing.
 
-## 7. Human review
+## 7. Style pipeline
+
+Run the style pass over the whole draft before anyone sees it:
+
+1. Spawn a general-purpose subagent, instruct it to load
+   `writing:sweep-plan` under the style agenda, and pass it the draft.
+2. Spawn a second general-purpose subagent, instruct it to load
+   `writing:revise-plan`, and pass it the draft's path and the batch
+   the sweep emitted.
+3. Read the revised file back.
+
+Resolve every instruction `revise-plan` reports unapplied. Either
+amend the instruction and re-invoke `revise-plan` on the same draft, or
+report the conflict to the user.
+
+## 8. Human review
 
 Show the user the file and stop. Do not post until they approve it.
-Apply the changes they ask for to the file.
+Apply the changes they ask for through the same pipeline:
 
-Run "Walk each stated behavior" over every behavior those changes add
-or alter, before you show the file again. Walk those behaviors alone.
-Self-review already walked the rest, and no change since then touched
-them. Then show the file again.
+1. Spawn a general-purpose subagent, instruct it to load
+   `writing:sweep-plan` under the one-change agenda, and pass it the
+   requested change and the draft.
+2. Spawn a second general-purpose subagent, instruct it to load
+   `writing:revise-plan`, and pass it the draft's path and a batch
+   carrying the requested change plus every instruction the sweep
+   emitted.
+3. Read the revised file back, then show it again.
 
-## 8. Post
+Resolve an unapplied instruction as "7. Style pipeline" prescribes. The
+sweep walks every behavior the change alters before the edit, and
+`revise-plan`'s read-back covers the edit itself, so this step runs no
+walk of its own.
+
+## 9. Post
 
 Post the approved file as a comment on the issue. Prefer an installed
 issue skill, for example `/issues:issue-comment`, which reads the
