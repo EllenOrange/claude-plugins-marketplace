@@ -1,13 +1,16 @@
 ---
-name: plan-converge
+name: converge-plan
 description: Run a bounded critique-and-fix loop over a plan on an issue until it converges, then report. Use when the user asks to converge a plan, run the critique loop, iterate a plan until it settles, or keep critiquing and fixing a plan until there is nothing left to find.
 ---
 
-# plan-converge
+# converge-plan
 
 Run the critique-and-fix loop over one plan until a stopping rule
-ends it, then report. This skill wraps `writing:critique-plan` rather
-than restating it. Write all prose per the communication-style rule.
+ends it, then report. This skill orchestrates. It wraps
+`writing:critique-plan` for discovery of defects,
+`writing:sweep-plan` for discovery of the edits a change forces, and
+`writing:revise-plan` for every edit of the plan text, rather than
+restating any of them. Write all prose per the communication-style rule.
 Use the installed copy at `~/.claude/rules/communication-style.md` if
 present, else the plugin's bundled copy at
 `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
@@ -96,7 +99,7 @@ marker. Fall back to any ref that carries the `issue-` marker and
 
 ## 2. Set up the state
 
-Keep the loop's state in `.claude/tmp/plan-converge-<issue>/`. Never
+Keep the loop's state in `.claude/tmp/converge-plan-<issue>/`. Never
 use the session scratchpad for it. A loop that pauses for rulings can
 outlive the session, and the state has to survive that pause.
 
@@ -107,6 +110,8 @@ The state has these files:
   - every question still open
   - the loop facts a resumed run needs, such as a churn firing
   - the round's verified fix findings, held across a pause
+  - the round's emitted instruction batch
+  - whether that batch has been applied to the round's draft
 
   The rulings and the open questions feed each round's critic
   verbatim, so the critic does not re-litigate ratified rulings or
@@ -119,6 +124,9 @@ The state has these files:
 - **`snapshot-<round>.md`, one plan snapshot per round.** The plan as
   it stood at the start of that round. The next round's critic reads
   the previous snapshot to label prior-round text.
+- **`draft.md`, the round's working copy of the plan.** The round
+  writes it, `writing:revise-plan` edits it, and step 7 copies it to
+  the located surface. The next round overwrites it.
 
 The ledger and the open-issues doc live here and nowhere else. The
 plan carries neither. The plan's Open questions section lists the
@@ -179,23 +187,44 @@ snapshot, because the round pauses before it edits anything.
    verified findings. When the round holds verified discuss findings,
    write the round's verified fix findings to the ledger and pause
    under "Blocked". Step 4 runs once every ruling has landed.
-4. **Apply the verified `fix` findings that clear the acceptance
-   bar.** The acceptance bar tests whether the plan already covers the
-   finding at class level, through a sweep action plus a verify
+4. **Collect the round's instruction batch.** Apply the acceptance bar
+   in the main session. The bar tests whether the plan already covers
+   the finding at class level, through a sweep action plus a verify
    command. On a match, reject the finding. Record it in the round's
    rejected list, with the covering action as the rejection reason.
    Acceptance-bar rejections count as rejected findings for the
-   stopping rules. Apply every finding that clears the bar. Delete and
-   cite where `critique-plan` prescribes it. After each fix, sweep the
-   plan for other instances of the same defect class. Fix them in the
-   same pass.
+   stopping rules.
+
+   The batch takes these instructions:
+   - One per finding that clears the bar. It carries the delete-and-cite
+     treatment where `critique-plan` prescribes it.
+   - Every instruction a `writing:sweep-plan` pass emits over each
+     accepted fix, under the one-change agenda. Spawn one
+     general-purpose subagent per fix and instruct it to load that
+     skill.
+   - Every instruction the same pass emits over each ruling ratified
+     after a Blocked pause.
+   - One that updates the plan's Open questions section to match the
+     ledger. It writes the empty form `write-plan` → "5. Write" owns,
+     so every writer and every reader of the section share one form.
+
+   Write the batch to the ledger. A question `sweep-plan` raises lands
+   in the ledger as a discuss item instead, and the round pauses under
+   "Blocked" before it posts.
 5. **Append the verified `discuss` findings** to the open-issues doc,
    synthesizing them with the prior rounds' themes.
-6. **Update the plan's Open questions section** to match the ledger.
-   Write it in the empty form `write-plan` → "5. Write" owns, so every
-   writer and every reader of the section share one form.
+6. **Revise the draft.** Write the round's snapshot to `draft.md`.
+   Spawn a general-purpose subagent, instruct it to load
+   `writing:revise-plan`, and pass it the draft's path and the batch.
+   Read the result back when it reports.
+
+   Resolve every instruction it reports unapplied before the round
+   posts. Either amend the instruction and re-invoke `revise-plan` on
+   the same draft, or record the instruction as rejected with the
+   conflict as its reason.
 7. **Edit the located surface in place, once.** One edit per round, at
-   the end of the round. Never post a new comment. On a body surface:
+   the end of the round. The surface receives the revised draft's
+   content. Never post a new comment. On a body surface:
    1. Run "The body-surface guard".
    2. Re-read the live body.
    3. Replace the text from `## Problem` to the line before
@@ -208,8 +237,8 @@ snapshot, because the round pauses before it edits anything.
 
 ### Fixes carry no history
 
-Rewrite the plan as if the text had always been right. The plan never
-records any of these:
+Every instruction leaves the plan reading as if the text had always
+been right. The plan never records any of these:
 
 - which round found what
 - what the text used to say
@@ -241,17 +270,19 @@ pause resolves.
    reset dryness. A round carrying build-changing discuss findings is
    not dry, and the blocked rule handles it. Stop and report after K
    consecutive dry rounds.
-3. **Blocked.** The round produced verified discuss findings. The
-   round pauses under "Run a round" step 3, before any edit of the
-   round:
+3. **Blocked.** The round produced verified discuss findings. A
+   question `writing:sweep-plan` raised is one of them, and counts as a
+   verified build-changing discuss finding in every tally. The round
+   pauses before any edit of the round: at "Run a round" step 3 for a
+   finding the critic raised, and at step 4 for a question `sweep-plan`
+   raised.
    1. Give the user the open-issues doc.
    2. Present the open items one at a time. Each item carries a
       problem statement, its options, and a recommendation.
    3. Resume only once every item is ruled.
-   4. Write each ruling into the ledger. Sweep its consequences, per
-      "Sweep each ruling at decision time" in `writing:write-plan`.
-      Walk every behavior the ruling changes, per that skill's
-      "Walk each stated behavior". The answers ride the round's one
+   4. Write each ruling into the ledger. Sweep its consequences through
+      `writing:sweep-plan` under the one-change agenda, per "Run a
+      round" step 4. The instructions it emits ride the round's one
       edit under "Run a round" step 7.
    5. Evaluate the remaining rules against this same round's tallies,
       so the resume still records and acts on a churn firing from
@@ -259,9 +290,11 @@ pause resolves.
 4. **Churn.** A majority of the round's verified findings target text
    that prior fix rounds added. On the first firing, do not run
    another critique round. Run one consolidation pass instead:
-   1. Collapse site-enumeration bullets back into class-level sweep
-      actions with verify commands. Apply the "Restatements" item from
-      `writing:write-plan`'s self-review to the whole plan.
+   1. Write a fresh draft to `draft.md` from the live surface. Spawn a
+      general-purpose subagent, instruct it to load
+      `writing:sweep-plan` under the style agenda, and pass it that
+      draft. Hand the batch it emits to `writing:revise-plan` on the
+      same draft, in a further general-purpose subagent.
    2. Record the firing as a line in `ledger.md`, so a resumed loop
       still knows of it.
    3. Write the fresh snapshot that "The staleness guard" prescribes

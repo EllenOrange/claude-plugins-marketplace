@@ -41,7 +41,7 @@ Skills:
 - **install-writing-style**: install the shipped communication-style rule
   into `~/.claude/rules/` and add the `@~/` load line to
   `~/.claude/CLAUDE.md`.
-- **findings-summary**: emit review or investigation findings as a
+- **summarize-findings**: emit review or investigation findings as a
   prioritized list. Each finding carries a title, a one-sentence
   problem, a triage verdict of `fix`, `refute`, or `discuss`, and a
   proposed solution of 1 to 3 sentences.
@@ -57,7 +57,23 @@ Skills:
   repo's rule for that kind of behavior, or against a completeness
   test of its own where the repo states no such rule. It derives the
   plan's scope from the repo's sweep sections and its neighboring
-  issues. It cites its authorities instead of restating them.
+  issues. It cites its authorities instead of restating them. It sweeps
+  each interview ruling and each human-review change through
+  `sweep-plan`, and applies the style pass and the human-review changes
+  through `revise-plan`.
+- **sweep-plan**: discover the edits a plan needs and emit them as
+  instructions. Under the one-change agenda it enumerates the
+  cross-cutting consequences of one accepted fix or one ratified
+  ruling, walks every behavior that change alters, and finds the fix's
+  sibling defect instances. Under the style agenda it sweeps the whole
+  plan against the communication-style rule and `write-plan`'s Write
+  step. It writes no file and posts nothing.
+- **revise-plan**: apply an instruction batch to one plan file in fresh
+  context. It style-sweeps every unit an instruction landed in, then
+  reads the result back to confirm that every decision, obligation,
+  membership rule, qualifier, and check survives unchanged. It reverts
+  an edit whose read-back finds changed meaning, and reports every
+  instruction it could not apply with the conflict named.
 - **promote-plan**: move an approved plan out of its issue comment and
   make it the issue body. Whatever the old body carried that the plan
   does not state lands under a trailing `## Notes` section. One
@@ -71,14 +87,17 @@ Skills:
   It reads the style guides that review enforces. Each finding states
   its provenance and carries a second label, `build-changing` or
   `text-only`.
-- **plan-converge**: run the critique-and-fix loop over a plan on an
+- **converge-plan**: run the critique-and-fix loop over a plan on an
   issue until a stopping rule ends it. The loop keeps a decision
-  ledger, an open-issues doc, and per-round snapshots as durable
-  state. It loops in place over the plan comment or over the promoted
-  plan in the issue body, leaving that body's `## Notes` section
-  unchanged. It refuses to edit a body when an open pull
-  request or an unmerged remote branch already carries the issue. A
-  round budget caps how many critique rounds the loop runs.
+  ledger, an open-issues doc, per-round snapshots, and the round's
+  draft as durable state. It orchestrates rather than edits: it
+  verifies each finding and applies the acceptance bar itself, collects
+  the round's edit instructions through `sweep-plan`, and hands the
+  batch to `revise-plan`. It loops in place over the plan comment or
+  over the promoted plan in the issue body, leaving that body's
+  `## Notes` section unchanged. It refuses to edit a body when an open
+  pull request or an unmerged remote branch already carries the issue.
+  A round budget caps how many critique rounds the loop runs.
 
 ## License
 

@@ -13,7 +13,7 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 ## Inputs
 
 The user names the plan. A caller running the critique inside a loop,
-such as `writing:plan-converge`, may also pass any of these:
+such as `writing:converge-plan`, may also pass any of these:
 
 - **A decision ledger.** The rulings the user has already ratified.
   Treat each one as a fixed constraint. Do not re-litigate a ratified
@@ -209,7 +209,7 @@ Note these things per finding as well. They survive into the report.
 
 ## 5. Report
 
-Hand the collected notes to the `writing:findings-summary` skill,
+Hand the collected notes to the `writing:summarize-findings` skill,
 which ships in this plugin. It prunes, ranks, and formats them into
 one prioritized list.
 
@@ -220,13 +220,13 @@ Constrain that pass:
 - **Emit one list.** A single priority order is what the reader acts
   on. The category still shows in each finding's own sentence, and a
   problem-definition finding sorts to the top on severity.
-- **Carry both axes.** Axis one is the `findings-summary` triage
+- **Carry both axes.** Axis one is the `summarize-findings` triage
   verdict of `fix`, `refute`, or `discuss`. Axis two is the
-  build-changing label. Both ride through `findings-summary` inside
+  build-changing label. Both ride through `summarize-findings` inside
   each finding's own sentence.
 - **Skip the pruning under a loop.** When a caller such as
-  `writing:plan-converge` runs this critique, tell
-  `findings-summary` that the report feeds an automated verification
+  `writing:converge-plan` runs this critique, tell
+  `summarize-findings` that the report feeds an automated verification
   loop, so it emits every finding.
 
 State the provenance, the unverified label where it applies, and the

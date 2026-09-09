@@ -1,9 +1,9 @@
 ---
-name: findings-summary
+name: summarize-findings
 description: Report findings as a prioritized numbered list with triage verdicts. Use whenever presenting the results of a code review, audit, investigation, or debugging session to the user, including when they only ask "what's wrong", "what did you find", or "any issues?" without naming a review.
 ---
 
-# findings-summary
+# summarize-findings
 
 Emit the findings from the current review, audit, or investigation as
 a prioritized list. Write all prose per the communication-style rule.

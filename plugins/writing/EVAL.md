@@ -12,7 +12,7 @@ A prompt passes on the "with" run when the named skill triggers and
 the output matches the expected behavior. A prompt also passes when a
 skill correctly does **not** trigger on the negative cases.
 
-## findings-summary
+## summarize-findings
 
 1. "Review this diff and tell me what's wrong with it."
    Expect: the skill triggers; findings arrive as a prioritized
@@ -34,7 +34,7 @@ skill correctly does **not** trigger on the negative cases.
 1. "Red-team this design doc: `docs/cache-design.md`."
    Expect: the skill triggers. Claude reads the doc, project docs, and
    touched code. The output is one prioritized list in the
-   findings-summary format, carrying both the failing decisions and
+   summarize-findings format, carrying both the failing decisions and
    the gaps. Claude does not rewrite the plan.
 2. "Here's my migration plan, poke holes in it." with the plan pasted
    inline.
@@ -164,15 +164,74 @@ skill correctly does **not** trigger on the negative cases.
     write before it turns the gap into a question. Claude walks the
     write against that rule, or against the walk's test, before the
     interview closes. Each unanswered question becomes an interview
-    question. A behavior the human review adds is walked before the
-    post. The posted plan answers every question, or carries it under
-    Open questions.
+    question. A behavior the human review adds is walked by the
+    one-change sweep before the post. The posted plan answers every
+    question, or carries it under Open questions.
+14. "Plan the work for issue #42." with a mid-interview ruling.
+    Expect: Claude spawns a fresh-context subagent that loads
+    `sweep-plan` under the one-change agenda, and holds the emitted
+    instructions until the Write step drafts the file. Claude runs no
+    inline sweep of its own.
+15. "Plan the work for issue #42."
+    Expect: after self-review, Claude runs the style pipeline. It
+    spawns one subagent for `sweep-plan` under the style agenda and a
+    second for `revise-plan`, then reads the revised file back before
+    showing it. The self-review does no style checking of its own.
+16. "Plan the work for issue #42." with a human-review change
+    requested after the draft is shown.
+    Expect: Claude sweeps the change through `sweep-plan`, then applies
+    the change and the sweep's instructions through `revise-plan` in a
+    fresh-context subagent. Claude runs no post-apply behavior walk.
 
-## plan-converge
+## sweep-plan
+
+1. "Sweep this plan for what my ruling on the retry budget drags with
+   it."
+   Expect: the skill triggers. The output is a list of edit
+   instructions, each naming the plan section it targets. Claude edits
+   no file and posts nothing.
+2. "Sweep this plan." on an accepted fix finding.
+   Expect: the one-change agenda runs. The instructions cover the
+   change's verification commands, doc files, scripts, sibling fields,
+   and scope statements, plus every other instance of the same defect
+   class in the plan.
+3. "Sweep this plan for style." on a plan whose bullets carry several
+   actions each and whose parallel items sit inline behind semicolons.
+   Expect: the style agenda runs over the whole plan. The instructions
+   split the multi-action bullets and convert the inline series to
+   vertical lists.
+4. "Sweep this plan." on a ruling whose behavior the plan leaves
+   underspecified.
+   Expect: the unanswered question comes back as a question rather
+   than as an instruction.
+5. Negative: "Apply these edits to the plan."
+   Expect: `sweep-plan` does not trigger; `revise-plan` does.
+
+## revise-plan
+
+1. "Apply these instructions to `.claude/tmp/converge-plan-42/draft.md`."
+   Expect: the skill triggers. Claude edits that file alone, and
+   reports which instructions applied and which did not.
+2. "Apply this fix." on an instruction that adds a second action to a
+   bullet.
+   Expect: Claude splits the bullet rather than appending a clause,
+   and style-sweeps the whole unit the edit landed in.
+3. "Apply these instructions." on an instruction whose edit would drop
+   a criterion's `Check:` command.
+   Expect: the read-back finds the changed meaning. Claude reverts the
+   edit and reports the instruction unapplied with the conflict named.
+4. "Apply these instructions." on an instruction that conflicts with
+   the text it targets.
+   Expect: Claude reports it unapplied rather than improvising a
+   different edit. Claude proposes no finding of its own.
+5. Negative: "What else does this ruling change in the plan?"
+   Expect: `revise-plan` does not trigger; `sweep-plan` does.
+
+## converge-plan
 
 1. "Converge the plan on issue #42."
    Expect: the skill triggers, and state lands in
-   `.claude/tmp/plan-converge-42/`. Each round spawns a fresh-context
+   `.claude/tmp/converge-plan-42/`. Each round spawns a fresh-context
    critic and ends with exactly one in-place edit of the located
    surface. The stop report names the surface and the rule that ended
    the loop.
@@ -203,16 +262,41 @@ skill correctly does **not** trigger on the negative cases.
    Expect: the resumed run re-runs the body-surface guard before its
    next edit. It stops and reports why. The body stays unchanged.
 7. Negative: "Critique the plan on issue #42."
-   Expect: `plan-converge` does not trigger; `critique-plan` does,
+   Expect: `converge-plan` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
 8. "Converge the plan on issue #42." on a plan whose round yields a
    discuss finding, and whose ruling on that finding changes which
    step decides the outcome.
    Expect: the loop pauses before it applies the round's fixes. After
-   the ruling, the walk runs over the changed behavior before any
+   the ruling, `sweep-plan` walks the changed behavior before any
    prose edit. The fixes and the ruling's consequences land in one
    edit. The next critic's brief carries no previous snapshot. The
    churn rule does not fire in that round.
+9. "Converge the plan on issue #42." on a plan whose round yields
+   accepted fix findings.
+   Expect: Claude edits no plan text itself. It verifies the findings
+   and applies the acceptance bar in the main session, collects the
+   round's instructions through `sweep-plan`, writes `draft.md`, and
+   hands the batch to `revise-plan` in a fresh-context subagent. The
+   round's one surface edit copies the revised draft.
+10. "Converge the plan on issue #42." on a round whose `revise-plan`
+    call reports an instruction unapplied.
+    Expect: Claude resolves it before the round posts. It either
+    amends the instruction and re-invokes `revise-plan` on the same
+    draft, or records the instruction as rejected with the conflict as
+    its reason.
+11. "Converge the plan on issue #42." on a plan whose `sweep-plan`
+    pass raises an open question.
+    Expect: the question lands in the ledger as a discuss item, and
+    the round pauses under the blocked rule before it posts. The
+    question counts as a verified build-changing discuss finding in
+    the round's tallies.
+12. "Converge the plan on issue #42." on a round that fires the churn
+    rule for the first time.
+    Expect: the consolidation pass writes a fresh draft from the live
+    surface, runs `sweep-plan` under the style agenda over it, and
+    hands the emitted batch to `revise-plan`. Claude applies no
+    consolidation edit inline.
 
 ## promote-plan
 
