@@ -103,9 +103,10 @@ outlive the session, and the state has to survive that pause.
 The state has these files:
 
 - **`ledger.md`, the decision ledger.** It holds:
-  - every ruling the user ratified
+  - every ruling the user ratified, with the round it landed in
   - every question still open
   - the loop facts a resumed run needs, such as a churn firing
+  - the round's verified fix findings, held across a pause
 
   The rulings and the open questions feed each round's critic
   verbatim, so the critic does not re-litigate ratified rulings or
@@ -132,12 +133,13 @@ outside the loop. Show the user the difference and confirm before you
 reuse the ledger.
 
 The loop's own edits must not trip the guard. Write a fresh snapshot
-once the loop's edit lands on a blocked pause, and again after a churn
-consolidation pass. Write it to `snapshot-<next round>.md`, so it is
-the newest snapshot the guard compares against. The next round's step
-1 rewrites that same file from the live surface, and the round that
-just ended keeps its own snapshot for the next critic to read. The
-resume comparison then flags only genuine outside edits.
+after a churn consolidation pass. That pass is the one occasion.
+Write it to `snapshot-<next round>.md`, so it is the newest snapshot
+the guard compares against. The next round's step 1 rewrites that
+same file from the live surface, and the round that just ended keeps
+its own snapshot for the next critic to read. The resume comparison
+then flags only genuine outside edits. A blocked pause needs no
+snapshot, because the round pauses before it edits anything.
 
 ## 3. Run a round
 
@@ -152,6 +154,10 @@ resume comparison then flags only genuine outside edits.
    - the ledger's rulings and open questions
    - the known-open list
    - the previous round's snapshot
+
+   In the round after a ruling, pass no previous snapshot.
+   `critique-plan` → "Inputs" makes that input optional, so the critic
+   labels no text as prior-round text.
 
    Withhold the ledger's loop facts. Tell the critic that a promoted
    body's `## Notes` section is not plan and yields no finding, which
@@ -170,7 +176,9 @@ resume comparison then flags only genuine outside edits.
 3. **Verify every finding in the main session.** Check each one
    against the ref the plan builds on, per `critique-plan`. Record
    each rejected finding with its rejection reason. Act only on
-   verified findings.
+   verified findings. When the round holds verified discuss findings,
+   write the round's verified fix findings to the ledger and pause
+   under "Blocked". Step 4 runs once every ruling has landed.
 4. **Apply the verified `fix` findings that clear the acceptance
    bar.** The acceptance bar tests whether the plan already covers the
    finding at class level, through a sweep action plus a verify
@@ -233,18 +241,19 @@ pause resolves.
    reset dryness. A round carrying build-changing discuss findings is
    not dry, and the blocked rule handles it. Stop and report after K
    consecutive dry rounds.
-3. **Blocked.** The round produced verified discuss findings. Pause
-   once the round's fixes are applied:
-   1. Write the fresh snapshot that "The staleness guard" prescribes
-      before you pause, so the resume comparison does not flag those
-      fixes.
-   2. Give the user the open-issues doc.
-   3. Present the open items one at a time. Each item carries a
+3. **Blocked.** The round produced verified discuss findings. The
+   round pauses under "Run a round" step 3, before any edit of the
+   round:
+   1. Give the user the open-issues doc.
+   2. Present the open items one at a time. Each item carries a
       problem statement, its options, and a recommendation.
-   4. Resume only once every item is ruled.
-   5. Write each ruling into the ledger. Sweep its consequences, per
+   3. Resume only once every item is ruled.
+   4. Write each ruling into the ledger. Sweep its consequences, per
       "Sweep each ruling at decision time" in `writing:write-plan`.
-   6. Evaluate the remaining rules against this same round's tallies,
+      Walk every behavior the ruling changes, per that skill's
+      "Walk each stated behavior". The answers ride the round's one
+      edit under "Run a round" step 7.
+   5. Evaluate the remaining rules against this same round's tallies,
       so the resume still records and acts on a churn firing from
       this round.
 4. **Churn.** A majority of the round's verified findings target text
@@ -258,6 +267,13 @@ pause resolves.
    3. Write the fresh snapshot that "The staleness guard" prescribes
       once the consolidation edit lands.
    4. Resume the rounds.
+
+   The round after a ruling cannot fire this rule. Its critic
+   receives no previous snapshot, per "Run a round" step 2, so no
+   finding carries the prior-round-text label. The round's ordinary
+   fixes escape the rule in that round too, because one baseline
+   cannot separate the sweep's text from the fixes that landed in the
+   same edit. The loop accepts that cost.
 
    On a second firing, stop and report.
 5. **Negative value.** The round produced more rejected findings than

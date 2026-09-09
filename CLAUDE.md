@@ -19,10 +19,11 @@ A skill may cite another skill's section heading verbatim as a prose
 pointer. The current citations are:
 
 - `plan-converge` cites the write-plan headings "Sweep each ruling at
-  decision time" and "5. Write", the write-plan self-review bullet
-  "Restatements", the critique-plan Report bullet "Skip the pruning
-  under a loop", the critique-plan heading "4. Collect", and the
-  promote-plan heading "4. Write the plan into the issue body".
+  decision time", "Walk each stated behavior", and "5. Write", the
+  write-plan self-review bullet "Restatements", the critique-plan
+  Report bullet "Skip the pruning under a loop", the critique-plan
+  headings "Inputs" and "4. Collect", and the promote-plan heading
+  "4. Write the plan into the issue body".
 - `critique-plan` cites the write-plan headings "Derive the scope",
   "5. Write", and "State the acceptance criteria".
 - `promote-plan` cites the write-plan heading "5. Write".
@@ -47,7 +48,8 @@ A skill also cites its own headings:
 - `write-plan`'s Propose step, Write step, and self-review point at
   its own subsections, among them "Derive the scope", "State the
   acceptance criteria", "State the rule that generates each set", and
-  "Mark every waiver".
+  "Mark every waiver". Its Propose step, its self-review, and its
+  ruling sweep also point at "Walk each stated behavior".
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code".
 

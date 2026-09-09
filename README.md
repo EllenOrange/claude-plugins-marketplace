@@ -53,9 +53,10 @@ Skills:
   about the merged result. Each carries the check that settles it,
   and either the test that pins it or a waiver saying why none
   exists. The skill walks the plan's dependencies at the ref the plan
-  builds on. It derives the plan's scope from the repo's sweep
-  sections and its neighboring issues. It cites its authorities
-  instead of restating them.
+  builds on, and walks every behavior the plan states against the
+  repo's rule for that kind of behavior. It derives the plan's scope
+  from the repo's sweep sections and its neighboring issues. It cites
+  its authorities instead of restating them.
 - **promote-plan**: move an approved plan out of its issue comment and
   make it the issue body. Whatever the old body carried that the plan
   does not state lands under a trailing `## Notes` section. One
