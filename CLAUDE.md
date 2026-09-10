@@ -34,18 +34,22 @@ pointer. The current citations are:
   and the write-plan self-review bullet "Restatements".
 - `revise-plan` cites the write-plan heading "5. Write".
 
-No file cites the sweep-plan headings "The one-change agenda" and "The
-style agenda" by that spelling. `converge-plan`, `write-plan`,
-`README.md`, and `plugins/writing/EVAL.md` name them in lowercase
-prose instead, as "the one-change agenda" and "the style agenda". A
-case-sensitive grep for the heading text therefore misses every one of
-those references, and they dangle on a rename all the same. Sweep them
-alongside the verbatim citations above, and grep for the lowercase
-form:
+No sibling file cites the sweep-plan headings "The one-change agenda"
+and "The style agenda" by that spelling. `converge-plan`,
+`write-plan`, `README.md`, and `plugins/writing/EVAL.md` name them in
+lowercase prose instead, as "the one-change agenda" and "the style
+agenda". A case-sensitive grep for the heading text therefore misses
+every one of those references, and they dangle on a rename all the
+same. Sweep them alongside the verbatim citations above, and grep for
+the lowercase form:
 
 ```bash
 git grep -n "one-change agenda"
 ```
+
+A case-sensitive grep for "The style agenda" does return one hit
+outside the headings. It is sweep-plan's own Inputs list item, which
+labels the agenda that heading documents. Rename it with the heading.
 
 Renaming a heading in one `SKILL.md` leaves a dangling reference in
 another, and nothing catches it. Treat a heading rename as an API
@@ -75,8 +79,8 @@ A skill also cites its own headings:
   does its "The interview's state" subsection, which points at
   "9. Post" as well. Its "Resume or start fresh" subsection points
   back at "The interview's state" and forward at "4. Propose". Its
-  "Derive the scope" subsection
-  and its self-review point at "1. Read".
+  "Derive the scope" subsection and its self-review point at
+  "1. Read".
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code". Its Collect step also names
   the "Inputs" section, and that section names the Collect step by
@@ -125,6 +129,25 @@ git grep -nP 'sweep-plan\b'
 Run such a check once before the rename and confirm it matches. A
 zero-hit result afterwards means something only if you have seen the
 same command produce hits.
+
+## The sweep's model is restated at every spawn site
+
+`sweep-plan` → "Execution context" mandates that every call run in a
+fresh-context general-purpose subagent on the Opus model. That section
+owns the mandate. A spawning skill has to name a model at the spawn
+itself, so `converge-plan` and `write-plan` each restate it at every
+site that spawns a sweep. Changing the mandated model means changing
+the mandate and every restatement in the same commit:
+
+```bash
+git grep -n "Opus model"
+```
+
+Two things that look like misses are not. `converge-plan`'s
+`critique-plan` spawn names no model, and says so in words. Leave it
+that way. `plugins/writing/EVAL.md` defers to the model `sweep-plan`
+mandates rather than naming it, so its expectations survive a change
+of model. Do not re-inline the model name there.
 
 ## The review's sources are mirrored by hand
 

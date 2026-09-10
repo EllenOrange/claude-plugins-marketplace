@@ -303,8 +303,8 @@ skill correctly does **not** trigger on the negative cases.
    snapshot path, the ledger's path, and a `sweep-<n>.md` output path,
    reads those output files, composes `batch-<round>.md`, writes
    `draft.md`, and hands the batch file's path to `revise-plan` in a
-   fresh-context
-   subagent. The round's one surface edit copies the revised draft.
+   fresh-context subagent. The round's one surface edit copies the
+   revised draft.
 10. "Converge the plan on issue #42." on a round whose `revise-plan`
     call reports an instruction unapplied.
     Expect: Claude resolves it before the round posts. It either

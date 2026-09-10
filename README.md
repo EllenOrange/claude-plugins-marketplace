@@ -55,24 +55,26 @@ Skills:
   waiver saying why none exists. The interview keeps its rulings, its
   open questions, and its draft in `.claude/tmp/write-plan-<issue>/`,
   so a run that pauses for a ruling survives the session and resumes
-  from that state. The skill walks the plan's dependencies at the ref the plan
-  builds on, and walks every behavior the plan states against the
-  repo's rule for that kind of behavior, or against a completeness
-  test of its own where the repo states no such rule. It derives the
-  plan's scope from the repo's sweep sections and its neighboring
-  issues. It cites its authorities instead of restating them. It sweeps
-  each interview ruling and each human-review change through
-  `sweep-plan`, and applies the style pass and the human-review changes
-  through `revise-plan`.
+  from that state. The skill walks the plan's dependencies at the ref
+  the plan builds on, and walks every behavior the plan states
+  against the repo's rule for that kind of behavior, or against a
+  completeness test of its own where the repo states no such rule. It
+  derives the plan's scope from the repo's sweep sections and its
+  neighboring issues. It cites its authorities instead of restating
+  them. It sweeps each interview ruling and each human-review change
+  through `sweep-plan`, and applies the style pass and the
+  human-review changes through `revise-plan`. An interview sweep runs
+  in the background, so the question on the table waits on nothing.
 - **sweep-plan**: discover the edits a plan needs and emit them as
   instructions. Under the one-change agenda it enumerates the
   cross-cutting consequences of one accepted fix or one ratified
   ruling, walks every behavior that change alters, and finds the fix's
   sibling defect instances. Under the style agenda it sweeps the whole
   plan against the communication-style rule and `write-plan`'s Write
-  step. It edits no plan file and posts nothing. Given a caller output
-  path it writes that one file, and given none it returns the
-  instructions inline.
+  step. Every call runs in a fresh-context subagent on the Opus
+  model, in every caller. It edits no plan file and posts nothing.
+  Given a caller output path it writes that one file, and given none
+  it returns the instructions inline.
 - **revise-plan**: apply an instruction batch to one plan file in fresh
   context. It style-sweeps every unit an instruction landed in, then
   reads the result back to confirm that every decision, obligation,
@@ -99,11 +101,11 @@ Skills:
   durable state. It orchestrates rather than edits: it verifies each
   finding and applies the acceptance bar itself, collects the round's
   edit instructions through `sweep-plan`, composes them into a batch
-  file, and hands that file's path to `revise-plan`. It loops in place
-  over the plan comment or over the promoted plan in the issue body,
-  leaving that body's
-  `## Notes` section unchanged. It refuses to edit a body when an open
-  pull request or an unmerged remote branch already carries the issue.
+  file, and hands that file's path to `revise-plan`. It loops in
+  place over the plan comment or over the promoted plan in the issue
+  body, leaving that body's `## Notes` section unchanged. It refuses
+  to edit a body when an open pull request or an unmerged remote
+  branch already carries the issue.
   A round budget caps how many critique rounds the loop runs.
 
 ## License
