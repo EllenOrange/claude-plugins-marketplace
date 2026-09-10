@@ -160,11 +160,16 @@ Search wrap-tolerantly here too. The phrase wraps across two lines in
 rg -U --multiline-dotall 'Opus\s+model' .
 ```
 
-Two things that look like misses are not. `converge-plan`'s
-`critique-plan` spawn names no model, and says so in words. Leave it
-that way. `plugins/writing/EVAL.md` defers to the model `sweep-plan`
-mandates rather than naming it, so its expectations survive a change
-of model. Do not re-inline the model name there.
+These sites look like misses and are not:
+
+- `converge-plan`'s `critique-plan` spawn names no model, and says so
+  in words. Leave it that way.
+- `converge-plan`'s "Blocked" step 4 sweeps a ratified ruling through
+  `sweep-plan` per "Run a round" step 4. It routes to that spawn
+  rather than spawning, so it names no model. Leave it that way.
+- `plugins/writing/EVAL.md` defers to the model `sweep-plan` mandates
+  rather than naming it, so its expectations survive a change of
+  model. Do not re-inline the model name there.
 
 ## The review's sources are mirrored by hand
 

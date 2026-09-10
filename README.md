@@ -105,8 +105,8 @@ Skills:
   place over the plan comment or over the promoted plan in the issue
   body, leaving that body's `## Notes` section unchanged. It refuses
   to edit a body when an open pull request or an unmerged remote
-  branch already carries the issue.
-  A round budget caps how many critique rounds the loop runs.
+  branch already carries the issue. A round budget caps how many
+  critique rounds the loop runs.
 
 ## License
 

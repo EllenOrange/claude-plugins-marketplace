@@ -194,8 +194,11 @@ skill correctly does **not** trigger on the negative cases.
     earlier run.
     Expect: Claude shows the ledger's rulings and open questions and
     asks whether to resume or start fresh. On a resume it re-asks no
-    ratified ruling. Claude reaches the Propose step only once every
-    spawned sweep has returned and every question they raised is
+    ratified ruling. It re-spawns only a sweep whose output file the
+    disk lacks, and it reads every sweep file the ledger does not mark
+    as drained, appending each question that file leaves unanswered to
+    the open-question queue. Claude reaches the Propose step only once
+    every spawned sweep has returned and every question they raised is
     resolved. A successful post deletes the directory.
 
 ## sweep-plan
