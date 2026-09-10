@@ -6,8 +6,9 @@ description: Apply a batch of edit instructions to a plan file, style-sweep ever
 # revise-plan
 
 Apply edit instructions to one plan file. This skill executes; it
-discovers nothing. `writing:sweep-plan` produces the instructions this
-skill applies. Write all prose per the communication-style rule. Use
+discovers nothing. `writing:sweep-consequences` and
+`writing:sweep-style` produce the instructions this skill applies.
+Write all prose per the communication-style rule. Use
 the installed copy at `~/.claude/rules/communication-style.md` if
 present, else the plugin's bundled copy at
 `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
@@ -47,6 +48,14 @@ Apply these to every edit, cited rather than restated:
 - A fix that adds a third item to an inline series converts the series
   to a vertical list.
 
+This section owns the restructuring moves. An instruction may
+prescribe any of them, and the sweep skills cite this owner rather
+than restating them:
+
+- Split a unit.
+- Regroup actions.
+- Add or rename a header.
+
 ## The sweep unit
 
 A style sweep covers the whole unit or section each instruction landed
@@ -80,3 +89,13 @@ Report these lists:
 
 The revised file is the other output, on disk at the path the caller
 gave. Post nothing.
+
+This section owns the unapplied-instruction resolution rule. The
+caller resolves every instruction this skill reports unapplied, before
+the caller's own next step. It does one of these:
+
+- Amend the instruction and re-invoke this skill on the same draft.
+- Return the conflict to the caller's own caller.
+
+Each applying site cites this owner and adds only its seat-specific
+disposition of a conflict that survives both moves.
