@@ -64,13 +64,15 @@ rather than restating the mechanism. The obligations on a caller are:
 
 - **`writing:converge-plan`** passes the round's accepted batch, the
   round's plan text by path, and the ledger by path.
-- **`writing:write-plan`'s interview seat** passes the interview's
-  whole ruling set and the ledger by path, with no plan text. Its
-  instructions land when `write-plan` → "5. Write" drafts the file. In
-  that seat an instruction targets the plan-to-be's sections by the
-  fixed section names "5. Write" owns.
+- **`writing:write-plan`'s core-draft seat** passes the interview's
+  whole ruling set as the decision set, plus the core draft and the
+  ledger by path. The core draft carries the Problem, Scope, Solution,
+  and Acceptance criteria sections and no other, so an instruction
+  targets those sections by the fixed section names `write-plan` →
+  "5. Write" owns. Its instructions land in the revision `write-plan`
+  → "Draft the core" runs, before the full plan is drafted.
 - **`writing:write-plan`'s human-review seat** passes the requested
-  changes as the decision set, and the draft by path.
+  changes as the decision set, plus the draft and the ledger by path.
 
 ## The decision-set agenda
 

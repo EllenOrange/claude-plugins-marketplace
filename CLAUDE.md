@@ -73,6 +73,21 @@ than quoted prose. Sweep for the directory name instead:
 git grep -nP 'write-plan-<issue>'
 ```
 
+## A sweep skill lists its own callers
+
+`sweep-consequences` and `sweep-style` each carry a "What each caller
+passes" section naming every seat that spawns them and the inputs that
+seat hands over. The spawn sites live in `converge-plan` and
+`write-plan`, so the fact is stated twice and nothing catches drift.
+
+Changing what a seat passes, adding a seat, or moving one obliges an
+edit to the sweep skill's caller list in the same commit. Find the
+spawn sites by skill name:
+
+```bash
+git grep -nP 'writing:sweep-(consequences|style)\b'
+```
+
 ## The review's sources are mirrored by hand
 
 `plugins/writing/docs/review-sources.md` mirrors the sources section

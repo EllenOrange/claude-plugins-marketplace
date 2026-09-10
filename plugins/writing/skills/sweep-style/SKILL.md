@@ -49,6 +49,10 @@ agenda, so this skill has nothing to route.
 
 - **`writing:converge-plan`** passes the consolidation pass's fresh
   draft by path.
+- **`writing:write-plan`'s core-draft seat** passes the core draft by
+  path. That draft carries the Problem, Scope, Solution, and
+  Acceptance criteria sections and no other, so the whole plan this
+  skill sweeps is the core at that point.
 - **`writing:write-plan`'s style-pipeline seat** passes the draft by
   path.
 

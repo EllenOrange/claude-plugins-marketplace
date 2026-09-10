@@ -175,13 +175,13 @@ reuse the ledger.
 The loop's own edits must not trip the guard. Write a fresh snapshot
 after a consolidation pass. The consolidation passes are the
 occasions, and this guard owns that list. Its members are the churn
-consolidation pass and the budget-spent consolidation pass.
-Write the snapshot to `snapshot-<next round>.md`, so it is the newest snapshot
-the guard compares against. The next round's step 1 rewrites that
-same file from the live surface, and the round that just ended keeps
-its own snapshot for the next critic to read. The resume comparison
-then flags only genuine outside edits. A blocked pause needs no
-snapshot, because the round pauses before it edits anything.
+consolidation pass and the budget-spent consolidation pass. Write the
+snapshot to `snapshot-<next round>.md`, so it is the newest snapshot
+the guard compares against. The next round's step 1 rewrites that same
+file from the live surface, and the round that just ended keeps its
+own snapshot for the next critic to read. The resume comparison then
+flags only genuine outside edits. A blocked pause needs no snapshot,
+because the round pauses before it edits anything.
 
 ## 3. Run a round
 
@@ -380,10 +380,10 @@ pause resolves.
    any ledger ruling the previous round recorded, whether the user
    ratified it at a pause or a fix-triaged sweep question derived it.
    Its critic receives no previous snapshot, per "Run a round" step 2,
-   so no finding carries the prior-round-text label. The round's ordinary
-   fixes escape the rule in that round too, because one baseline
-   cannot separate the sweep's text from the fixes that landed in the
-   same edit. The loop accepts that cost.
+   so no finding carries the prior-round-text label. The round's
+   ordinary fixes escape the rule in that round too, because one
+   baseline cannot separate the sweep's text from the fixes that
+   landed in the same edit. The loop accepts that cost.
 
    On a second firing, stop and report.
 5. **Negative value.** The round produced more rejected findings than
