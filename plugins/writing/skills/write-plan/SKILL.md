@@ -224,7 +224,7 @@ References is required:
    satisfy, per "State the acceptance criteria". This section carries
    a `### Postconditions` subsection and an `### Invariants`
    subsection, always. That section owns the entry form of both and
-   owns each subsection's empty form.
+   owns the Invariants empty form.
 5. **Outline.** Decompose the work.
 6. **Open questions.** Keep only the ones that survived the
    interview. List the questions themselves and nothing else. A

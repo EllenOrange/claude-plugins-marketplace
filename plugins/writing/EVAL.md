@@ -184,7 +184,7 @@ skill correctly does **not** trigger on the negative cases.
     write against that rule, or against the walk's test, before the
     interview closes. Each unanswered question becomes an interview
     question. A behavior the human review adds is walked by the
-    one-change sweep before the post. The posted plan answers every
+    consequence sweep before the post. The posted plan answers every
     question, or carries it under Open questions.
 14. "Plan the work for issue #42." after the interview closes.
     Expect: Claude drafts the core to `draft.md` under

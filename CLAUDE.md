@@ -64,17 +64,16 @@ A skill also cites its own headings:
   a bold list item rather than a heading.
 - `write-plan`'s Propose step, Write step, and self-review point at
   its own subsections, among them "Derive the scope", "State the
-  acceptance criteria", "State the rule that generates each set",
-  "The outline", and "Mark every waiver". Its Propose step and its
-  self-review also point at "Walk each stated behavior", and that
-  subsection in turn points at "Cite the authority instead of
-  restating it". Its state directory points at "4. Propose", and its
-  interview and triage steps point at "Define the ledger's entry
-  classes". Its human review step points at "Triage the sweep's
-  questions". Its self-review and its human review step point at
-  "7. Style pipeline". Its Propose step and its self-review point at
-  "5. Write". Its "Derive the scope" subsection and its self-review
-  point at "1. Read".
+  acceptance criteria", "State the rule that generates each set", and
+  "Mark every waiver". Its Propose step and its self-review also point
+  at "Walk each stated behavior", and that subsection in turn points at
+  "Cite the authority instead of restating it". Its state directory
+  points at "4. Propose", and its interview and triage steps point at
+  "Define the ledger's entry classes". Its human review step points at
+  "Triage the sweep's questions". Its self-review points at "7. Style
+  pipeline". Its Propose step and its self-review point at "5. Write".
+  Its "Derive the scope" subsection and its self-review point at
+  "1. Read".
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code". Its Collect step also names
   the "Inputs" section, and that section names the Collect step by
@@ -120,6 +119,23 @@ git grep -nP 'sweep-style\b'
 Run such a check once before the rename and confirm it matches. A
 zero-hit result afterwards means something only if you have seen the
 same command produce hits.
+
+## One skill's state directory is another skill's input
+
+`write-plan` writes its ledger and its draft to
+`.claude/tmp/write-plan-<issue>/`, and leaves the directory in place
+after it posts. `converge-plan` reads that same path to seed its own
+ledger and to compare the draft against the live plan surface. The
+path and the filenames `ledger.md` and `draft.md` are a contract
+between them.
+
+A rename on either side dangles as silently as a renamed heading. The
+heading sweep above misses it, because the pointer is a path rather
+than quoted prose. Sweep for the directory name instead:
+
+```bash
+git grep -nP 'write-plan-<issue>'
+```
 
 ## The review's sources are mirrored by hand
 
