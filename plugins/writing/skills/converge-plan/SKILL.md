@@ -33,7 +33,8 @@ emits:
 
 - Problem
 - Scope
-- Acceptance criteria, with its Invariants subsection
+- Acceptance criteria, with its Postconditions and Invariants
+  subsections
 - Solution
 - Outline
 - Open questions
@@ -110,7 +111,7 @@ The state has these files:
   - every question still open
   - the loop facts a resumed run needs, such as a churn firing
   - the round's verified fix findings, held across a pause
-  - the round's emitted instruction batch
+  - the path of each composed instruction batch file
   - whether that batch has been applied to the round's draft
 
   The rulings and the open questions feed each round's critic
@@ -127,6 +128,12 @@ The state has these files:
 - **`draft.md`, the round's working copy of the plan.** The round
   writes it, `writing:revise-plan` edits it, and step 7 copies it to
   the located surface. The next round overwrites it.
+- **`batch-<round>.md`, the round's composed instruction batch.** The
+  round writes what it accepts here, and hands the path to
+  `writing:revise-plan`.
+- **`batch-consolidation-<k>.md`, a consolidation pass's composed
+  instruction batch.** The pass writes what it accepts here, and hands
+  the path to `writing:revise-plan`.
 
 The ledger and the open-issues doc live here and nowhere else. The
 plan carries neither. The plan's Open questions section lists the
@@ -156,16 +163,22 @@ snapshot, because the round pauses before it edits anything.
    body, or the promoted body from `## Problem` through the end of the
    last plan section, stopping before `## Notes`.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
-   and instruct it to load `writing:critique-plan`. Pass it:
-   - the round's snapshot as the plan text
+   and instruct it to load `writing:critique-plan`. Name no model at
+   this spawn. Pass it:
+   - the round's `snapshot-<round>.md` path as the plan text
    - the surface the plan lives on
-   - the ledger's rulings and open questions
+   - the ledger's rulings and open questions, inline
    - the known-open list
-   - the previous round's snapshot
+   - the previous round's `snapshot-<round>.md` path
 
    In the round after a ruling, pass no previous snapshot.
    `critique-plan` → "Inputs" makes that input optional, so the critic
    labels no text as prior-round text.
+
+   The rulings and the open questions pass inline rather than by path,
+   because `ledger.md` carries the loop facts the critic is briefed
+   without. Compose no excerpt file, and let no `ledger.md` path reach
+   the critic.
 
    Withhold the ledger's loop facts. Tell the critic that a promoted
    body's `## Notes` section is not plan and yields no finding, which
@@ -200,23 +213,30 @@ snapshot, because the round pauses before it edits anything.
      treatment where `critique-plan` prescribes it.
    - Every instruction a `writing:sweep-plan` pass emits over each
      accepted fix, under the one-change agenda. Spawn one
-     general-purpose subagent per fix and instruct it to load that
-     skill.
+     general-purpose subagent per fix, on the Opus model, and instruct
+     it to load that skill. Pass it the round's `snapshot-<round>.md`
+     path, the ledger's path, and a `sweep-<n>.md` output path in the
+     state directory. `sweep-plan` → "Inputs" and "Output" own the
+     handoff mechanism. Number each sweep file after the highest
+     existing `sweep-<n>.md` in the state directory, so a later round
+     never overwrites an earlier round's file. Read each output file
+     before you take an instruction from it.
    - Every instruction the same pass emits over each ruling ratified
      after a Blocked pause.
    - One that updates the plan's Open questions section to match the
      ledger. It writes the empty form `write-plan` → "5. Write" owns,
      so every writer and every reader of the section share one form.
 
-   Write the batch to the ledger. A question `sweep-plan` raises lands
-   in the ledger as a discuss item instead, and the round pauses under
-   "Blocked" before it posts.
+   Compose the instructions you accept into `batch-<round>.md`, and
+   record that file's path in the ledger. A question `sweep-plan`
+   raises lands in the ledger as a discuss item instead, and the round
+   pauses under "Blocked" before it posts.
 5. **Append the verified `discuss` findings** to the open-issues doc,
    synthesizing them with the prior rounds' themes.
 6. **Revise the draft.** Write the round's snapshot to `draft.md`.
    Spawn a general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it the draft's path and the batch.
-   Read the result back when it reports.
+   `writing:revise-plan`, and pass it the draft's path and the
+   `batch-<round>.md` path. Read the result back when it reports.
 
    Resolve every instruction it reports unapplied before the round
    posts. Either amend the instruction and re-invoke `revise-plan` on
@@ -291,12 +311,19 @@ pause resolves.
    that prior fix rounds added. On the first firing, do not run
    another critique round. Run one consolidation pass instead:
    1. Write a fresh draft to `draft.md` from the live surface. Spawn a
-      general-purpose subagent, instruct it to load
+      general-purpose subagent on the Opus model, instruct it to load
       `writing:sweep-plan` under the style agenda, and pass it that
-      draft. Hand the batch it emits to `writing:revise-plan` on the
-      same draft, in a further general-purpose subagent.
-   2. Record the firing as a line in `ledger.md`, so a resumed loop
-      still knows of it.
+      draft's path, the ledger's path, and a `sweep-<n>.md` output
+      path numbered on the same continuing counter. `sweep-plan` →
+      "Inputs" and "Output" own the handoff mechanism. Read that
+      output file, and compose `batch-consolidation-<k>.md` from what
+      you accept, with `k` after the highest existing such file. Hand
+      that path to `writing:revise-plan` on the same draft, in a
+      further general-purpose subagent, and read the revised draft
+      back when it reports.
+   2. Record the firing as a line in `ledger.md`, carrying the
+      consolidation batch file's path, so a resumed loop still knows
+      of it.
    3. Write the fresh snapshot that "The staleness guard" prescribes
       once the consolidation edit lands.
    4. Resume the rounds.

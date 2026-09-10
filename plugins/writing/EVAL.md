@@ -136,16 +136,17 @@ skill correctly does **not** trigger on the negative cases.
    - Open questions
    - References, which is optional
 
-   Acceptance criteria carries an Invariants subsection, which reads
-   `None.` plus one clause when the outline touches no contract.
+   Acceptance criteria carries these subsections: Postconditions and
+   Invariants. Postconditions carries at least one entry. Invariants
+   reads `None.` plus one clause when the outline touches no contract.
 9. "Plan the work for issue #42."
-   Expect: every acceptance criterion states a claim about the merged
-   result, quantified over a class with its membership rule. Each
-   criterion carries a `Check:` clause and a `Pinned by:` or
-   `Waiver:` clause. No criterion is an action or an exemplar to
-   imitate.
+   Expect: every entry under Postconditions and under Invariants opens
+   with a bold title and states a claim about the merged result,
+   quantified over a class with its membership rule. Each entry
+   carries a `Check:` sub-bullet and a `Pinned by:` or `Waiver:`
+   sub-bullet. No entry is an action or an exemplar to imitate.
 10. "Plan the work for issue #42."
-    Expect: the Propose step shows the acceptance criteria and
+    Expect: the Propose step shows the postconditions and the
     invariants between the scope summary and the proposed solutions,
     as the definition of done each solution is measured against.
 11. "Plan the work for issue #42." on an issue whose work changes a
@@ -168,28 +169,42 @@ skill correctly does **not** trigger on the negative cases.
     one-change sweep before the post. The posted plan answers every
     question, or carries it under Open questions.
 14. "Plan the work for issue #42." with a mid-interview ruling.
-    Expect: Claude spawns a fresh-context subagent that loads
-    `sweep-plan` under the one-change agenda, and holds the emitted
-    instructions until the Write step drafts the file. Claude runs no
+    Expect: Claude spawns a fresh-context subagent on the Opus model
+    that loads `sweep-plan` under the one-change agenda, passing the
+    ruling inline, the ledger's path, and a `sweep-<n>.md` output
+    path. Claude continues the interview without waiting on that
+    sweep, and reads the output file when it returns. Claude runs no
     inline sweep of its own.
 15. "Plan the work for issue #42."
     Expect: after self-review, Claude runs the style pipeline. It
-    spawns one subagent for `sweep-plan` under the style agenda and a
-    second for `revise-plan`, then reads the revised file back before
-    showing it. The self-review does no style checking of its own.
+    spawns one subagent on the Opus model for `sweep-plan` under the
+    style agenda, reads the `sweep-<n>.md` file it writes, composes a
+    `batch-<n>.md`, and spawns a second subagent for `revise-plan`
+    with the draft's path and that batch path. It reads the revised
+    file back before showing it. The self-review does no style
+    checking of its own.
 16. "Plan the work for issue #42." with a human-review change
     requested after the draft is shown.
-    Expect: Claude sweeps the change through `sweep-plan`, then applies
-    the change and the sweep's instructions through `revise-plan` in a
-    fresh-context subagent. Claude runs no post-apply behavior walk.
+    Expect: Claude sweeps the change through `sweep-plan`, reads the
+    sweep's output file, composes a batch carrying the requested
+    change, and applies it through `revise-plan` in a fresh-context
+    subagent. Claude runs no post-apply behavior walk.
+17. "Plan the work for issue #42." on an issue whose
+    `.claude/tmp/write-plan-42/` already holds a `ledger.md` from an
+    earlier run.
+    Expect: Claude shows the ledger's rulings and open questions and
+    asks whether to resume or start fresh. On a resume it re-asks no
+    ratified ruling. Claude reaches the Propose step only once every
+    spawned sweep has returned and every question they raised is
+    resolved. A successful post deletes the directory.
 
 ## sweep-plan
 
 1. "Sweep this plan for what my ruling on the retry budget drags with
    it."
-   Expect: the skill triggers. The output is a list of edit
-   instructions, each naming the plan section it targets. Claude edits
-   no file and posts nothing.
+   Expect: the skill triggers. This invocation carries no caller
+   output path, so the instructions come back inline, each naming the
+   plan section it targets. Claude writes no file and posts nothing.
 2. "Sweep this plan." on an accepted fix finding.
    Expect: the one-change agenda runs. The instructions cover the
    change's verification commands, doc files, scripts, sibling fields,
@@ -199,19 +214,27 @@ skill correctly does **not** trigger on the negative cases.
    actions each and whose parallel items sit inline behind semicolons.
    Expect: the style agenda runs over the whole plan. The instructions
    split the multi-action bullets and convert the inline series to
-   vertical lists.
+   vertical lists. This invocation carries no caller output path, so
+   they come back inline.
 4. "Sweep this plan." on a ruling whose behavior the plan leaves
    underspecified.
    Expect: the unanswered question comes back as a question rather
    than as an instruction.
-5. Negative: "Apply these edits to the plan."
+5. "Sweep this plan and write the instructions to
+   `.claude/tmp/converge-plan-42/sweep-3.md`."
+   Expect: Claude writes exactly that file, overwriting it when it is
+   already there, and returns the path plus a summary. Claude creates
+   no other file, edits no plan file, and posts nothing.
+6. Negative: "Apply these edits to the plan."
    Expect: `sweep-plan` does not trigger; `revise-plan` does.
 
 ## revise-plan
 
-1. "Apply these instructions to `.claude/tmp/converge-plan-42/draft.md`."
-   Expect: the skill triggers. Claude edits that file alone, and
-   reports which instructions applied and which did not.
+1. "Apply the batch at `.claude/tmp/converge-plan-42/batch-2.md` to
+   `.claude/tmp/converge-plan-42/draft.md`."
+   Expect: the skill triggers. Claude reads the batch file, edits the
+   draft alone, and reports which instructions applied and which did
+   not.
 2. "Apply this fix." on an instruction that adds a second action to a
    bullet.
    Expect: Claude splits the bullet rather than appending a clause,
@@ -275,10 +298,12 @@ skill correctly does **not** trigger on the negative cases.
 9. "Converge the plan on issue #42." on a plan whose round yields
    accepted fix findings.
    Expect: Claude edits no plan text itself. It verifies the findings
-   and applies the acceptance bar in the main session, collects the
-   round's instructions through `sweep-plan`, writes `draft.md`, and
-   hands the batch to `revise-plan` in a fresh-context subagent. The
-   round's one surface edit copies the revised draft.
+   and applies the acceptance bar in the main session, spawns each
+   `sweep-plan` pass on the Opus model with the round's snapshot path,
+   the ledger's path, and a `sweep-<n>.md` output path, reads those
+   output files, composes `batch-<round>.md`, writes `draft.md`, and
+   hands the batch file's path to `revise-plan` in a fresh-context
+   subagent. The round's one surface edit copies the revised draft.
 10. "Converge the plan on issue #42." on a round whose `revise-plan`
     call reports an instruction unapplied.
     Expect: Claude resolves it before the round posts. It either
@@ -294,9 +319,11 @@ skill correctly does **not** trigger on the negative cases.
 12. "Converge the plan on issue #42." on a round that fires the churn
     rule for the first time.
     Expect: the consolidation pass writes a fresh draft from the live
-    surface, runs `sweep-plan` under the style agenda over it, and
-    hands the emitted batch to `revise-plan`. Claude applies no
-    consolidation edit inline.
+    surface, runs `sweep-plan` under the style agenda over that
+    draft's path on the same continuing sweep counter, reads the
+    output file, composes `batch-consolidation-<k>.md`, and hands that
+    path to `revise-plan`. The firing line in `ledger.md` carries that
+    batch path. Claude applies no consolidation edit inline.
 
 ## promote-plan
 

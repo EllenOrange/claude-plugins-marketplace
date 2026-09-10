@@ -22,9 +22,11 @@ accumulated context produces.
 ## Inputs
 
 - **The plan file path.** Required. This skill edits that file in
-  place and touches no other file. It never edits an issue surface.
-- **The instruction batch.** Required. Each instruction names the plan
-  section it targets and the change to make there.
+  place and writes no other file. It never edits an issue surface.
+- **The instruction batch.** Required, and given as a file path
+  whenever the caller holds the batch on disk. Read that file and do
+  not write it. Each instruction names the plan section it targets and
+  the change to make there.
 
 ## Boundaries
 

@@ -22,13 +22,15 @@ pointer. The current citations are:
   critique-plan Report bullet "Skip the pruning under a loop", the
   critique-plan headings "Inputs" and "4. Collect", the promote-plan
   heading "4. Write the plan into the issue body", and the sweep-plan
-  headings "The one-change agenda" and "The style agenda".
+  headings "The one-change agenda", "The style agenda", "Inputs", and
+  "Output".
 - `critique-plan` cites the write-plan headings "Derive the scope",
   "5. Write", and "State the acceptance criteria".
 - `promote-plan` cites the write-plan heading "5. Write".
 - `write-plan` cites the promote-plan heading "2. Read both texts
-  verbatim", and the sweep-plan headings "The one-change agenda" and
-  "The style agenda".
+  verbatim", the converge-plan heading "2. Set up the state", and the
+  sweep-plan headings "The one-change agenda", "The style agenda",
+  "Inputs", and "Output".
 - `sweep-plan` cites the write-plan headings "Walk each stated
   behavior" and "5. Write", and the write-plan self-review bullet
   "Restatements".
@@ -66,7 +68,10 @@ A skill also cites its own headings:
   Collect step names the Report step by that word too, rather than by
   the numbered heading "5. Report".
 - `sweep-plan`'s one-change agenda points at its own "Output" section
-  for the routing of an unanswered question.
+  for the routing of an unanswered question. Its "Inputs" section
+  names "Output" as its co-owner of the sweep-file handoff mechanism,
+  and its "What each caller passes" section names both "Inputs" and
+  "Output" as that mechanism's owner.
 
 A rename inside one file dangles just as silently. Sweep the file you
 renamed in as well as its siblings.
