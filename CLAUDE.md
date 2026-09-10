@@ -49,7 +49,7 @@ git grep -n "one-change agenda"
 
 A case-sensitive grep for "The style agenda" does return hits outside
 the headings. One is sweep-plan's own Inputs list item, which labels
-the agenda that heading documents. The rest are this file's own two
+the agenda that heading documents. The rest are this file's own
 quotations of the heading text, in the paragraph above and in this
 one. Rename all of them with the heading.
 
