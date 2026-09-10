@@ -15,10 +15,13 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 The user names the plan. A caller running the critique inside a loop,
 such as `writing:converge-plan`, may also pass any of these:
 
-- **A decision ledger.** The rulings the user has already ratified.
-  Treat each one as a fixed constraint. Do not re-litigate a ratified
-  ruling, and do not report a finding that asks for a different
-  ruling.
+- **A decision ledger.** The rulings the caller has recorded, each
+  marked user-ratified or repo-derived. Treat a user-ratified ruling
+  as a fixed constraint. Do not re-litigate it, and do not report a
+  finding that asks for a different ruling. A repo-derived ruling is
+  open to a finding: report one when the derivation does not hold
+  against the code. The caller triages that finding as the veto
+  trigger.
 - **A known-open list.** The questions the caller already tracks as
   open. Do not report one of them as a finding.
 - **A prior plan snapshot or diff.** The plan as it stood before the
@@ -94,6 +97,29 @@ its question of the plan and of the implementation the Outline
 prescribes, then report the finding that file names for a failing
 answer. That file owns the questions and the findings; restate neither
 here.
+
+### Report a criterion above its altitude
+
+Apply the altitude test that `write-plan` → "State the acceptance
+criteria" owns. A criterion only the implementer needs fails it.
+Report the failure and prescribe moving the text into the Outline.
+This finding is build-changing, because the review grades whatever
+reads as a criterion.
+
+### Report a budget violation
+
+Each budgeted section names its own budget. `write-plan` → "State the
+acceptance criteria" owns the criteria's size discipline, and
+`write-plan` → "Derive the scope" owns Scope's. Report a section that
+exceeds the budget its owner states, such as an oversized Scope
+paragraph or a `Check:` clause grown into a procedure. Prescribe the
+delegation that owner sanctions.
+
+### Report a compound action
+
+`write-plan` → "The outline" owns the one-action-per-line rule. Report
+an outline action that carries more than one thing the implementer
+does, and prescribe splitting it into one action per line.
 
 ### Derive each named set from the code
 

@@ -8,7 +8,8 @@ description: Run a bounded critique-and-fix loop over a plan on an issue until i
 Run the critique-and-fix loop over one plan until a stopping rule
 ends it, then report. This skill orchestrates. It wraps
 `writing:critique-plan` for discovery of defects,
-`writing:sweep-plan` for discovery of the edits a change forces, and
+`writing:sweep-consequences` for discovery of the edits a decision set
+forces, `writing:sweep-style` for the whole-plan style pass, and
 `writing:revise-plan` for every edit of the plan text, rather than
 restating any of them. Write all prose per the communication-style rule.
 Use the installed copy at `~/.claude/rules/communication-style.md` if
@@ -33,12 +34,15 @@ emits:
 
 - Problem
 - Scope
-- Acceptance criteria, with its Invariants subsection
 - Solution
+- Acceptance criteria, with its Postconditions and Invariants
+  subsections
 - Outline
 - Open questions
 
-An optional References section may follow them.
+An optional References section may follow them. `write-plan` → "State
+the acceptance criteria" owns each subsection's entry form and the
+Invariants empty form.
 
 When both surfaces exist, the body governs, because it is the surface
 the review reads. Name the leftover comment in the report.
@@ -106,17 +110,22 @@ outlive the session, and the state has to survive that pause.
 The state has these files:
 
 - **`ledger.md`, the decision ledger.** It holds:
-  - every ruling the user ratified, with the round it landed in
+  - every ruling the loop has recorded, with the round it landed in
+    and its class mark
   - every question still open
   - the loop facts a resumed run needs, such as a churn firing
   - the round's verified fix findings, held across a pause
   - the round's emitted instruction batch
   - whether that batch has been applied to the round's draft
 
+  A ruling carries a user-ratified or repo-derived class mark.
+  `write-plan` → "Define the ledger's entry classes" owns the marking.
+  A repo-derived entry carries its derivation beside the ruling.
+
   The rulings and the open questions feed each round's critic
-  verbatim, so the critic does not re-litigate ratified rulings or
-  re-report open questions. The loop facts stay out of the critic's
-  brief.
+  verbatim, so the critic does not re-litigate a user-ratified ruling
+  or re-report an open question. The loop facts stay out of the
+  critic's brief.
 - **`open-issues.md`, the open-issues doc.** The discuss findings
   gathered across rounds, synthesized into common themes, each with
   its options and a recommendation. The user sees this file whenever
@@ -133,6 +142,29 @@ plan carries neither. The plan's Open questions section lists the
 ledger's open items, as bare questions with no rulings, no dates, and
 no round history.
 
+### Seed the ledger from the write-plan state
+
+Seed `ledger.md` from `.claude/tmp/write-plan-<issue>/` when that
+directory is present. This bullet owns the seeding trigger. Seeding
+runs only during this state setup, and only while
+`.claude/tmp/converge-plan-<issue>/ledger.md` does not yet exist. A
+resumed loop never re-seeds, and a loop whose ledger exists but never
+seeded stays unseeded by design.
+
+A seeded ledger arrives with its class marks already present, matching
+the format split `write-plan` → "The state directory" states. It
+arrives with no round-indexed field and no loop fact, so this skill
+initializes its own fields on seeding.
+
+Compare `.claude/tmp/write-plan-<issue>/draft.md` against the live
+plan surface before you reuse the seed. `draft.md` holds the posted
+full plan, so a byte match is expected and a mismatch means someone
+edited the plan at post time. On a mismatch, show the user the
+difference and confirm before reusing the seed. That confirmation is
+an interaction outside the round structure, before round 1, like the
+staleness guard's resume confirmation. "The body-surface guard"
+discussion in "1. Locate the plan" owns which surface is the live one.
+
 ### The staleness guard
 
 Compare the newest snapshot against the live plan surface when you
@@ -141,8 +173,10 @@ outside the loop. Show the user the difference and confirm before you
 reuse the ledger.
 
 The loop's own edits must not trip the guard. Write a fresh snapshot
-after a churn consolidation pass. That pass is the one occasion.
-Write it to `snapshot-<next round>.md`, so it is the newest snapshot
+after a consolidation pass. The consolidation passes are the
+occasions, and this guard owns that list. Its members are the churn
+consolidation pass and the budget-spent consolidation pass.
+Write the snapshot to `snapshot-<next round>.md`, so it is the newest snapshot
 the guard compares against. The next round's step 1 rewrites that
 same file from the live surface, and the round that just ended keeps
 its own snapshot for the next critic to read. The resume comparison
@@ -157,15 +191,19 @@ snapshot, because the round pauses before it edits anything.
    last plan section, stopping before `## Notes`.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
    and instruct it to load `writing:critique-plan`. Pass it:
-   - the round's snapshot as the plan text
+   - the round's snapshot as the plan text, by path
    - the surface the plan lives on
-   - the ledger's rulings and open questions
+   - the ledger's rulings and open questions, by path
    - the known-open list
-   - the previous round's snapshot
+   - the previous round's snapshot, by path
 
    In the round after a ruling, pass no previous snapshot.
    `critique-plan` → "Inputs" makes that input optional, so the critic
    labels no text as prior-round text.
+
+   Tell the critic that a user-ratified ruling is fixed and that a
+   finding against a repo-derived one is allowed. Such a finding is
+   the veto trigger this session triages.
 
    Withhold the ledger's loop facts. Tell the critic that a promoted
    body's `## Notes` section is not plan and yields no finding, which
@@ -195,22 +233,38 @@ snapshot, because the round pauses before it edits anything.
    Acceptance-bar rejections count as rejected findings for the
    stopping rules.
 
+   Run one `writing:sweep-consequences` call per round over the
+   round's whole accepted batch. Spawn one general-purpose subagent on
+   the Opus model, per `sweep-consequences` → "Execution context",
+   instruct it to load that skill, and pass it the accepted batch as
+   the decision set plus the round's plan text and the ledger by path.
+   After a Blocked pause, re-run the sweep once over the enlarged
+   batch on resume: one call per pause-resume cycle.
+
    The batch takes these instructions:
    - One per finding that clears the bar. It carries the delete-and-cite
      treatment where `critique-plan` prescribes it.
-   - Every instruction a `writing:sweep-plan` pass emits over each
-     accepted fix, under the one-change agenda. Spawn one
-     general-purpose subagent per fix and instruct it to load that
-     skill.
-   - Every instruction the same pass emits over each ruling ratified
-     after a Blocked pause.
+   - Every instruction the sweep emits.
    - One that updates the plan's Open questions section to match the
      ledger. It writes the empty form `write-plan` → "5. Write" owns,
      so every writer and every reader of the section share one form.
 
-   Write the batch to the ledger. A question `sweep-plan` raises lands
-   in the ledger as a discuss item instead, and the round pauses under
-   "Blocked" before it posts.
+   Write the batch to the ledger.
+
+   **Triage the sweep's questions** before the Blocked rule fires.
+   `sweep-consequences` → "Output" owns the triage seat, the finding
+   shape, the fold rule, and the refute rule. This seat's own behavior
+   is the tally arithmetic:
+   - A `fix`-triaged question counts as an accepted build-changing
+     finding. Record its repo-derived answer in the ledger as a
+     vetoable ruling carrying its derivation, marked per `write-plan`
+     → "Define the ledger's entry classes". The fold follows the
+     owning Output section.
+   - A `refute`-triaged question joins the rejected total.
+   - An unresolved `revise-plan` conflict joins the rejected total.
+   - Only a `discuss` survivor counts as a discuss finding. It lands
+     in the ledger as a discuss item, and the round pauses under
+     "Blocked" before it posts.
 5. **Append the verified `discuss` findings** to the open-issues doc,
    synthesizing them with the prior rounds' themes.
 6. **Revise the draft.** Write the round's snapshot to `draft.md`.
@@ -218,10 +272,12 @@ snapshot, because the round pauses before it edits anything.
    `writing:revise-plan`, and pass it the draft's path and the batch.
    Read the result back when it reports.
 
-   Resolve every instruction it reports unapplied before the round
-   posts. Either amend the instruction and re-invoke `revise-plan` on
-   the same draft, or record the instruction as rejected with the
-   conflict as its reason.
+   `revise-plan` → "Output" owns the unapplied-instruction resolution
+   rule, and this seat applies it before the round posts. A conflict
+   that survives it is recorded as rejected for the round's tallies,
+   with the conflict as its reason. The budget-spent consolidation is
+   this skill's other applying seat, and it disposes of a conflict the
+   same way.
 7. **Edit the located surface in place, once.** One edit per round, at
    the end of the round. The surface receives the revised draft's
    content. Never post a new comment. On a body surface:
@@ -259,10 +315,16 @@ that matches, except where a rule says otherwise. The blocked rule
 says otherwise: it sends you back to the remaining rules once its
 pause resolves.
 
-1. **Budget spent.** The rounds run reach the round budget N. Stop and
-   report. Critique rounds alone consume budget. A consolidation pass
-   and a blocked pause consume none, and a resume continues the same
-   count.
+1. **Budget spent.** The rounds run reach the round budget N. Run one
+   consolidation pass, unconditionally, then stop and report. The pass
+   reuses the churn pass's mechanics, so its steps live under "Churn"
+   and this rule cites them rather than restating them. "The staleness
+   guard" owns the occasions a fresh snapshot is written, and this
+   pass is one of them. The consolidation edit lands through "Run a
+   round" step 7, and it sits outside the one-edit-per-round rule
+   exactly as the churn pass's edit does. Critique rounds alone consume
+   budget. A consolidation pass and a blocked pause consume none, and a
+   resume continues the same count.
 2. **Dry.** The round produced zero accepted build-changing fix
    findings and zero verified build-changing discuss findings.
    Accepted means verified and past the acceptance bar in "Run a
@@ -271,30 +333,38 @@ pause resolves.
    not dry, and the blocked rule handles it. Stop and report after K
    consecutive dry rounds.
 3. **Blocked.** The round produced verified discuss findings. A
-   question `writing:sweep-plan` raised is one of them, and counts as a
-   verified build-changing discuss finding in every tally. The round
-   pauses before any edit of the round: at "Run a round" step 3 for a
-   finding the critic raised, and at step 4 for a question `sweep-plan`
-   raised.
-   1. Give the user the open-issues doc.
+   `discuss` survivor of the sweep-question triage is one of them, and
+   counts as a verified build-changing discuss finding in every tally.
+   The round pauses before any edit of the round: at "Run a round"
+   step 3 for a finding the critic raised, and at step 4 for a
+   surviving sweep question.
+   1. Give the user the open-issues doc. It shows every repo-derived
+      ruling with its derivation, so the user can veto one.
    2. Present the open items one at a time. Each item carries a
       problem statement, its options, and a recommendation.
    3. Resume only once every item is ruled.
-   4. Write each ruling into the ledger. Sweep its consequences through
-      `writing:sweep-plan` under the one-change agenda, per "Run a
-      round" step 4. The instructions it emits ride the round's one
-      edit under "Run a round" step 7.
+   4. Write each ruling into the ledger, marked user-ratified. Its
+      consequences ride the resume's single re-run of
+      `writing:sweep-consequences` over the enlarged batch, per "Run a
+      round" step 4. The instructions that sweep emits ride the
+      round's one edit under "Run a round" step 7.
    5. Evaluate the remaining rules against this same round's tallies,
       so the resume still records and acts on a churn firing from
       this round.
+
+   **A veto** reopens the vetoed question as a discuss item in the
+   ledger. It reverts nothing: a ruling that already landed in the
+   plan stays landed, the reopened item's eventual ruling rides the
+   next round's normal edit, and the tallies are not restated.
 4. **Churn.** A majority of the round's verified findings target text
    that prior fix rounds added. On the first firing, do not run
    another critique round. Run one consolidation pass instead:
    1. Write a fresh draft to `draft.md` from the live surface. Spawn a
-      general-purpose subagent, instruct it to load
-      `writing:sweep-plan` under the style agenda, and pass it that
-      draft. Hand the batch it emits to `writing:revise-plan` on the
-      same draft, in a further general-purpose subagent.
+      general-purpose subagent on the Opus model, per `sweep-style` →
+      "Execution context", instruct it to load `writing:sweep-style`,
+      and pass it that draft by path. Hand the batch it emits to
+      `writing:revise-plan` in a further general-purpose subagent,
+      with the same draft passed by path.
    2. Record the firing as a line in `ledger.md`, so a resumed loop
       still knows of it.
    3. Write the fresh snapshot that "The staleness guard" prescribes
@@ -306,9 +376,11 @@ pause resolves.
    the procedure "Run a round" step 7 owns. That step stays the one
    place that describes an edit of the plan's surface.
 
-   The round after a ruling cannot fire this rule. Its critic
-   receives no previous snapshot, per "Run a round" step 2, so no
-   finding carries the prior-round-text label. The round's ordinary
+   The round after a ruling cannot fire this rule. A ruling here is
+   any ledger ruling the previous round recorded, whether the user
+   ratified it at a pause or a fix-triaged sweep question derived it.
+   Its critic receives no previous snapshot, per "Run a round" step 2,
+   so no finding carries the prior-round-text label. The round's ordinary
    fixes escape the rule in that round too, because one baseline
    cannot separate the sweep's text from the fixes that landed in the
    same edit. The loop accepts that cost.
@@ -340,7 +412,8 @@ Give the user:
 - The rejected findings, each with its rejection reason. This list
   carries the acceptance-bar rejections, each citing the plan action
   that already covers the finding.
-- The open-issues doc, with a recommendation per item.
+- The open-issues doc, with a recommendation per item. It shows every
+  repo-derived ruling with its derivation, so the user can veto one.
 
 The plan is already updated in place on its surface, and the report
 names that surface. Post nothing else.

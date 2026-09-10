@@ -34,13 +34,15 @@ sections `write-plan` emits:
 
 - Problem
 - Scope
-- Acceptance criteria, with its Invariants subsection
 - Solution
+- Acceptance criteria, with its Postconditions and Invariants
+  subsections
 - Outline
 - Open questions
 
-An optional References section may follow them. Then act on what you
-found:
+An optional References section may follow them. `write-plan` → "State
+the acceptance criteria" owns each subsection's entry form and the
+Invariants empty form. Then act on what you found:
 
 - **Exactly one plan comment.** Use it.
 - **Several plan comments.** Show the user the candidates with their
