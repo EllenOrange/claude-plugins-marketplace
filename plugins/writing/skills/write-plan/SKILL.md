@@ -306,7 +306,7 @@ of the issue body, and Scope says so.
 The Acceptance criteria section is the PR reviewer's rubric. Write it
 for that reader and for no other. Cite
 `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` for the bar a criterion
-clears and for what the review does with this section.
+clears.
 
 **The altitude test.** A criterion earns its place only if the PR
 reviewer needs it to judge the merged result; anything only the

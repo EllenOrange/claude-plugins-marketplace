@@ -13,7 +13,6 @@ none of them:
 - The finding a failing answer yields.
 - The style-guide fallback order.
 - The bar a criterion must clear.
-- What the review does with the acceptance-criteria section.
 
 On a repo that runs the sdlc plugin, the review that grades the
 implementation is the theorem pipeline. It works the sources below in
