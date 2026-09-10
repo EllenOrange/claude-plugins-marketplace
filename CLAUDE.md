@@ -76,11 +76,12 @@ A skill also cites its own headings:
   Its Propose step and its self-review point at "5. Write". Its
   "Derive the scope" subsection and its self-review point at
   "1. Read".
-- `critique-plan`'s Collect step names the "Inputs" section, and that
-  section names the Collect step by that word rather than by the
-  numbered heading "4. Collect". The Collect step names the Report
-  step by that word too, rather than by the numbered heading
-  "5. Report".
+- `critique-plan`'s "Verify a cited authority" subsection points at
+  "Derive each named set from the code". Its Collect step names the
+  "Inputs" section, and that section names the Collect step by that
+  word rather than by the numbered heading "4. Collect". The Collect
+  step names the Report step by that word too, rather than by the
+  numbered heading "5. Report".
 - `sweep-consequences`' decision-set agenda points at its own "Output"
   section for the routing of an unanswered question.
 
