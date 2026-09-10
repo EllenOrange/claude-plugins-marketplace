@@ -40,93 +40,17 @@ The interview settles every decision that
 set, before the draft. Resolve that set per the resolution order in
 that file. Enumerate none of it here.
 
-### The interview's state
-
-Keep the run's state in `.claude/tmp/write-plan-<issue>/` and nowhere
-else. Create the directory at interview start. An interview that pauses
-for a ruling can outlive the session, and the state has to survive that
-pause. A per-session temporary directory does not.
-
-The directory holds:
-
-- **`ledger.md`, the decision ledger.** `converge-plan` → "2. Set up
-  the state" owns the ledger's format. The interview instantiates that
-  format. It populates the rulings entry and the open-questions entry,
-  drops the round field, and records the path of every sweep output
-  file and every batch file under the loop-facts entry. It records
-  beside each sweep path whether that sweep is drained, meaning its
-  questions have reached the open-question queue.
-- **`draft.md`, the working copy of the plan.** "5. Write" writes it,
-  `writing:revise-plan` edits it, and "9. Post" posts it.
-- **`sweep-<n>.md`, one output file per sweep.** `sweep-plan` →
-  "Inputs" and "Output" own the handoff mechanism.
-- **`batch-<n>.md`, one composed instruction batch per handoff to
-  `writing:revise-plan`.** The batch counter is this skill's own, and
-  runs independently of the sweep counter. Each composed batch takes
-  the next `n` after the highest existing `batch-<n>.md` in the
-  directory, whichever seat composes it.
-
-The open-question queue lives in the ledger's open-questions entry.
-The interview works that queue top to bottom.
-
-### Resume or start fresh
-
-When `ledger.md` already exists at startup, show the user its rulings
-and its open questions, then ask whether to resume the run or to start
-fresh. Start-fresh deletes `.claude/tmp/write-plan-<issue>/` before the
-interview begins.
-
-A resume is best-effort, and the ledger is the source of truth:
-
-- Never re-ask a ratified ruling.
-- Continue the open-question queue top to bottom.
-- Re-spawn only a sweep whose output file, recorded by path under the
-  ledger's loop-facts entry, is missing on disk. Re-spawn it into the
-  same numbered slot.
-- Read every `sweep-<n>.md` present on disk that the ledger does not
-  mark as drained. Append each question it leaves unanswered to the
-  open-question queue, then mark it drained. A sweep that finished
-  after the session ended leaves its file on disk and its questions
-  out of the ledger. The re-spawn rule above never fires on it,
-  because the file is there, and "4. Propose" never counts its
-  questions, because the queue never received them.
-- Number a new sweep after the highest existing `sweep-<n>.md`.
-- Number a new batch on the batch counter "The interview's state"
-  states.
-- Keep `draft.md`. "5. Write" overwrites it when it next runs.
-
-A sweep file, a `batch-<n>.md`, or a `draft.md` the ledger records and
-the disk lacks is the benign refill case. Carry on, and let the run
-write the file again. An unparseable ledger, or one whose records
-contradict each other, is the inconsistency case. Inform the user and
-suggest starting clean. The user decides, and the best-effort resume
-proceeds on a decline.
-
 ### Sweep each ruling at decision time
 
 When the user rules on a design question, sweep the ruling's
-cross-cutting consequences. Spawn a general-purpose subagent on the
-Opus model, instruct it to load `writing:sweep-plan` under the
-one-change agenda, and pass it the new ruling inline, the ledger's
-path, and a caller-numbered `sweep-<n>.md` output path in the state
-directory. `sweep-plan` → "Inputs" and "Output" own the handoff
-mechanism. That skill owns the sweep, including the behavior walk it
-runs. The ledger's path is the channel for the interview's earlier
-rulings, and only the new ruling goes inline.
+cross-cutting consequences before you move on. Spawn a general-purpose
+subagent, instruct it to load `writing:sweep-plan` under the one-change
+agenda, and pass it the ruling and the interview's earlier rulings.
+That skill owns the sweep, including the behavior walk it runs.
 
-Continue the interview immediately. The sweep runs in the background,
-so the question on the table is never preempted. Only an interview
-sweep runs in the background. The "7. Style pipeline" and "8. Human
-review" pipelines stay sequential, so no sweep is still running at
-Post time.
-
-When a background sweep returns, read its `sweep-<n>.md` output file
-and append each question it leaves unanswered to the end of the
-ledger's open-question queue. Then mark that sweep drained in the
-ledger. The mark is what a resumed run reads to tell a drained sweep
-file from an undrained one. Leave its instructions unread until
-"5. Write" reads them. They target the plan-to-be's sections by the
-fixed section names that step owns.
+Hold the instructions it emits until "5. Write" drafts the file. They
+target the plan-to-be's sections by the fixed section names that step
+owns. A question it raises becomes an interview question.
 
 ### Walk each stated behavior
 
@@ -169,11 +93,6 @@ that it is built entirely on a component until this walk passes.
 
 ## 4. Propose
 
-Fire this step only once every sweep the run spawned has returned and
-every question those sweeps raised is resolved in the ledger. The gate
-covers every sweep of the run, a resume's re-spawns included. A framing
-built on an unresolved ruling is a framing the user corrects twice.
-
 After the interview, propose the framing in conversation before you
 draft anything. Show the user:
 
@@ -181,10 +100,10 @@ draft anything. Show the user:
    form the plan's Problem section will use.
 2. **The scope summary.** Summarize what the work covers and what it
    rules out.
-3. **The acceptance criteria.** State the postconditions and the
-   invariants, in the entry form "State the acceptance criteria"
-   gives. They are the definition of done, and you measure every
-   candidate solution below against them.
+3. **The acceptance criteria and invariants.** State them in the entry
+   shape "State the acceptance criteria" gives. They are the
+   definition of done, and you measure every candidate solution below
+   against them.
 4. **Proposed solutions.** Write each one in the one-paragraph
    solution format. Each proposed solution has passed "Walk each
    stated behavior". Propose one solution when one is obviously
@@ -202,14 +121,10 @@ addition it makes.
 
 ## 5. Write
 
-Write the plan in Markdown, as a file. Draft it to
-`.claude/tmp/write-plan-<issue>/draft.md`, creating the directory if it
-is absent. You revise this file during self-review and post it from the
-Post step, so the reader never sees a draft you already rejected.
-
-Read every `sweep-<n>.md` file in the state directory before you draft,
-and apply the instructions each one carries. `sweep-plan` → "Inputs"
-and "Output" own the sweep-file mechanism.
+Write the plan in Markdown, as a file. Draft it to the session
+scratchpad if the harness gave you one, else to `.claude/tmp/`. You
+revise this file during self-review and post it from the Post step, so
+the reader never sees a draft you already rejected.
 
 The plan has these sections and nothing else. Every section except
 References is required:
@@ -222,8 +137,7 @@ References is required:
    issue. Derive it per "Derive the scope".
 3. **Acceptance criteria.** State the claims the merged result must
    satisfy, per "State the acceptance criteria". This section carries
-   a `### Postconditions` subsection and an `### Invariants`
-   subsection, always.
+   an `### Invariants` subsection, always.
 4. **Solution.** Say what will be built, in at most one paragraph.
 5. **Outline.** Decompose the work.
 6. **Open questions.** Keep only the ones that survived the
@@ -307,39 +221,25 @@ into every round of the review that grades the implementation. Cite
 `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` for the bar a criterion
 clears.
 
-The `## Acceptance criteria` section carries `### Postconditions` and
-`### Invariants`:
+Each criterion is one bullet carrying these parts:
 
-- **`### Postconditions`** holds the claims the merged result must
-  newly satisfy. Read that strictly. A guarantee the change
-  strengthens or modifies is a postcondition, because the merged
-  result then satisfies something it did not satisfy before.
-- **`### Invariants`** holds the claims that were already true and
-  must stay true: the existing contracts, consumers, and tests the
-  change must leave intact.
-
-Both subsections use one entry form. An entry is a bullet that opens
-with a bold title and its description, and carries these sub-bullets:
-
+- **The claim.** What the merged result satisfies, quantified over a
+  class with its membership rule stated. State what a consumer of the
+  merged result relies on.
 - **`Check:`** The command or the read that settles the claim.
 - **`Pinned by:` or `Waiver:`** Name the test the diff adds or
   updates, or say why none exists.
-
-The title and description state what the merged result satisfies,
-quantified over a class with its membership rule stated. State what a
-consumer of the merged result relies on.
-
-`### Postconditions` must be non-empty, and it has no empty form. A
-change with no postcondition is a change whose behavior the plan never
-stated, so derive at least one postcondition from the behavior the work
-states. `### Invariants` keeps its name and its `None.` empty form.
 
 An action, an implementation step, or an exemplar to imitate is never
 a criterion. The review quotes whatever reads as a criterion and
 grades it against a High severity floor. So the review grades an
 instruction placed here as a requirement of the merged result.
 
-An invariant binds every write and read able to violate it, not the
+The `### Invariants` subsection carries the existing contracts,
+consumers, and tests the change must leave intact. Each entry takes
+the parts a criterion takes, so every invariant names its own
+`Check:` clause and its own `Pinned by:` or `Waiver:` clause. An
+invariant binds every write and read able to violate it, not the
 consequence of one action. Every contract the Outline touches has an
 invariant or a waiver naming it.
 
@@ -546,16 +446,12 @@ here costs an edit rather than a correction.
 - **Stated behavior.** Run "Walk each stated behavior" over the
   drafted Solution and Outline. Every behavior passes the walk's
   test, or the question it fails on sits under Open questions.
-- **Criteria shape.** Does `## Acceptance criteria` carry both
-  `### Postconditions` and `### Invariants`, and does
-  `### Postconditions` carry an entry? Does every entry open with a
-  bold title
-  and state a claim about the merged result, quantified over a class
-  with its membership rule? Does each carry a `Check:` sub-bullet and
-  a `Pinned by:` or `Waiver:` sub-bullet, per "State the acceptance
-  criteria"? Is any entry an action, an implementation step, or an
-  exemplar to imitate wearing those clauses? Move that one into the
-  Outline.
+- **Criteria shape.** Does every criterion state a claim about the
+  merged result, quantified over a class with its membership rule?
+  Does each carry a `Check:` clause and a `Pinned by:` or `Waiver:`
+  clause, per "State the acceptance criteria"? Is any criterion an
+  action, an implementation step, or an exemplar to imitate wearing
+  those clauses? Move that one into the Outline.
 - **Touched contracts.** Does every existing contract the Outline
   touches have an invariant or a waiver naming it?
 - **Actions that read as results.** Any outline action stating a claim
@@ -630,17 +526,12 @@ until a pass turns up nothing.
 
 Run the style pass over the whole draft before anyone sees it:
 
-1. Spawn a general-purpose subagent on the Opus model, instruct it to
-   load `writing:sweep-plan` under the style agenda, and pass it the
-   draft's path and a caller-numbered `sweep-<n>.md` output path in the
-   state directory. `sweep-plan` → "Inputs" and "Output" own the
-   handoff mechanism.
-2. Read that output file, decide which instructions to accept, and
-   write them to the next `batch-<n>.md` in the state directory.
-3. Spawn a second general-purpose subagent, instruct it to load
+1. Spawn a general-purpose subagent, instruct it to load
+   `writing:sweep-plan` under the style agenda, and pass it the draft.
+2. Spawn a second general-purpose subagent, instruct it to load
    `writing:revise-plan`, and pass it the draft's path and the batch
-   file's path.
-4. Read the revised file back.
+   the sweep emitted.
+3. Read the revised file back.
 
 Resolve every instruction `revise-plan` reports unapplied. Either
 amend the instruction and re-invoke `revise-plan` on the same draft, or
@@ -651,18 +542,14 @@ report the conflict to the user.
 Show the user the file and stop. Do not post until they approve it.
 Apply the changes they ask for through the same pipeline:
 
-1. Spawn a general-purpose subagent on the Opus model, instruct it to
-   load `writing:sweep-plan` under the one-change agenda, and pass it
-   the requested change, the draft's path, and a caller-numbered
-   `sweep-<n>.md` output path in the state directory. `sweep-plan` →
-   "Inputs" and "Output" own the handoff mechanism.
-2. Read that output file, decide which instructions to accept, and
-   write them to the next `batch-<n>.md` in the state directory,
-   together with the user's requested change.
-3. Spawn a second general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it the draft's path and the batch
-   file's path.
-4. Read the revised file back, then show it again.
+1. Spawn a general-purpose subagent, instruct it to load
+   `writing:sweep-plan` under the one-change agenda, and pass it the
+   requested change and the draft.
+2. Spawn a second general-purpose subagent, instruct it to load
+   `writing:revise-plan`, and pass it the draft's path and a batch
+   carrying the requested change plus every instruction the sweep
+   emitted.
+3. Read the revised file back, then show it again.
 
 Resolve an unapplied instruction as "7. Style pipeline" prescribes. The
 sweep walks every behavior the change alters before the edit, and
@@ -675,10 +562,6 @@ Post the approved file as a comment on the issue. Prefer an installed
 issue skill, for example `/issues:issue-comment`, which reads the
 body from a file. Otherwise use `gh issue comment --body-file`. Then
 report the comment URL to the user.
-
-Delete `.claude/tmp/write-plan-<issue>/` entirely once the post
-succeeds. Leave the directory intact when the post fails, so the next
-run resumes from it. No step after Post reads the directory.
 
 `writing:converge-plan` runs the critique-and-fix loop over the plan.
 It loops over the comment or over the promoted plan in the issue body,
