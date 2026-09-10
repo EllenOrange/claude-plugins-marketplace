@@ -215,7 +215,7 @@ skill correctly does **not** trigger on the negative cases.
    Expect: the style agenda runs over the whole plan. The instructions
    split the multi-action bullets and convert the inline series to
    vertical lists. This invocation carries no caller output path, so
-   they come back inline.
+   they come back inline. Claude writes no file.
 4. "Sweep this plan." on a ruling whose behavior the plan leaves
    underspecified.
    Expect: the unanswered question comes back as a question rather
