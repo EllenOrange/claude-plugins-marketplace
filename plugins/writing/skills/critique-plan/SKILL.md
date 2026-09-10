@@ -45,8 +45,6 @@ Every input is optional. Without them, critique the plan as it stands.
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
   skill it names, or its fallback. Then read the style guides it names,
   with the per-guide fallback it states.
-  Its hardest rule: the acceptance-criteria source is exempt from the
-  review's stakes bar and carries a High severity floor.
 - Read the neighboring issues the plan's Scope names, and the issue's
   own edges. Read the edges as `write-plan` → "Derive the scope"
   prescribes.

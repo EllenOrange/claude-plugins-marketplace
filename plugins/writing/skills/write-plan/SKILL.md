@@ -65,8 +65,6 @@ restated here.
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
   skill it names, or its fallback. Then read the style guides it names,
   with the per-guide fallback it states.
-  Its hardest rule: the acceptance-criteria source is exempt from the
-  review's stakes bar and carries a High severity floor.
 
 ## 2. Interview
 
