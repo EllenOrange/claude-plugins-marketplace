@@ -128,6 +128,9 @@ The state has these files:
 - **`draft.md`, the round's working copy of the plan.** The round
   writes it, `writing:revise-plan` edits it, and step 7 copies it to
   the located surface. The next round overwrites it.
+- **`sweep-<n>.md`, one output file per sweep.** `sweep-plan` →
+  "Inputs" and "Output" own the handoff mechanism. The counter
+  continues across rounds and across consolidation passes.
 - **`batch-<round>.md`, the round's composed instruction batch.** The
   round writes what it accepts here, and hands the path to
   `writing:revise-plan`.

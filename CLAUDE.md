@@ -32,8 +32,8 @@ pointer. The current citations are:
   sweep-plan headings "The one-change agenda", "The style agenda",
   "Inputs", and "Output".
 - `sweep-plan` cites the write-plan headings "Walk each stated
-  behavior" and "5. Write", and the write-plan self-review bullet
-  "Restatements".
+  behavior", "5. Write", "7. Style pipeline", and "8. Human review",
+  and the write-plan self-review bullet "Restatements".
 - `revise-plan` cites the write-plan heading "5. Write".
 
 Renaming a heading in one `SKILL.md` leaves a dangling reference in
@@ -57,10 +57,14 @@ A skill also cites its own headings:
   acceptance criteria", "State the rule that generates each set", and
   "Mark every waiver". Its Propose step and its self-review also point
   at "Walk each stated behavior", and that subsection in turn points at
-  "Cite the authority instead of restating it". Its self-review and its
-  human review step point at "7. Style pipeline". Its ruling sweep and
-  its self-review point at "5. Write". Its "Derive the scope"
-  subsection and its self-review point at "1. Read".
+  "Cite the authority instead of restating it". Its self-review, its
+  human review step, and its ruling sweep point at "7. Style
+  pipeline", and its ruling sweep also points at "8. Human review".
+  Its ruling sweep and its self-review point at "5. Write", and so
+  does its "The interview's state" subsection, which points at
+  "9. Post" as well. Its "Resume or start fresh" subsection points
+  back at "The interview's state". Its "Derive the scope" subsection
+  and its self-review point at "1. Read".
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code". Its Collect step also names
   the "Inputs" section, and that section names the Collect step by

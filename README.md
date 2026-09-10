@@ -48,11 +48,14 @@ Skills:
 - **write-plan**: read an issue and the foundational docs, then
   interview the user to resolve open design questions. Write an
   inverted-pyramid technical spec and plan, and post it as an issue
-  comment. The plan carries an Acceptance criteria section with an
-  Invariants subsection. Each invariant is a class-quantified claim
-  about the merged result. Each carries the check that settles it,
-  and either the test that pins it or a waiver saying why none
-  exists. The skill walks the plan's dependencies at the ref the plan
+  comment. The plan carries an Acceptance criteria section with a
+  Postconditions subsection and an Invariants subsection. Each entry
+  is a class-quantified claim about the merged result. Each carries
+  the check that settles it, and either the test that pins it or a
+  waiver saying why none exists. The interview keeps its rulings, its
+  open questions, and its draft in `.claude/tmp/write-plan-<issue>/`,
+  so a run that pauses for a ruling survives the session and resumes
+  from that state. The skill walks the plan's dependencies at the ref the plan
   builds on, and walks every behavior the plan states against the
   repo's rule for that kind of behavior, or against a completeness
   test of its own where the repo states no such rule. It derives the
@@ -67,7 +70,9 @@ Skills:
   ruling, walks every behavior that change alters, and finds the fix's
   sibling defect instances. Under the style agenda it sweeps the whole
   plan against the communication-style rule and `write-plan`'s Write
-  step. It writes no file and posts nothing.
+  step. It edits no plan file and posts nothing. Given a caller output
+  path it writes that one file, and given none it returns the
+  instructions inline.
 - **revise-plan**: apply an instruction batch to one plan file in fresh
   context. It style-sweeps every unit an instruction landed in, then
   reads the result back to confirm that every decision, obligation,
@@ -89,12 +94,14 @@ Skills:
   `text-only`.
 - **converge-plan**: run the critique-and-fix loop over a plan on an
   issue until a stopping rule ends it. The loop keeps a decision
-  ledger, an open-issues doc, per-round snapshots, and the round's
-  draft as durable state. It orchestrates rather than edits: it
-  verifies each finding and applies the acceptance bar itself, collects
-  the round's edit instructions through `sweep-plan`, and hands the
-  batch to `revise-plan`. It loops in place over the plan comment or
-  over the promoted plan in the issue body, leaving that body's
+  ledger, an open-issues doc, per-round snapshots, the round's draft,
+  and the sweep and batch files the round hands between skills as
+  durable state. It orchestrates rather than edits: it verifies each
+  finding and applies the acceptance bar itself, collects the round's
+  edit instructions through `sweep-plan`, composes them into a batch
+  file, and hands that file's path to `revise-plan`. It loops in place
+  over the plan comment or over the promoted plan in the issue body,
+  leaving that body's
   `## Notes` section unchanged. It refuses to edit a body when an open
   pull request or an unmerged remote branch already carries the issue.
   A round budget caps how many critique rounds the loop runs.
