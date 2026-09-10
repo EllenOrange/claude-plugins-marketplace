@@ -67,19 +67,20 @@ A skill also cites its own headings:
   acceptance criteria", "State the rule that generates each set", and
   "Mark every waiver". Its Propose step and its self-review also point
   at "Walk each stated behavior", and that subsection in turn points at
-  "Cite the authority instead of restating it". Its state directory
-  points at "4. Propose", and its interview and triage steps point at
-  "Define the ledger's entry classes". Its human review step points at
-  "Triage the sweep's questions". Its self-review points at "7. Style
-  pipeline". Its Propose step and its self-review point at "5. Write".
-  Its "Derive the scope" subsection and its self-review point at
+  "Cite the authority instead of restating it". Its "State the rule
+  that generates each set" subsection points at "State the acceptance
+  criteria". Its state directory points at "4. Propose" and
+  "5. Write", and its interview and triage steps point at "Define the
+  ledger's entry classes". Its human review step points at "Triage the
+  sweep's questions". Its self-review points at "7. Style pipeline".
+  Its Propose step and its self-review point at "5. Write". Its
+  "Derive the scope" subsection and its self-review point at
   "1. Read".
-- `critique-plan` points one section at another through the name
-  "Derive each named set from the code". Its Collect step also names
-  the "Inputs" section, and that section names the Collect step by
-  that word rather than by the numbered heading "4. Collect". The
-  Collect step names the Report step by that word too, rather than by
-  the numbered heading "5. Report".
+- `critique-plan`'s Collect step names the "Inputs" section, and that
+  section names the Collect step by that word rather than by the
+  numbered heading "4. Collect". The Collect step names the Report
+  step by that word too, rather than by the numbered heading
+  "5. Report".
 - `sweep-consequences`' decision-set agenda points at its own "Output"
   section for the routing of an unanswered question.
 
