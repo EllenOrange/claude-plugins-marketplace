@@ -34,7 +34,8 @@ sections `write-plan` emits:
 
 - Problem
 - Scope
-- Acceptance criteria, with its Invariants subsection
+- Acceptance criteria, with its Postconditions and Invariants
+  subsections
 - Solution
 - Outline
 - Open questions
