@@ -22,19 +22,30 @@ pointer. The current citations are:
   critique-plan Report bullet "Skip the pruning under a loop", the
   critique-plan headings "Inputs" and "4. Collect", the promote-plan
   heading "4. Write the plan into the issue body", and the sweep-plan
-  headings "The one-change agenda", "The style agenda", "Inputs", and
-  "Output".
+  headings "Inputs" and "Output".
 - `critique-plan` cites the write-plan headings "Derive the scope",
   "5. Write", and "State the acceptance criteria".
 - `promote-plan` cites the write-plan heading "5. Write".
 - `write-plan` cites the promote-plan heading "2. Read both texts
   verbatim", the converge-plan heading "2. Set up the state", and the
-  sweep-plan headings "The one-change agenda", "The style agenda",
-  "Inputs", and "Output".
+  sweep-plan headings "Inputs" and "Output".
 - `sweep-plan` cites the write-plan headings "Walk each stated
   behavior", "5. Write", "7. Style pipeline", and "8. Human review",
   and the write-plan self-review bullet "Restatements".
 - `revise-plan` cites the write-plan heading "5. Write".
+
+No file cites the sweep-plan headings "The one-change agenda" and "The
+style agenda" by that spelling. `converge-plan`, `write-plan`,
+`README.md`, and `plugins/writing/EVAL.md` name them in lowercase
+prose instead, as "the one-change agenda" and "the style agenda". A
+case-sensitive grep for the heading text therefore misses every one of
+those references, and they dangle on a rename all the same. Sweep them
+alongside the verbatim citations above, and grep for the lowercase
+form:
+
+```bash
+git grep -n "one-change agenda"
+```
 
 Renaming a heading in one `SKILL.md` leaves a dangling reference in
 another, and nothing catches it. Treat a heading rename as an API
@@ -63,7 +74,8 @@ A skill also cites its own headings:
   Its ruling sweep and its self-review point at "5. Write", and so
   does its "The interview's state" subsection, which points at
   "9. Post" as well. Its "Resume or start fresh" subsection points
-  back at "The interview's state". Its "Derive the scope" subsection
+  back at "The interview's state" and forward at "4. Propose". Its
+  "Derive the scope" subsection
   and its self-review point at "1. Read".
 - `critique-plan` points one section at another through the name
   "Derive each named set from the code". Its Collect step also names

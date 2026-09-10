@@ -53,7 +53,9 @@ The directory holds:
   the state" owns the ledger's format. The interview instantiates that
   format. It populates the rulings entry and the open-questions entry,
   drops the round field, and records the path of every sweep output
-  file and every batch file under the loop-facts entry.
+  file and every batch file under the loop-facts entry. It records
+  beside each sweep path whether that sweep is drained, meaning its
+  questions have reached the open-question queue.
 - **`draft.md`, the working copy of the plan.** "5. Write" writes it,
   `writing:revise-plan` edits it, and "9. Post" posts it.
 - **`sweep-<n>.md`, one output file per sweep.** `sweep-plan` →
@@ -81,6 +83,13 @@ A resume is best-effort, and the ledger is the source of truth:
 - Re-spawn only a sweep whose output file, recorded by path under the
   ledger's loop-facts entry, is missing on disk. Re-spawn it into the
   same numbered slot.
+- Read every `sweep-<n>.md` present on disk that the ledger does not
+  mark as drained. Append each question it leaves unanswered to the
+  open-question queue, then mark it drained. A sweep that finished
+  after the session ended leaves its file on disk and its questions
+  out of the ledger. The re-spawn rule above never fires on it,
+  because the file is there, and "4. Propose" never counts its
+  questions, because the queue never received them.
 - Number a new sweep after the highest existing `sweep-<n>.md`.
 - Number a new batch on the batch counter "The interview's state"
   states.
@@ -113,7 +122,9 @@ Post time.
 
 When a background sweep returns, read its `sweep-<n>.md` output file
 and append each question it leaves unanswered to the end of the
-ledger's open-question queue. Leave its instructions unread until
+ledger's open-question queue. Then mark that sweep drained in the
+ledger. The mark is what a resumed run reads to tell a drained sweep
+file from an undrained one. Leave its instructions unread until
 "5. Write" reads them. They target the plan-to-be's sections by the
 fixed section names that step owns.
 

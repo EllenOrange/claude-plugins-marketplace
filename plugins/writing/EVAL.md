@@ -169,20 +169,20 @@ skill correctly does **not** trigger on the negative cases.
     one-change sweep before the post. The posted plan answers every
     question, or carries it under Open questions.
 14. "Plan the work for issue #42." with a mid-interview ruling.
-    Expect: Claude spawns a fresh-context subagent on the Opus model
-    that loads `sweep-plan` under the one-change agenda, passing the
-    ruling inline, the ledger's path, and a `sweep-<n>.md` output
-    path. Claude continues the interview without waiting on that
-    sweep, and reads the output file when it returns. Claude runs no
-    inline sweep of its own.
+    Expect: Claude spawns a fresh-context subagent that loads
+    `sweep-plan` under the one-change agenda, on the model that skill
+    mandates, passing the ruling inline, the ledger's path, and a
+    `sweep-<n>.md` output path. Claude continues the interview without
+    waiting on that sweep, and reads the output file when it returns.
+    Claude runs no inline sweep of its own.
 15. "Plan the work for issue #42."
     Expect: after self-review, Claude runs the style pipeline. It
-    spawns one subagent on the Opus model for `sweep-plan` under the
-    style agenda, reads the `sweep-<n>.md` file it writes, composes a
-    `batch-<n>.md`, and spawns a second subagent for `revise-plan`
-    with the draft's path and that batch path. It reads the revised
-    file back before showing it. The self-review does no style
-    checking of its own.
+    spawns one subagent for `sweep-plan` under the style agenda, on
+    the model that skill mandates, reads the `sweep-<n>.md` file it
+    writes, composes a `batch-<n>.md`, and spawns a second subagent
+    for `revise-plan` with the draft's path and that batch path. It
+    reads the revised file back before showing it. The self-review
+    does no style checking of its own.
 16. "Plan the work for issue #42." with a human-review change
     requested after the draft is shown.
     Expect: Claude sweeps the change through `sweep-plan`, reads the
@@ -299,10 +299,11 @@ skill correctly does **not** trigger on the negative cases.
    accepted fix findings.
    Expect: Claude edits no plan text itself. It verifies the findings
    and applies the acceptance bar in the main session, spawns each
-   `sweep-plan` pass on the Opus model with the round's snapshot path,
-   the ledger's path, and a `sweep-<n>.md` output path, reads those
-   output files, composes `batch-<round>.md`, writes `draft.md`, and
-   hands the batch file's path to `revise-plan` in a fresh-context
+   `sweep-plan` pass on the model that skill mandates with the round's
+   snapshot path, the ledger's path, and a `sweep-<n>.md` output path,
+   reads those output files, composes `batch-<round>.md`, writes
+   `draft.md`, and hands the batch file's path to `revise-plan` in a
+   fresh-context
    subagent. The round's one surface edit copies the revised draft.
 10. "Converge the plan on issue #42." on a round whose `revise-plan`
     call reports an instruction unapplied.
