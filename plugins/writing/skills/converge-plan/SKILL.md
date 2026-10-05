@@ -212,7 +212,7 @@ because the round pauses before it edits anything.
    the readiness bar like the rest. Brief it with the materiality bar.
    Under that bar, the critic reports a finding only when one of these
    holds:
-   - the finding is build-changing per `critique-plan` → "4. Collect"
+   - the finding is material per `critique-plan` → "4. Collect"
    - the plan's existing class-level actions and verify commands do
      not already cover the finding
 
@@ -260,7 +260,7 @@ because the round pauses before it edits anything.
    `sweep-consequences` → "Output" owns the triage seat, the finding
    shape, the fold rule, and the refute rule. This seat's own behavior
    is the tally arithmetic:
-   - A `fix`-triaged question counts as an accepted build-changing
+   - A `fix`-triaged question counts as an accepted material
      finding. Record its repo-derived answer in the ledger as a
      vetoable ruling carrying its derivation, marked per `write-plan`
      → "Define the ledger's entry classes". The fold follows the
@@ -305,10 +305,10 @@ Provenance and rulings stay in the state files.
 
 ## 4. Check the stopping rules
 
-A finding is **build-changing** per `critique-plan` → "4. Collect",
+A finding is **material** per `critique-plan` → "4. Collect",
 which owns the definition. A finding that names one more site the
 plan's existing class-level action already sweeps is not
-build-changing. Several rules below pivot on this term, so apply the
+material. Several rules below pivot on this term, so apply the
 bar before you tally a round's findings.
 
 Check these rules in order after each round. Act on the first one
@@ -326,16 +326,16 @@ pause resolves.
    exactly as the churn pass's edit does. Critique rounds alone consume
    budget. A consolidation pass and a blocked pause consume none, and a
    resume continues the same count.
-2. **Dry.** The round produced zero accepted build-changing fix
-   findings and zero verified build-changing discuss findings.
+2. **Dry.** The round produced zero accepted material fix findings
+   and zero verified material discuss findings.
    Accepted means verified and past the acceptance bar in "Run a
    round". Text-only fixes may still have landed, and they do not
-   reset dryness. A round carrying build-changing discuss findings is
+   reset dryness. A round carrying material discuss findings is
    not dry, and the blocked rule handles it. Stop and report after K
    consecutive dry rounds.
 3. **Blocked.** The round produced verified discuss findings. A
    `discuss` survivor of the sweep-question triage is one of them, and
-   counts as a verified build-changing discuss finding in every tally.
+   counts as a verified material discuss finding in every tally.
    The round pauses before any edit of the round: at "Run a round"
    step 3 for a finding the critic raised, and at step 4 for a
    surviving sweep question.
@@ -388,11 +388,11 @@ pause resolves.
 
    On a second firing, stop and report.
 5. **Negative value.** The round produced more rejected findings than
-   accepted build-changing ones. Acceptance-bar rejections count
+   accepted material ones. Acceptance-bar rejections count
    toward the rejected total. The denominator is accepted rather than
    verified on purpose. Under a verified denominator, an
    acceptance-bar rejection would raise the rejected total while the
-   finding it rejected still counted as build-changing. The same
+   finding it rejected still counted as material. The same
    finding would then sit on both sides of the comparison. Stop and
    report. The marginal round costs more verification than it
    returns.

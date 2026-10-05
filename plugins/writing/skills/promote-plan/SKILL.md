@@ -71,9 +71,10 @@ implementer stops on a design decision the issue does not answer, and
 the promoted plan is the issue body it reads.
 
 Then grade the plan against every item of the installed
-`sdlc:orchestrate-readiness` bar. Grade it at the heading levels
-step 3 gives it, with its sections at `##` and its unit headers
-at `###`, however deep the comment nests them. Resolve that skill per
+`sdlc:orchestrate-readiness` bar. Grade it as step 3 leaves it,
+with its sections at `##` and its unit headers at `###`, however deep
+the comment nests them, and with an Open questions section that reads
+`None.` deleted. Resolve that skill per
 its entry in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Run each
 Mechanical bullet's command against the tree, per that skill's
 executed Mechanical check, and read the issue's edges for the items

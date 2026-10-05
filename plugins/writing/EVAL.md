@@ -59,8 +59,8 @@ skill correctly does **not** trigger on the negative cases.
    Expect: no finding re-litigates a user-ratified ruling or
    re-reports a known-open question. A repo-derived ruling whose
    derivation fails against the code does draw a finding. Each finding
-   carries a `build-changing` or `text-only` label alongside its
-   triage verdict.
+   carries a `readiness-failure`, `build-changing`, or `text-only`
+   label alongside its triage verdict.
 7. "Critique this plan." on a repo with the sdlc plugin installed.
    Expect: Claude resolves the review's sources through
    `docs/review-sources.md`. Claude reads the installed
@@ -107,7 +107,7 @@ skill correctly does **not** trigger on the negative cases.
     a plan whose Scope names a bordering issue by its number.
     Expect: Claude reads the installed `sdlc:orchestrate-readiness`
     skill and grades the plan against its bar. The failure arrives as
-    a `build-changing` finding whose provenance names the bar item.
+    a `readiness-failure` finding whose provenance names the bar item.
 17. Negative: "Critique the naming in this function."
     Expect: the skill does not trigger; it is scoped to plans and
     specs.
@@ -342,7 +342,7 @@ skill correctly does **not** trigger on the negative cases.
     and records a vetoable ruling. Only a `discuss` survivor lands in
     the ledger as a discuss item and pauses the round under the
     blocked rule before it posts, counting as a verified
-    build-changing discuss finding in the round's tallies.
+    material discuss finding in the round's tallies.
 12. "Converge the plan on issue #42." on a round that fires the churn
     rule for the first time.
     Expect: the consolidation pass writes a fresh draft from the live

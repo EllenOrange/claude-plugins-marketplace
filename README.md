@@ -109,8 +109,8 @@ Skills:
   criterion above its altitude, a section past its budget, and a
   compound outline action. It treats a user-ratified ruling as fixed
   and may report a finding against a repo-derived one. Each finding
-  states its provenance and carries a second label, `build-changing`
-  or `text-only`.
+  states its provenance and carries a second label,
+  `readiness-failure`, `build-changing`, or `text-only`.
 - **converge-plan**: run the critique-and-fix loop over a plan on an
   issue until a stopping rule ends it. The loop keeps a decision
   ledger, an open-issues doc, per-round snapshots, and the round's

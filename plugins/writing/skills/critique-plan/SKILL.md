@@ -106,8 +106,8 @@ bar:
 - Ask each bar item's question of the plan.
 - Run each Mechanical bullet's command against the tree, per that
   skill's executed Mechanical check.
-- Report each failure as a finding whose provenance is the bar item
-  it fails. Label it per "4. Collect".
+- Report each failure as a `readiness-failure` finding whose
+  provenance is the bar item it fails.
 
 When the locator in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`
 finds no sdlc install, skip this grading and say in the report that
@@ -235,15 +235,22 @@ Note these things per finding as well. They survive into the report.
 - **Provenance.** The file and the ref you verified the finding
   against. For an external claim, note the doc page or source file
   you read. Label a finding with no provenance unverified.
-- **The build-changing label.** This step owns the label's definition.
-  Mark the finding `build-changing` when acting on it changes what the
-  implementer builds, decides, or verifies, or what the reviewer
-  checks. Mark it `text-only` when acting on it changes the plan's
-  prose alone. A contradiction between two of the plan's own
-  statements is build-changing, because the implementer cannot know
-  which statement to follow. A missing or unfalsifiable criterion is
-  build-changing, because the reviewer checks the criteria the plan
-  carries.
+- **The finding label.** This step owns the labels' definitions. Give
+  each finding exactly one of them:
+  - `readiness-failure` when the finding fails an item of the
+    installed `sdlc:orchestrate-readiness` bar. A finding that is both
+    a bar failure and build-changing takes this label.
+  - `build-changing` when acting on it changes what the implementer
+    builds, decides, or verifies, or what the reviewer checks. A
+    contradiction between two of the plan's own statements is
+    build-changing, because the implementer cannot know which
+    statement to follow. A missing or unfalsifiable criterion is
+    build-changing, because the reviewer checks the criteria the plan
+    carries.
+  - `text-only` when the finding is neither.
+
+  A **material** finding is one labeled `build-changing` or
+  `readiness-failure`.
 - **The prior-round-text label.** Mark the finding when it targets
   text a prior fix round added. This needs the prior plan snapshot
   from the Inputs section, so skip the label when the caller passed
@@ -264,7 +271,7 @@ Constrain that pass:
   problem-definition finding sorts to the top on severity.
 - **Carry both axes.** Axis one is the `summarize-findings` triage
   verdict of `fix`, `refute`, or `discuss`. Axis two is the
-  build-changing label. Both ride through `summarize-findings` inside
+  finding label. Both ride through `summarize-findings` inside
   each finding's own sentence.
 - **Skip the pruning under a loop.** When a caller such as
   `writing:converge-plan` runs this critique, tell

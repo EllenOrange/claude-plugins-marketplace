@@ -481,8 +481,8 @@ doc, or a dependency's source. A copy can be wrong today and stale
 tomorrow, and every copy is critique surface.
 
 Name the authority instead, and keep the reference terse. An in-repo
-path or a skill name stays inline because the implementer opens it in
-the checkout, while a fact that lives only where the implementer
+path or a skill name stays inline because the implementer can open it
+where they work, while a fact that lives only where the implementer
 cannot open it, such as another issue, a pull request, a commit, or a
 web page, is restated in the body in the present tense with no URL.
 Pointing at a file never stands in for stating a decision.
