@@ -53,17 +53,21 @@ Skills:
   criteria the chosen solution earns. The agreed core is drafted to
   disk, given one `sweep-consequences` pass and one `sweep-style`
   pass, and revised once through `revise-plan` before the full plan is
-  drafted from it. The plan carries an Acceptance criteria section
-  with a Postconditions subsection and an Invariants subsection. Each
-  entry is a class-quantified claim about the merged result, written
-  as the PR reviewer's rubric. Each carries the check that settles it,
-  and either the test that pins it or a waiver saying why none
-  exists. The skill walks the plan's dependencies at the ref the plan
-  builds on, and walks every behavior the plan states against the
-  repo's rule for that kind of behavior, or against a completeness
-  test of its own where the repo states no such rule. It derives the
-  plan's scope from the repo's sweep sections and its neighboring
-  issues. It cites its authorities instead of restating them. Every
+  drafted from it. The plan carries the sections Problem, Scope,
+  Solution, Acceptance, Outline, Files affected (floor), and Open
+  questions, in the issue-body grammar of `sdlc:orchestrate-readiness`.
+  The Acceptance section splits into Mechanical and Semantic claims
+  about the merged result, written as the PR reviewer's rubric. Each
+  bullet is a bold title and one claim, and each Mechanical claim
+  names one read-only command. Self-review grades the draft against
+  the installed readiness bar, and reports the grading as skipped when
+  the sdlc plugin is absent. The skill walks the plan's dependencies
+  at the ref the plan builds on, and walks every behavior the plan
+  states against the repo's rule for that kind of behavior, or against
+  a completeness test of its own where the repo states no such rule.
+  It derives the plan's scope from the repo's sweep sections, and
+  describes the bordering work it rules out without naming an issue
+  number. It cites its authorities instead of restating them. Every
   sweep question passes through `summarize-findings` triage, so only a
   `discuss` verdict reaches the user. It posts the plan as an issue
   comment and leaves its state directory in place for `converge-plan`
@@ -88,13 +92,14 @@ Skills:
   whose read-back finds changed meaning, and reports every unapplied
   instruction with the conflict named.
 - **promote-plan**: move an approved plan out of its issue comment and
-  make it the issue body. It recognizes a plan comment by the sections
-  `write-plan` emits, Solution ahead of Acceptance criteria and that
-  section carrying both its subsections. Whatever the old body carried
-  that the plan does not state lands under a trailing `## Notes`
-  section. One question covers the body write and the comment deletion
-  together. It asks first when the plan's Open questions section is
-  not empty.
+  make it the whole issue body. It recognizes a plan comment by the
+  sections `write-plan` emits. The body it writes is the plan and
+  nothing else, with an Open questions section reading `None.`
+  dropped. It asks first when the plan's Open questions section is
+  not empty, and when the plan fails an item of the installed
+  `sdlc:orchestrate-readiness` bar. One question covers the body write
+  and the comment deletion together. After the write it runs the sdlc
+  readiness check and reports its verdict.
 - **critique-plan**: read a plan and the foundational docs, then
   report one prioritized list. The list carries the decisions that
   fail to fully address the identified problems, the decisions that
@@ -118,9 +123,11 @@ Skills:
   through `summarize-findings` triage before the blocked rule fires. A
   spent budget runs one consolidation pass through `sweep-style`
   before the loop reports. It loops in place over the plan comment or
-  over the promoted plan in the issue body, leaving that body's
-  `## Notes` section unchanged. It refuses to edit a body when an open
-  pull request or an unmerged remote branch already carries the issue.
+  over the promoted plan in the issue body, and on a body it
+  snapshots and edits the whole body. A body carries the Open
+  questions section only while the ledger holds an open item. It
+  refuses to edit a body when an open pull request or an unmerged
+  remote branch already carries the issue.
   A round budget caps how many critique rounds the loop runs.
 
 ## License

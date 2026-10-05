@@ -12,7 +12,6 @@ none of them:
 - The per-source question a critic asks of a plan.
 - The finding a failing answer yields.
 - The style-guide fallback order.
-- The bar a criterion must clear.
 
 On a repo that runs the sdlc plugin, the review that grades the
 implementation is the theorem pipeline. It works the sources below in
@@ -29,7 +28,8 @@ into every review round.
 
 The installed sdlc skill a citation names is the authority for the
 cited fact when it is present. This file's own summary of that fact is
-the fallback. Read the installed skill first. Select the fallback
+the fallback, for every member whose entry below names one. Read the
+installed skill first. Select the fallback
 silently when the locator returns nothing or the file is absent.
 
 The per-source questions below are this file's own. Read them in both
@@ -40,12 +40,12 @@ cases.
 The membership rule: every `sdlc:` citation in this file and under
 `plugins/writing/skills`. Known members:
 
-- **What each theorem source means, and the emission bar**, from
-  `sdlc:theorem-generation`. Fallback: the source sections and "The
-  bar a criterion clears" below.
-- **The decision set an issue must settle**, from
-  `sdlc:orchestrate-ready` → "The readiness bar". Fallback: "The
-  decision set" below.
+- **What each theorem source means**, from `sdlc:theorem-generation`.
+  Fallback: the source sections below.
+- **The readiness bar and the issue-body grammar**, from
+  `sdlc:orchestrate-readiness`. No fallback: this file restates
+  neither. When the locator finds no sdlc install, a skill that grades
+  against the bar skips the grading and says so in its report.
 - **That the pipeline reads each member issue through `/issue-view`**,
   from `sdlc:theorem-generation` → "Workflow". Fallback: "The pipeline
   reads the body" below. That section also states the body-only read
@@ -82,8 +82,12 @@ own `version` field reads `2`. The sibling reader of the same file is
 
 The sdlc resolution calls the locator with `sdlc` and reads
 `<installPath>/skills/theorem-generation/SKILL.md`. An empty result or
-a missing file selects the fallback silently. The heading sweep calls
-the locator with the plugin a citation names.
+a missing file selects the fallback silently. The readiness bar
+resolves through the same call and reads
+`<installPath>/skills/orchestrate-readiness/SKILL.md`. An empty result
+or a missing file there selects no fallback, and the grading is
+skipped. The heading sweep calls the locator with the plugin a
+citation names.
 
 ## The pipeline reads the body
 
@@ -96,30 +100,6 @@ so it is this file's own claim. Check it by reading
 `sdlc:theorem-generation` → "Workflow" and `issues:issue-view` →
 "Output".
 
-## The decision set
-
-An issue is ready for orchestration when nothing in it can trigger the
-implementer's stop on a design decision the issue does not answer. The
-decisions the issue settles in its body:
-
-- Naming.
-- Placement in the tree.
-- Load mode.
-- The fate of content the change subsumes.
-- Any structural contract a downstream consumer depends on.
-
-This plugin adds one more: the authority site of any convention, name,
-or class the solution introduces.
-
-## The bar a criterion clears
-
-A criterion is falsifiable by a quote from the tree or from a
-command's output, and its failure is under-delivery. This is the
-emission bar in `sdlc:theorem-generation` → "The emission bar:
-falsifiability, then stakes", applied to a plan. An acceptance
-criterion clears the stakes half by construction, because the issue
-asked for it.
-
 ## 1. Acceptance criteria
 
 Mirrors `sdlc:theorem-generation` → "1. Acceptance criteria". Every
@@ -128,18 +108,8 @@ criterion of every member issue becomes one theorem, quoted verbatim.
 Ask of the plan: does every criterion state a claim the review can
 quote and a disprover can refute?
 
-The findings a failing answer yields:
-
-- The plan carries no Acceptance criteria section.
-- A criterion is an action, an implementation step, or an exemplar to
-  imitate.
-- A criterion binds an obligation to a set and states no membership
-  rule.
-- A criterion carries no `Check:` clause.
-- A criterion carries neither a `Pinned by:` clause nor a `Waiver:`
-  clause.
-- The Outline touches an existing contract and the Invariants
-  subsection carries no invariant or waiver naming it.
+The finding a failing answer yields: the plan fails an Acceptance
+item of the installed `sdlc:orchestrate-readiness` bar.
 
 ## 2. PR-body claims
 
