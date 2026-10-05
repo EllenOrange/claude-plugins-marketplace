@@ -78,12 +78,11 @@ understanding with plain questions, one at a time. Reserve
 multiple-choice forms for bounded decisions among known options.
 Do not manufacture questions you can settle by reading the repo.
 
-The interview settles every decision in the decision-set item of the
-installed `sdlc:orchestrate-readiness` bar, before the draft. That
-item is "No unanswered design decisions". This plugin adds one
-decision to that set: the authority site of any convention, name, or
-class the solution introduces. Enumerate none of the bar's decisions
-here.
+The interview settles every decision in the "No unanswered design
+decisions" item of the installed `sdlc:orchestrate-readiness` bar,
+before the draft. This plugin adds one decision to that set: the
+authority site of any convention, name, or class the solution
+introduces. Enumerate none of the bar's decisions here.
 
 With the sdlc plugin absent, the interview settles the authority-site
 decision alone. The report then says that the bar's decision set was
@@ -481,10 +480,12 @@ of facts the implementer can derive from a repo file, an authority
 doc, or a dependency's source. A copy can be wrong today and stale
 tomorrow, and every copy is critique surface.
 
-Name the authority instead. Keep the reference terse: an in-repo path
-or a skill name stays inline. A fact from a document outside the repo
-is the exception. Restate that fact in the body, in the present tense,
-with no URL, because the body alone has to suffice.
+Name the authority instead, and keep the reference terse. An in-repo
+path or a skill name stays inline because the implementer opens it in
+the checkout, while a fact that lives only where the implementer
+cannot open it, such as another issue, a pull request, a commit, or a
+web page, is restated in the body in the present tense with no URL.
+Pointing at a file never stands in for stating a decision.
 
 When the plan cites an authority for a class, it does not enumerate
 the class's members beside the citation. A short enumeration reads as
@@ -610,9 +611,10 @@ here costs an edit rather than a correction.
   style guides read in "1. Read". What counts as a rule comes from
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`.
 - **Decisions settled.** Is every decision settled in the body,
-  rather than posed or implied? The decisions are those of the
-  decision-set item of the installed `sdlc:orchestrate-readiness` bar,
-  plus the authority-site decision "2. Interview" adds.
+  rather than posed or implied? The decisions are those of the "No
+  unanswered design decisions" item of the installed
+  `sdlc:orchestrate-readiness` bar, plus the authority-site decision
+  "2. Interview" adds.
 - **Outline shape.** Is every unit a section header, and every action
   a bullet under its unit?
 - **Outline against the problem.** Does every sub-problem get a unit?
@@ -732,4 +734,4 @@ step before orchestration, and it reads the promoted plan as part of
 the body it rewrites. Promotion stops and asks on a plan whose Open
 questions section carries a bullet. It also stops and asks on a plan
 that fails an item of the `sdlc:orchestrate-readiness` bar. Both stops
-follow `promote-plan` → "2. Read both texts verbatim".
+follow `promote-plan` → "2. Read the plan verbatim".

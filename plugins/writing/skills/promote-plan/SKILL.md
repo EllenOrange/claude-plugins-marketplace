@@ -47,18 +47,17 @@ Then act on what you found:
 - **No plan comment.** Say so and stop. Do not write a plan here;
   that is `writing:write-plan`.
 
-## 2. Read both texts verbatim
+## 2. Read the plan verbatim
 
-Fetch the comment body and the current issue body into files. Keep
-both exactly as stored:
+Fetch the comment body into a file, exactly as stored. Step 3 edits
+this file in place, and step 4 writes the issue body from it:
 
 ```bash
-gh issue view <N> --json body --jq .body > "$scratch/body.md"
 gh api repos/{owner}/{repo}/issues/comments/<comment-id> \
   --jq .body > "$scratch/plan.md"
 ```
 
-Write the working files to the session scratchpad if the harness gave
+Write the working file to the session scratchpad if the harness gave
 you one, else to `.claude/tmp/`.
 
 Then read the plan's Open questions section, in the empty form
@@ -72,12 +71,14 @@ implementer stops on a design decision the issue does not answer, and
 the promoted plan is the issue body it reads.
 
 Then grade the plan against every item of the installed
-`sdlc:orchestrate-readiness` bar. Resolve that skill per its entry in
-`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Run each Mechanical
-bullet's command against the tree, per that skill's executed
-Mechanical check, and read the issue's edges for the items that key on
-them. The assembled body is this plan and nothing else, per step 4, so
-a gap in the plan is a gap in the body.
+`sdlc:orchestrate-readiness` bar. Grade it at the heading levels
+step 3 gives it, with its sections at `##` and its unit headers
+at `###`, however deep the comment nests them. Resolve that skill per
+its entry in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Run each
+Mechanical bullet's command against the tree, per that skill's
+executed Mechanical check, and read the issue's edges for the items
+that key on them. The assembled body is this plan and nothing else,
+per step 4, so a gap in the plan is a gap in the body.
 
 - **Any gap.** Stop. Show the user the gaps. Ask whether to promote
   anyway. Proceed only on a yes. Say in the report that you promoted
@@ -88,7 +89,8 @@ a gap in the plan is a gap in the body.
 ## 3. Normalize the plan's headings
 
 The plan becomes the body, so its sections must be `##` and its unit
-headers `###`. Dispatch on the plan text's first heading:
+headers `###`. Make every edit below in `$scratch/plan.md`. Dispatch
+on the plan text's first heading:
 
 - **`## Problem`.** The plan already carries the levels the body
   needs. Change nothing.
@@ -108,21 +110,21 @@ question is open.
 
 ## 4. Write the plan into the issue body
 
-The assembled body is the normalized plan and nothing else. Nothing
-of the old body carries over.
+The assembled body is the normalized plan in `$scratch/plan.md` and
+nothing else. Nothing of the old body carries over.
 
-Assemble the file, then ask once. Show the user the assembled body and
-the comment URL. Ask whether to write the body and delete the comment.
-Deleting a comment is irreversible, so this one question covers both
-acts and step 5 asks no second time. Proceed on a yes. On a no, write
-nothing and stop.
+Ask once. Show the user the assembled body and the comment URL. Ask
+whether to write the body and delete the comment. Deleting a comment
+is irreversible, so this one question covers both acts and step 5
+asks no second time. Proceed on a yes. On a no, write nothing and
+stop.
 
 Update the issue with the assembled file. Prefer an installed issue
 skill, for example `/issues:issue-update`, which replaces the body
 from a file. Otherwise use `gh`:
 
 ```bash
-gh issue edit <N> --body-file "$scratch/body.md"
+gh issue edit <N> --body-file "$scratch/plan.md"
 ```
 
 Then re-read the issue body. Confirm it carries the plan. Do not

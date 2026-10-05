@@ -106,8 +106,8 @@ bar:
 - Ask each bar item's question of the plan.
 - Run each Mechanical bullet's command against the tree, per that
   skill's executed Mechanical check.
-- Report each failure as a build-changing finding whose provenance is
-  the bar item it fails.
+- Report each failure as a finding whose provenance is the bar item
+  it fails. Label it per "4. Collect".
 
 When the locator in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`
 finds no sdlc install, skip this grading and say in the report that

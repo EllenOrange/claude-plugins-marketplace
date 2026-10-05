@@ -180,8 +180,10 @@ skill correctly does **not** trigger on the negative cases.
     installed.
     Expect: Claude reads the bundled `docs/review-sources.md` for the
     review's sources and proceeds with no error. The plan still
-    carries the grammar's headings. The report says the readiness-bar
-    grading and the emission-bar check were skipped.
+    carries the grammar's headings. The interview settles the
+    authority-site decision alone. The report says the bar's decision
+    set, the readiness-bar grading, and the emission-bar check were
+    skipped.
 13. "Plan the work for issue #42." on an issue whose solution states
     a two-step write with no completion rule.
     Expect: Claude reads the repo for a class rule for that kind of

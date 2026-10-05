@@ -158,11 +158,15 @@ initializes its own fields on seeding.
 Compare `.claude/tmp/write-plan-<issue>/draft.md` against the live
 plan surface before you reuse the seed. `draft.md` holds the posted
 full plan, so a byte match is expected and a mismatch means someone
-edited the plan at post time. On a mismatch, show the user the
-difference and confirm before reusing the seed. That confirmation is
-an interaction outside the round structure, before round 1, like the
-staleness guard's resume confirmation. "The body-surface guard"
-discussion in "1. Locate the plan" owns which surface is the live one.
+edited the plan at post time. On a body surface, first apply to a copy
+of `draft.md` the edits `promote-plan` → "3. Normalize the plan's
+headings" makes: the heading normalization and the deletion of a
+`None.` Open questions section. Compare that copy instead. On a
+mismatch, show the user the difference and confirm before reusing the
+seed. That confirmation is an interaction outside the round
+structure, before round 1, like the staleness guard's resume
+confirmation. "The body-surface guard" discussion in "1. Locate the
+plan" owns which surface is the live one.
 
 ### The staleness guard
 
