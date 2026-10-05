@@ -35,14 +35,13 @@ emits:
 - Problem
 - Scope
 - Solution
-- Acceptance criteria, with its Postconditions and Invariants
-  subsections
+- Acceptance, with its Mechanical and Semantic sub-headings
 - Outline
+- Files affected (floor)
 - Open questions
 
-An optional References section may follow them. `write-plan` → "State
-the acceptance criteria" owns each subsection's entry form and the
-Invariants empty form.
+A body surface carries the Open questions section only while a
+question is open.
 
 When both surfaces exist, the body governs, because it is the surface
 the review reads. Name the leftover comment in the report.
@@ -187,8 +186,7 @@ because the round pauses before it edits anything.
 
 1. **Snapshot the plan.** Write the plan as the located surface
    currently carries it to `snapshot-<round>.md`. That is the comment
-   body, or the promoted body from `## Problem` through the end of the
-   last plan section, stopping before `## Notes`.
+   body, or the whole promoted body.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
    and instruct it to load `writing:critique-plan`. Pass it:
    - the round's snapshot as the plan text, by path
@@ -205,9 +203,9 @@ because the round pauses before it edits anything.
    finding against a repo-derived one is allowed. Such a finding is
    the veto trigger this session triages.
 
-   Withhold the ledger's loop facts. Tell the critic that a promoted
-   body's `## Notes` section is not plan and yields no finding, which
-   the snapshot already excludes. Brief it with the materiality bar.
+   Withhold the ledger's loop facts. Tell the critic that a leftover
+   `## Notes` section on a promoted body is plan text, graded against
+   the readiness bar like the rest. Brief it with the materiality bar.
    Under that bar, the critic reports a finding only when one of these
    holds:
    - the finding is build-changing per `critique-plan` → "4. Collect"
@@ -246,8 +244,11 @@ because the round pauses before it edits anything.
      treatment where `critique-plan` prescribes it.
    - Every instruction the sweep emits.
    - One that updates the plan's Open questions section to match the
-     ledger. It writes the empty form `write-plan` → "5. Write" owns,
-     so every writer and every reader of the section share one form.
+     ledger. On a body surface, it writes the section only while the
+     ledger holds an open item, and omits the section otherwise. On a
+     comment surface, it writes the empty form `write-plan` →
+     "5. Write" owns when no item is open, so every writer and every
+     reader of the section share one form.
 
    Write the batch to the ledger.
 
@@ -283,11 +284,7 @@ because the round pauses before it edits anything.
    content. Never post a new comment. On a body surface:
    1. Run "The body-surface guard".
    2. Re-read the live body.
-   3. Replace the text from `## Problem` to the line before
-      `## Notes`, or to the end of the body when it carries no
-      `## Notes`, per `promote-plan` → "4. Write the plan into the
-      issue body". `## Notes` and everything after it passes through
-      byte for byte unchanged.
+   3. Replace the whole body with the revised draft.
    4. Write the result.
    5. Re-read the body after the write.
 

@@ -65,6 +65,10 @@ restated here.
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
   skill it names, or its fallback. Then read the style guides it names,
   with the per-guide fallback it states.
+- Resolve `sdlc:orchestrate-readiness` per its entry in
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`, and read the
+  installed skill. It owns the readiness bar and the issue-body
+  grammar, and it has no fallback.
 
 ## 2. Interview
 
@@ -74,10 +78,16 @@ understanding with plain questions, one at a time. Reserve
 multiple-choice forms for bounded decisions among known options.
 Do not manufacture questions you can settle by reading the repo.
 
-The interview settles every decision that
-`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` names as the decision
-set, before the draft. Resolve that set per the resolution order in
-that file. Enumerate none of it here.
+The interview settles every decision in the decision-set item of the
+installed `sdlc:orchestrate-readiness` bar, before the draft. That
+item is "No unanswered design decisions". This plugin adds one
+decision to that set: the authority site of any convention, name, or
+class the solution introduces. Enumerate none of the bar's decisions
+here.
+
+With the sdlc plugin absent, the interview settles the authority-site
+decision alone. The report then says that the bar's decision set was
+skipped.
 
 ### Record each ruling to the ledger
 
@@ -150,15 +160,15 @@ their pros and cons stay in the conversation and never enter the
 plan file.
 
 **Stage two. The criteria the chosen solution earns.** Derive the
-acceptance criteria, the postconditions, and the invariants from the
-solution the user picked. State them in the entry form "State the
-acceptance criteria" gives. Show them and stop for correction.
+Acceptance section's Mechanical and Semantic bullets from the solution
+the user picked. State them in the bullet form "State the acceptance
+criteria" gives. Show them and stop for correction.
 
 ### Draft the core
 
 Draft the agreed core to `.claude/tmp/write-plan-<issue>/draft.md`.
-The core is the Problem, Scope, Solution, and Acceptance criteria
-sections, written as "5. Write" prescribes them. The full-plan draft
+The core is the Problem, Scope, Solution, and Acceptance sections,
+written as "5. Write" prescribes them. The full-plan draft
 later overwrites `draft.md`, and the core text is not retained
 separately.
 
@@ -183,7 +193,7 @@ the full plan, and a conflict that survives that rule stops the flow
 here for the user.
 
 Re-show the revised core to the user only when the revision changed
-the Solution or the Acceptance criteria. Otherwise proceed; human
+the Solution or the Acceptance section. Otherwise proceed; human
 review covers the rest.
 
 ### Triage the sweep's questions
@@ -208,8 +218,8 @@ self-review and post it from the Post step, so the reader never sees a
 draft you already rejected. `converge-plan`'s seed comparison reads
 this file, so the posted plan's own text is what stays on disk.
 
-The plan has these sections and nothing else. Every section except
-References is required:
+The plan has these sections, in this order, and nothing else. Every
+section is required:
 
 1. **Problem.** Name the problem this work solves in one sentence.
    Then write at most one paragraph on the sub-problems it decomposes
@@ -218,23 +228,26 @@ References is required:
    covers, its boundaries, and anything ruled out of scope for this
    issue. Derive it per "Derive the scope".
 3. **Solution.** Say what will be built, in at most one paragraph.
-4. **Acceptance criteria.** State the claims the merged result must
-   satisfy, per "State the acceptance criteria". This section carries
-   a `### Postconditions` subsection and an `### Invariants`
-   subsection, always. That section owns the entry form of both and
-   owns the Invariants empty form.
+4. **Acceptance.** Head it `## Acceptance`, with the sub-headings
+   `### Mechanical` and `### Semantic` under it. State the claims the
+   merged result must satisfy, per "State the acceptance criteria".
 5. **Outline.** Decompose the work.
-6. **Open questions.** Keep only the ones that survived the
+6. **Files affected.** Head it `## Files affected (floor)`. Derive it
+   per "Derive the files affected".
+7. **Open questions.** Keep only the ones that survived the
    interview. List the questions themselves and nothing else. A
    question the interview settled leaves this section entirely. This
    section owns its empty form: a section with no question carries the
    single line `None.` and no bullet, and a question is a bullet.
-7. **References.** Optional. Collect the citations that run too long
-   to sit inline in the body.
 
-The Solution section precedes the Acceptance criteria section because
-the criteria answer to the solution. A reader who meets the criteria
-first has nothing to measure them against.
+`sdlc:orchestrate-readiness` → "The issue-body grammar" owns the
+grammar of the Acceptance section and the Files affected section. This
+skill copies none of its rules. With the sdlc plugin absent, the plan
+still carries the headings this list names.
+
+The Solution section precedes the Acceptance section because the
+criteria answer to the solution. A reader who meets the criteria first
+has nothing to measure them against.
 
 Include only what changes the implementer's next decision.
 
@@ -288,25 +301,19 @@ Editing any text in a file obliges every rule the repo states over
 touched text, not only over new text. So a file the plan edits at all
 brings its whole surface under those rules.
 
-Scope also names, by number, every issue whose work borders this one,
-and rules that work out. Read the borders from the issue's edges,
-through the issue read that "1. Read" prescribes. The edges are:
-
-- blocked-by
-- blocking
-- parent
-- sub-issue
-- References
-
-With no issue skill installed, the edge set is the References lines
-of the issue body, and Scope says so.
+Scope also describes the work that borders this one, and rules that
+work out. It names the bordering work by description and names no
+issue number. The issue's edges carry the relation, so find the
+bordering work through the issue read that "1. Read" prescribes.
 
 ### State the acceptance criteria
 
-The Acceptance criteria section is the PR reviewer's rubric. Write it
-for that reader and for no other. Cite
-`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` for the bar a criterion
-clears.
+The Acceptance section is the PR reviewer's rubric. Write it for that
+reader and for no other. Every bullet clears the emission bar in
+`sdlc:theorem-generation` → "The emission bar: falsifiability, then
+stakes". Read that section from the installed skill. With the sdlc
+plugin absent, skip the emission-bar check, and say in the report that
+it was skipped.
 
 **The altitude test.** A criterion earns its place only if the PR
 reviewer needs it to judge the merged result; anything only the
@@ -319,41 +326,33 @@ a criterion. The review quotes whatever reads as a criterion and
 grades it against a High severity floor. So the review grades an
 instruction placed here as a requirement of the merged result.
 
-**The entry form.** This subsection owns it. Every entry of both
-subsections below is one bullet in this shape:
+**The bullet form.** This subsection owns it. Every bullet under both
+sub-headings is a bold title phrase ending in a period, followed by
+one claim sentence:
 
 ```markdown
 - **The title.** The claim, quantified over a class with its
   membership rule stated.
-  - Check: the command or the read that settles the claim.
-  - Pinned by: the test the diff adds or updates.
 ```
 
-The last sub-bullet reads `Waiver:` instead of `Pinned by:` when no
-test pins the claim, and it says why none exists.
+**The Mechanical command.** A bullet under `### Mechanical` names, in
+its claim sentence, one read-only command that settles the claim. A
+check that needs several commands, or a command that writes to the
+tree, is not one Mechanical bullet. Restate it as a Semantic claim, or
+split it into several Mechanical bullets with one command each.
 
-**Check delegation.** A `Check:` clause names the command or the read
-and stops there. When the check runs long, delegate it to an Outline
-verify action and cite that action from the `Check:` clause. The
-delegation is sanctioned, and a `Check:` clause grown into a
-procedure is not.
+**Reconcile with Files affected.** Reconcile each Mechanical bullet's
+hits and targets with the Files affected section, per
+`sdlc:orchestrate-readiness` → "The executed Mechanical check".
 
-**The size discipline.** A criterion's claim is one sentence, and its
-`Check:` clause is one sentence. A section that outgrows the rubric
-stops being one: the reviewer reads every entry every round, so each
-entry the plan adds costs every later round.
+**The size discipline.** A bullet's claim is one sentence. A section
+that outgrows the rubric stops being one: the reviewer reads every
+bullet every round, so each bullet the plan adds costs every later
+round.
 
-The `### Postconditions` subsection carries the claims the merged
-result newly satisfies. The change delivers something, so this
-subsection is always non-empty and has no empty form.
-
-The `### Invariants` subsection carries the existing contracts,
-consumers, and tests the change must leave intact. An invariant binds
-every write and read able to violate it, not the consequence of one
-action. Every contract the Outline touches has an invariant or a
-waiver naming it. This subsection owns its empty form: a subsection
-with no contract to keep carries the single line `None.` followed by
-one clause saying why the Outline touches no contract.
+**Touched contracts.** Every existing contract the Outline touches
+earns one claim. The claim binds every write and read able to violate
+the contract, not the consequence of one action.
 
 ### The solution matches the problem's altitude
 
@@ -408,8 +407,24 @@ Every action obeys:
 - **Order by dependency.** An action may rely only on actions above
   it.
 - **State the how, never the result.** An action that reads as a claim
-  about the merged result belongs in Acceptance criteria. The review
-  quotes it as a criterion wherever it sits.
+  about the merged result belongs in the Acceptance section. The
+  review quotes it as a criterion wherever it sits.
+- **Pin a claim with an action.** A test that pins an Acceptance claim
+  is an Outline action, with its verify command.
+- **Name no test in Acceptance.** No Acceptance bullet names a test.
+  The test lives in the Outline action that adds or updates it.
+
+### Derive the files affected
+
+Derive the Files affected section from the Outline, never from recall.
+List these paths:
+
+- every file an Outline action touches
+- every file a Mechanical bullet's command hits in the tree today
+- every file a Mechanical bullet requires a change in
+
+Tag each path per `sdlc:orchestrate-readiness` → "The files-affected
+section".
 
 ### State the rule that generates each set
 
@@ -417,7 +432,7 @@ A plan bullet often binds an obligation to a set:
 
 - the rpcs a gate covers
 - the call sites of a helper
-- the writes an invariant constrains
+- the writes a touched contract constrains
 - the consumers a change affects
 
 State the membership rule that generates the set. Write the
@@ -432,8 +447,8 @@ These cases bite hardest:
 - **A shared helper or single code path.** Every contract, test, and
   doc obligation about it quantifies over the helper's call sites,
   not over an example list in another bullet.
-- **An invariant.** "State the acceptance criteria" defines it and
-  owns its shape.
+- **A touched contract.** "State the acceptance criteria" owns the
+  claim it earns.
 
 `writing:converge-plan` accepts a critique finding as already
 covered only when the plan carries such a class-level sweep action
@@ -466,10 +481,10 @@ of facts the implementer can derive from a repo file, an authority
 doc, or a dependency's source. A copy can be wrong today and stale
 tomorrow, and every copy is critique surface.
 
-Name the authority instead. Keep the reference terse. A file path
-or a rule name in passing is enough inline. Move anything longer to
-the References section at the bottom, so the body stays clear,
-concise, and prescriptive.
+Name the authority instead. Keep the reference terse: an in-repo path
+or a skill name stays inline. A fact from a document outside the repo
+is the exception. Restate that fact in the body, in the present tense,
+with no URL, because the body alone has to suffice.
 
 When the plan cites an authority for a class, it does not enumerate
 the class's members beside the citation. A short enumeration reads as
@@ -516,8 +531,9 @@ The authority is one of:
 Web search and WebFetch are fair game.
 
 A usage pattern written from memory is a guess, and the plan may not
-carry one. Cite the authority you consulted, so the prescription
-stays terse and the reference carries the detail.
+carry one. Restate the fact you read in the body, in the present
+tense, with no URL. An in-repo authority, such as a dependency's
+source path or a skill name, stays inline.
 
 ### Write for the implementer
 
@@ -534,11 +550,11 @@ cannot derive:
 - Per-PR obligations the repo imposes, such as a version bump. These
   are actions in the outline like any other.
 
-Leave out the search you already ran. An exhaustive file inventory or
-a line-level edit list goes stale against the tree, and the
-implementer derives locations more accurately by reading it. Name the
-change surface at the component level and stop there. That is enough
-to scope the work and to tell whether it collides with another issue.
+Leave out the search you already ran. A line-level edit list goes
+stale against the tree, and the implementer derives locations more
+accurately by reading it. Name the change surface at the component
+level in the Outline. The Files affected section is the plan's one
+file list, and "Derive the files affected" owns what it carries.
 
 ## 6. Self-review
 
@@ -558,25 +574,33 @@ here costs an edit rather than a correction.
 - **Stated behavior.** Run "Walk each stated behavior" over the
   drafted Solution and Outline. Every behavior passes the walk's
   test, or the question it fails on sits under Open questions.
-- **Criteria shape.** Does every entry of Postconditions and
-  Invariants take the entry form "State the acceptance criteria" owns?
-  Does each claim quantify over a class with its membership rule?
+- **Readiness bar.** Grade the draft against every item of the
+  installed `sdlc:orchestrate-readiness` bar. Run each Mechanical
+  bullet's command against the tree, per that skill's executed
+  Mechanical check. Fix every gap. When the locator in
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` finds no sdlc install,
+  skip this item and say in the report that the grading was skipped.
+- **Criteria shape.** Does every Acceptance bullet take the bullet
+  form "State the acceptance criteria" owns, and does every Mechanical
+  bullet name one read-only command? Does each claim quantify over a
+  class with its membership rule?
 - **Criteria altitude.** Apply the altitude test "State the acceptance
-  criteria" owns to every entry. Move a failing entry into the
-  Outline. Is any entry an action, an implementation step, or an
-  exemplar to imitate wearing the entry form's sub-bullets?
-- **Criteria budget.** Does any claim or `Check:` clause run past one
-  sentence, against the size discipline "State the acceptance
-  criteria" owns? Delegate a long check to an Outline verify action
-  and cite that action.
+  criteria" owns to every bullet. Move a failing bullet into the
+  Outline. Is any bullet an action, an implementation step, or an
+  exemplar to imitate wearing the bullet form?
+- **Criteria budget.** Does any claim run past one sentence, or does
+  any Mechanical bullet need more than one command, against "State the
+  acceptance criteria"? Split the bullet, or restate it as a Semantic
+  claim.
 - **Touched contracts.** Does every existing contract the Outline
-  touches have an invariant or a waiver naming it?
+  touches have one Acceptance bullet?
 - **Actions that read as results.** Any outline action stating a claim
-  about the merged result. Move it to Acceptance criteria, per "State
-  the how, never the result".
+  about the merged result. Move it to the Acceptance section, per
+  "State the how, never the result".
 - **Scope against the sweep sections.** Does Scope name the restating
   surfaces of every mirrored fact the plan changes, and does Scope
-  name the neighboring issues by number, per "Derive the scope"?
+  describe the bordering work with no issue number, per "Derive the
+  scope"?
 - **Enumeration beside a citation.** Any list of a class's members
   written next to the citation of the authority for that class.
 - **Ownership.** Does the plan name the permitted-restatement set for
@@ -585,10 +609,10 @@ here costs an edit rather than a correction.
 - **Style guides.** Check each outline action against each rule of the
   style guides read in "1. Read". What counts as a rule comes from
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`.
-- **Decisions settled.** Is every decision the decision set names
-  settled in the body, rather than posed or implied? The set and its
-  resolution order come from
-  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`.
+- **Decisions settled.** Is every decision settled in the body,
+  rather than posed or implied? The decisions are those of the
+  decision-set item of the installed `sdlc:orchestrate-readiness` bar,
+  plus the authority-site decision "2. Interview" adds.
 - **Outline shape.** Is every unit a section header, and every action
   a bullet under its unit?
 - **Outline against the problem.** Does every sub-problem get a unit?
@@ -596,9 +620,9 @@ here costs an edit rather than a correction.
 - **Frozen sets.** Find every bullet that binds an obligation to a
   list of sites, fields, or rpcs. Each one states the membership
   rule and carries a class-level sweep action with a verify command,
-  per "State the rule that generates each set". Check each invariant
-  the same way, against the shape "State the acceptance criteria"
-  gives it.
+  per "State the rule that generates each set". Check each
+  touched-contract claim the same way, against "State the acceptance
+  criteria".
 - **Unmarked silences.** Each of these says waiver or obligation, per
   "Mark every waiver":
   - sibling paths missing a pattern their twin spells out
@@ -609,26 +633,22 @@ here costs an edit rather than a correction.
 - **Restatements.** Find every sentence that states a fact the
   implementer can derive from a repo file, an authority doc, or a
   dependency's source. Drop the restatement and name the authority
-  instead. Keep the inline reference terse, and move a long one to
-  the References section.
+  instead. Keep the inline reference terse, and restate a fact from
+  outside the repo in the body with no URL, per "Cite the authority
+  instead of restating it".
 - **Uncited external usage.** Any prescription for an external SDK,
   library, or service that names no authority. Read the authority
   now, then cite it.
 - **Open questions against the body.** Every question the body defers,
   marks unresolved, or points elsewhere for appears in Open questions.
   Open questions lists nothing the body treats as decided, and carries
-  no record of formerly open questions or how each one closed.
+  no record of formerly open questions or how each one closed. A
+  question left here is a design decision the plan does not answer,
+  so promotion stops on it.
 - **The empty form.** An Open questions section with no question reads
   the single line `None.` and carries no bullet, in the form
-  "5. Write" owns. An Invariants subsection with no invariant reads
-  `None.` followed by its one clause saying why the Outline touches no
-  contract, in the form "State the acceptance criteria" owns. A
-  Postconditions subsection has no empty form, so an empty one is a
-  defect rather than a form. The Invariants subsection has a second
-  reader that keys on no form. The acceptance-criteria source in
-  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` asks instead whether
-  every contract the Outline touches carries an invariant or a waiver.
-  So a well-formed `None.` still fails when the Outline touches one.
+  "5. Write" owns. The Acceptance section has no empty form, so an
+  Acceptance section with no bullet is a defect rather than a form.
 - **Placeholders.** Any action that names no specific work.
 - **Contradictions.** Actions that undo each other, or an action that
   contradicts the Solution paragraph.
@@ -709,6 +729,7 @@ never its comments, per
 review, and a plan left in a comment never reaches it. Promotion
 precedes `sdlc:orchestrate-ready` grooming. That grooming is the last
 step before orchestration, and it reads the promoted plan as part of
-the body it rewrites. On a plan whose Open questions section carries a
-bullet, promotion stops and asks, per `promote-plan` → "2. Read both
-texts verbatim".
+the body it rewrites. Promotion stops and asks on a plan whose Open
+questions section carries a bullet. It also stops and asks on a plan
+that fails an item of the `sdlc:orchestrate-readiness` bar. Both stops
+follow `promote-plan` → "2. Read both texts verbatim".

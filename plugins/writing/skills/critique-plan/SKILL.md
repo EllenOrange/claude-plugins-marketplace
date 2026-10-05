@@ -45,9 +45,11 @@ Every input is optional. Without them, critique the plan as it stands.
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
   skill it names, or its fallback. Then read the style guides it names,
   with the per-guide fallback it states.
-- Read the neighboring issues the plan's Scope names, and the issue's
-  own edges. Read the edges as `write-plan` → "Derive the scope"
-  prescribes.
+- Resolve `sdlc:orchestrate-readiness` per its entry in
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`, and read the
+  installed skill. It owns the readiness bar, and it has no fallback.
+- Read the issue's own edges and the issues they name. Read the edges
+  as `write-plan` → "Derive the scope" prescribes.
 
 ## 2. Check the problem definition
 
@@ -96,22 +98,38 @@ prescribes, then report the finding that file names for a failing
 answer. That file owns the questions and the findings; restate neither
 here.
 
+### Grade against the readiness bar
+
+Grade the plan against the installed `sdlc:orchestrate-readiness`
+bar:
+
+- Ask each bar item's question of the plan.
+- Run each Mechanical bullet's command against the tree, per that
+  skill's executed Mechanical check.
+- Report each failure as a build-changing finding whose provenance is
+  the bar item it fails.
+
+When the locator in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`
+finds no sdlc install, skip this grading and say in the report that
+it was skipped.
+
 ### Report a criterion above its altitude
 
 Apply the altitude test that `write-plan` → "State the acceptance
-criteria" owns. A criterion only the implementer needs fails it.
-Report the failure and prescribe moving the text into the Outline.
+criteria" owns. An Acceptance bullet only the implementer needs fails
+it. Report the failure and prescribe moving the text into the Outline.
 This finding is build-changing, because the review grades whatever
 reads as a criterion.
 
 ### Report a budget violation
 
 Each budgeted section names its own budget. `write-plan` → "State the
-acceptance criteria" owns the criteria's size discipline, and
+acceptance criteria" owns the Acceptance bullets' size discipline, and
 `write-plan` → "Derive the scope" owns Scope's. Report a section that
 exceeds the budget its owner states, such as an oversized Scope
-paragraph or a `Check:` clause grown into a procedure. Prescribe the
-delegation that owner sanctions.
+paragraph, a claim that runs past one sentence, or a Mechanical bullet
+that needs more than one command. Prescribe the split or the
+restatement that owner sanctions.
 
 ### Report a compound action
 
@@ -125,7 +143,7 @@ When the plan binds an obligation to a list of sites, fields, or
 rpcs, derive the true set from the code and compare. Enumerate:
 
 - a shared helper's call sites
-- the writes and reads able to violate a stated invariant per
+- the writes and reads able to violate a touched contract's claim, per
   `write-plan` → "State the acceptance criteria"
 - the files that restate a rule the plan changes
 

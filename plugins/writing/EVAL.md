@@ -71,7 +71,7 @@ skill correctly does **not** trigger on the negative cases.
    Expect: the locator returns nothing. Claude reads the bundled
    `docs/review-sources.md` through `${CLAUDE_PLUGIN_ROOT}` and
    proceeds with the fallback. Claude reports no error and invents no
-   style rule.
+   style rule. The report says the readiness-bar grading was skipped.
 9. "Critique this plan." on a plan whose outline prescribes a style
    violation of a rule in the guides the review enforces.
    Expect: a finding naming the violated rule heading, quoted rather
@@ -87,24 +87,28 @@ skill correctly does **not** trigger on the negative cases.
     Expect: a finding that the enumeration displaces the authority it
     sits beside. The proposed solution states the membership rule or
     marks the named members as illustrations.
-12. "Critique this plan." on a plan with no Acceptance criteria
-    section.
+12. "Critique this plan." on a plan with no Acceptance section.
     Expect: a finding labelled `build-changing` rather than
     `text-only`, because a missing criterion changes what the reviewer
     checks.
-13. "Critique this plan." on a plan whose Acceptance criteria carry an
-    entry only the implementer needs.
-    Expect: a finding that the entry fails the altitude test, with the
+13. "Critique this plan." on a plan whose Acceptance section carries a
+    bullet only the implementer needs.
+    Expect: a finding that the bullet fails the altitude test, with the
     proposed solution moving it into the Outline.
 14. "Critique this plan." on a plan whose Scope runs to four
-    paragraphs and whose `Check:` clause spells out a procedure.
+    paragraphs and whose Mechanical bullet chains three commands.
     Expect: a finding per budget violation, with the proposed solution
-    delegating the long check to an Outline verify action.
+    splitting the bullet or restating it as a Semantic claim.
 15. "Critique this plan." on a plan whose outline action reads "Add
     the field and migrate the callers".
     Expect: a finding that the action is compound, with the proposed
     solution splitting it into one action per line.
-16. Negative: "Critique the naming in this function."
+16. "Critique this plan." on a repo with the sdlc plugin installed, on
+    a plan whose Scope names a bordering issue by its number.
+    Expect: Claude reads the installed `sdlc:orchestrate-readiness`
+    skill and grades the plan against its bar. The failure arrives as
+    a `build-changing` finding whose provenance names the bar item.
+17. Negative: "Critique the naming in this function."
     Expect: the skill does not trigger; it is scoped to plans and
     specs.
 
@@ -133,8 +137,8 @@ skill correctly does **not** trigger on the negative cases.
 6. "Plan the work for issue #42." on an issue whose work calls an
    external SDK.
    Expect: Claude reads the SDK docs before prescribing the call
-   pattern, and cites what it read. Long citations land in a
-   References section at the bottom.
+   pattern. The plan restates each fact it read in the body, in the
+   present tense, with no URL.
 7. "Plan the work for issue #42." with a mid-interview ruling that
    renames a field.
    Expect: Claude records the ruling to
@@ -147,21 +151,20 @@ skill correctly does **not** trigger on the negative cases.
    - Problem
    - Scope
    - Solution
-   - Acceptance criteria
+   - Acceptance
    - Outline
+   - Files affected (floor)
    - Open questions
-   - References, which is optional
 
-   Acceptance criteria carries a Postconditions subsection and an
-   Invariants subsection. Postconditions is non-empty. Invariants
-   reads `None.` plus one clause when the outline touches no contract.
+   The Acceptance section carries a `### Mechanical` and a
+   `### Semantic` sub-heading. Every existing contract the outline
+   touches has one Acceptance bullet.
 9. "Plan the work for issue #42."
-   Expect: every entry of Postconditions and Invariants states a claim
-   about the merged result, quantified over a class with its
-   membership rule. Each takes the entry form, with `Check:` and
-   `Pinned by:` or `Waiver:` as sub-bullets. No entry is an action or
-   an exemplar to imitate, and no entry is something only the
-   implementer needs.
+   Expect: every Acceptance bullet is a bold title phrase and one
+   claim sentence about the merged result, quantified over a class
+   with its membership rule. Each Mechanical bullet names one
+   read-only command. No bullet names a test, is an action or an
+   exemplar to imitate, or is something only the implementer needs.
 10. "Plan the work for issue #42."
     Expect: the Propose step runs in two stages. Stage one shows the
     framing, the scope summary, and the candidate solutions, and stops
@@ -171,12 +174,14 @@ skill correctly does **not** trigger on the negative cases.
     fact the repo's `CLAUDE.md` says several surfaces mirror.
     Expect: Scope names those surfaces. The Outline carries one
     class-level sweep action with a grep-shaped verify command. Scope
-    names by number the issues whose work borders this one.
+    describes the work that borders this one and names no issue
+    number.
 12. "Plan the work for issue #42." on a machine with no sdlc plugin
     installed.
     Expect: Claude reads the bundled `docs/review-sources.md` for the
-    review's sources and the decision set, and proceeds with no
-    error.
+    review's sources and proceeds with no error. The plan still
+    carries the grammar's headings. The report says the readiness-bar
+    grading and the emission-bar check were skipped.
 13. "Plan the work for issue #42." on an issue whose solution states
     a two-step write with no completion rule.
     Expect: Claude reads the repo for a class rule for that kind of
@@ -255,7 +260,7 @@ skill correctly does **not** trigger on the negative cases.
    Expect: Claude splits the bullet rather than appending a clause,
    and style-sweeps the whole unit the edit landed in.
 3. "Apply these instructions." on an instruction whose edit would drop
-   a criterion's `Check:` command.
+   the command an Acceptance bullet names.
    Expect: the read-back finds the changed meaning. Claude reverts the
    edit and reports the instruction unapplied with the conflict named.
 4. "Apply these instructions." on an instruction that conflicts with
@@ -278,12 +283,11 @@ skill correctly does **not** trigger on the negative cases.
    surface. The stop report names the surface and the rule that ended
    the loop.
 2. "Keep critiquing and fixing the plan on issue #42 until it
-   settles." on an issue whose body already carries a promoted plan
-   and a trailing `## Notes` section.
-   Expect: the loop runs in place over the body's plan sections, with
-   one edit of the body per round. Nothing moves the plan back into a
-   comment. The `## Notes` section passes through each round byte for
-   byte unchanged.
+   settles." on an issue whose body already carries a promoted plan.
+   Expect: the loop runs in place over the whole body, with one edit
+   of the body per round. Nothing moves the plan back into a comment.
+   The body carries an Open questions section only while the ledger
+   holds an open item.
 3. "Run the critique loop on issue #42." on a plan whose round yields
    verified discuss findings.
    Expect: the loop pauses on the blocked rule before it applies the
@@ -357,16 +361,16 @@ skill correctly does **not** trigger on the negative cases.
 ## promote-plan
 
 1. "Promote the plan on issue #42 into the issue."
-   Expect: the skill triggers. The plan becomes the issue body, whose
-   first heading is `## Problem`. Whatever the old body carried that
-   the plan does not state lands under a trailing `## Notes` section.
+   Expect: the skill triggers. The plan becomes the whole issue body,
+   whose first heading is `## Problem`, and Claude authors no section
+   of its own. An Open questions section reading `None.` is dropped.
    Claude asks one question covering both the body write and the
-   comment deletion, and asks nothing further before deleting.
+   comment deletion, and asks nothing further before deleting. The
+   report gives the verdict of `/sdlc:orchestrate-readiness <N>`.
 2. "Move the plan comment into the issue body." on an issue whose
    body already carries a promoted plan.
    Expect: Claude replaces the whole body with the new plan, and
-   carries the existing `## Notes` section's leftovers forward into
-   the new body's `## Notes`.
+   carries nothing of the old body forward.
 3. "Promote this plan into issue #42." on a plan comment already
    nested under a level-two Plan header, whose own sections are `###`.
    Expect: Claude drops that header line and promotes the plan with
@@ -376,7 +380,13 @@ skill correctly does **not** trigger on the negative cases.
    Expect: Claude shows the open questions and asks whether to promote
    anyway. It proceeds only on a yes, and the report says the plan was
    promoted with open questions.
-5. Negative: "Write a plan for issue #42."
+5. "Promote the plan on issue #42." on a repo with the sdlc plugin
+   installed, on a plan whose Acceptance section has no bullet.
+   Expect: Claude grades the plan against the installed
+   `sdlc:orchestrate-readiness` bar before it writes anything. It
+   shows the gaps and asks whether to promote anyway, and it proceeds
+   only on a yes.
+6. Negative: "Write a plan for issue #42."
    Expect: `promote-plan` does not trigger; `write-plan` does.
 
 ## install-writing-style
