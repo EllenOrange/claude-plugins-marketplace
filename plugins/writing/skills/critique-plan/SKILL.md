@@ -85,8 +85,8 @@ Then hunt for gaps: sub-problems no unit addresses, and actions a unit
 needs but does not contain.
 
 An Open questions section that carries a bullet absent from the
-caller's known-open list is a build-changing finding. Its consequence
-is the implementer's stop. With no caller, every bullet counts. The
+caller's known-open list is a finding. Its consequence is the
+implementer's stop. With no caller, every bullet counts. The
 section's empty form is the one `write-plan` → "5. Write" owns.
 
 ### Run the review's sources
@@ -118,8 +118,6 @@ it was skipped.
 Apply the altitude test that `write-plan` → "State the acceptance
 criteria" owns. An Acceptance bullet only the implementer needs fails
 it. Report the failure and prescribe moving the text into the Outline.
-This finding is build-changing, because the review grades whatever
-reads as a criterion.
 
 ### Report a budget violation
 
@@ -147,8 +145,8 @@ rpcs, derive the true set from the code and compare. Enumerate:
   `write-plan` → "State the acceptance criteria"
 - the files that restate a rule the plan changes
 
-A list smaller than the derived set is a build-changing finding even
-when every listed member is correct. Prescribe stating the membership
+A list smaller than the derived set is a finding even when every
+listed member is correct. Prescribe stating the membership
 rule as a class-level sweep action with a verify command. Do not
 prescribe adding the missing member to the list: a grown list is
 still frozen, and it goes stale on the next change.
@@ -163,15 +161,15 @@ a finding unless the plan waives it explicitly:
 - an action that pins the order of checks but not what each check
   evaluates
 
-These findings are build-changing: the implementer reads the silence
-as a decision and builds the gap.
+Each is a finding because the implementer reads the silence as a
+decision and builds the gap.
 
 ### Flag a rule stated twice with no owner
 
 When the plan writes the same rule or derivation into two sites,
 prescribe naming one owning site, with the other site citing it.
-This finding is text-only, and it is still worth reporting: every
-copy is critique surface, and copies drift apart.
+Report it even when the copies agree: every copy is critique
+surface, and copies drift apart.
 
 Check the plan's own actions against the plan's ownership rule. An
 action that prescribes a copy of a fact the plan declares owned

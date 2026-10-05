@@ -87,10 +87,10 @@ skill correctly does **not** trigger on the negative cases.
     Expect: a finding that the enumeration displaces the authority it
     sits beside. The proposed solution states the membership rule or
     marks the named members as illustrations.
-12. "Critique this plan." on a plan with no Acceptance section.
-    Expect: a finding labelled `build-changing` rather than
-    `text-only`, because a missing criterion changes what the reviewer
-    checks.
+12. "Critique this plan." on a repo with the sdlc plugin installed, on
+    a plan with no Acceptance section.
+    Expect: a `readiness-failure` finding whose provenance names the
+    bar's Acceptance criteria item.
 13. "Critique this plan." on a plan whose Acceptance section carries a
     bullet only the implementer needs.
     Expect: a finding that the bullet fails the altitude test, with the

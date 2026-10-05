@@ -306,10 +306,10 @@ Provenance and rulings stay in the state files.
 ## 4. Check the stopping rules
 
 A finding is **material** per `critique-plan` → "4. Collect",
-which owns the definition. A finding that names one more site the
-plan's existing class-level action already sweeps is not
-material. Several rules below pivot on this term, so apply the
-bar before you tally a round's findings.
+which owns the definition. The rules below count a finding that
+names one more site the plan's existing class-level action already
+sweeps as not material, whatever its label. Several rules pivot on
+this term, so apply the bar before you tally a round's findings.
 
 Check these rules in order after each round. Act on the first one
 that matches, except where a rule says otherwise. The blocked rule
