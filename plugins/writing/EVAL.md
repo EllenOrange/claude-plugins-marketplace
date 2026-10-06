@@ -90,7 +90,7 @@ skill correctly does **not** trigger on the negative cases.
 12. "Critique this plan." on a repo with the sdlc plugin installed, on
     a plan with no Acceptance section.
     Expect: a `readiness-failure` finding whose provenance names the
-    bar's Acceptance criteria item.
+    bar item that requires an `## Acceptance` section.
 13. "Critique this plan." on a plan whose Acceptance section carries a
     bullet only the implementer needs.
     Expect: a finding that the bullet fails the altitude test, with the
