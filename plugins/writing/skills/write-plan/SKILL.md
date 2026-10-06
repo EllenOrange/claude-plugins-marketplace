@@ -37,7 +37,8 @@ the scheme, as `sdlc:agent-result-persist-interface` → "The
 identifying flags" resolves its repo value. Each segment holds only
 letters, digits, `.`, `_`, and `-`, and no segment is `.` or `..`.
 Stop and report before you write any state when the `gh` call fails,
-when the value has no host, or when a segment falls outside that set.
+when the value has no host, when a segment falls outside that set, or
+when a segment is `.` or `..`.
 No fallback directory exists.
 
 The state has these files:
@@ -262,9 +263,14 @@ sweep returns through `writing:summarize-findings` as that owner
 prescribes. This seat's own behavior is the verdict handling:
 
 - A `fix` verdict's repo-derived answer goes to the one fold call the
-  owning Output section prescribes. Record the answer in `ledger.md`
-  as a vetoable ruling, marked per "Define the ledger's entry
-  classes", only once the fold call reports its check passed.
+  owning Output section prescribes. Spawn that call as a
+  general-purpose subagent on the Opus model, per `sweep-consequences`
+  → "Execution context", and instruct it to load
+  `writing:sweep-consequences`. Pass it the fold-call inputs
+  `sweep-consequences` → "What each caller passes" names. Record the
+  answer in `ledger.md` as a vetoable ruling, marked per "Define the
+  ledger's entry classes", only once the fold call reports its check
+  passed.
 - A fold answer whose check failed, and every question the fold call
   raises, lands in the ledger as a `discuss` item.
 - A `refute` verdict follows the owning Output section.

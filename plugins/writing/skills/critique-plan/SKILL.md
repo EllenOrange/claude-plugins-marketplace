@@ -32,11 +32,10 @@ such as `writing:converge-plan`, may also pass any of these:
   `sweep-consequences` → "Output" owns. They come only with a prior
   snapshot. Use them to tell which prior-round text each instruction
   added.
-- **An evidence file.** The caller's `evidence.md`, by path. It holds
-  the records of the evidence class `write-plan` → "Record evidence
-  before the sentence" defines. With no evidence file passed, verify
-  every claim yourself per "Verify against the ref the plan builds
-  on".
+- **An evidence file.** The caller's `evidence.md`, by path. Its
+  records take the shape `write-plan` → "The state directory" owns.
+  With no evidence file passed, verify every claim yourself per
+  "Verify against the ref the plan builds on".
 
 Every input is optional. Without them, critique the plan as it stands.
 

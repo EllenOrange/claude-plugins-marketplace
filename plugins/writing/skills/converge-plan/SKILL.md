@@ -298,10 +298,14 @@ because the round pauses before it edits anything.
    is the tally arithmetic:
    - A `fix`-triaged question counts as an accepted material
      finding. Its repo-derived answer goes to the round's one fold
-     call, which writes `batch-<round>-fold.md`. Record the answer in
-     the ledger as a vetoable ruling carrying its derivation, marked
-     per `write-plan` → "Define the ledger's entry classes", only once
-     the fold call reports its check passed.
+     call. Spawn that call as a general-purpose subagent on the Opus
+     model, per `sweep-consequences` → "Execution context", and
+     instruct it to load that skill. Pass it the fold-call inputs
+     `sweep-consequences` → "What each caller passes" names, with
+     `batch-<round>-fold.md` as its instruction file. Record the
+     answer in the ledger as a vetoable ruling carrying its
+     derivation, marked per `write-plan` → "Define the ledger's entry
+     classes", only once the fold call reports its check passed.
    - A fold answer whose check failed, and every question the fold
      call raises, lands in the ledger as a `discuss` item and pauses
      the round under "Blocked".
@@ -316,7 +320,8 @@ because the round pauses before it edits anything.
    `batch-<round>.md` afresh over the enlarged set:
    - the round's accepted findings
    - the round's verified `fix`-triaged answers
-   - the pause's user rulings
+   - the user rulings of every pause the round has taken, a step 3
+     pause included
    - the standing Open questions sync
 
    The re-run's questions take the same triage.

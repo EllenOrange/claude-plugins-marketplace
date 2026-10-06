@@ -98,7 +98,9 @@ Every path a caller passes sits in its own state directory.
   the standing Open questions sync as the decision set. The sync
   carries the located plan surface and its form rule. It also passes
   the round's plan text, the ledger, and its evidence copy by path,
-  and `batch-<round>.md` as the instruction file.
+  and `batch-<round>.md` as the instruction file. A resume re-run's
+  decision set also carries the user rulings of every pause the round
+  has taken.
 - **`writing:write-plan`'s core-draft seat** passes the interview's
   whole ruling set as the decision set, plus the core draft, the
   ledger, and `evidence.md` by path, and `core-batch.md` as the
