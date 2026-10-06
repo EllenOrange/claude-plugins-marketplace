@@ -77,12 +77,13 @@ Skills:
   cross-cutting consequences of the whole set, walks every behavior
   those decisions alter, and finds each fix's sibling defect
   instances. It owns the channel that routes a question it cannot
-  settle back through the caller's triage. It writes no file and posts
-  nothing.
+  settle back through the caller's triage. It writes only the
+  instruction file its caller names, appends only to the evidence file
+  its caller names, and posts nothing.
 - **sweep-style**: sweep a whole plan against the communication-style
   rule and `write-plan`'s Write step, and emit the repairs as
-  instructions. It emits no question. It writes no file and posts
-  nothing.
+  instructions. It emits no question. It writes only the instruction
+  file it is handed, and posts nothing.
 - **revise-plan**: apply an instruction batch to one plan file in fresh
   context. It style-sweeps every unit an instruction landed in, then
   reads the result back to confirm that every decision, obligation,
