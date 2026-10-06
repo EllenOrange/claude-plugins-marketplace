@@ -35,14 +35,13 @@ emits:
 - Problem
 - Scope
 - Solution
-- Acceptance criteria, with its Postconditions and Invariants
-  subsections
+- Acceptance, with its Mechanical and Semantic sub-headings
 - Outline
+- Files affected (floor)
 - Open questions
 
-An optional References section may follow them. `write-plan` → "State
-the acceptance criteria" owns each subsection's entry form and the
-Invariants empty form.
+A body surface carries the Open questions section only while a
+question is open.
 
 When both surfaces exist, the body governs, because it is the surface
 the review reads. Name the leftover comment in the report.
@@ -159,11 +158,15 @@ initializes its own fields on seeding.
 Compare `.claude/tmp/write-plan-<issue>/draft.md` against the live
 plan surface before you reuse the seed. `draft.md` holds the posted
 full plan, so a byte match is expected and a mismatch means someone
-edited the plan at post time. On a mismatch, show the user the
-difference and confirm before reusing the seed. That confirmation is
-an interaction outside the round structure, before round 1, like the
-staleness guard's resume confirmation. "The body-surface guard"
-discussion in "1. Locate the plan" owns which surface is the live one.
+edited the plan at post time. On a body surface, first apply to a copy
+of `draft.md` the edits `promote-plan` → "3. Normalize the plan's
+headings" makes: the heading normalization and the deletion of a
+`None.` Open questions section. Compare that copy instead. On a
+mismatch, show the user the difference and confirm before reusing the
+seed. That confirmation is an interaction outside the round
+structure, before round 1, like the staleness guard's resume
+confirmation. "The body-surface guard" discussion in "1. Locate the
+plan" owns which surface is the live one.
 
 ### The staleness guard
 
@@ -187,8 +190,7 @@ because the round pauses before it edits anything.
 
 1. **Snapshot the plan.** Write the plan as the located surface
    currently carries it to `snapshot-<round>.md`. That is the comment
-   body, or the promoted body from `## Problem` through the end of the
-   last plan section, stopping before `## Notes`.
+   body, or the whole promoted body.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
    and instruct it to load `writing:critique-plan`. Pass it:
    - the round's snapshot as the plan text, by path
@@ -205,12 +207,12 @@ because the round pauses before it edits anything.
    finding against a repo-derived one is allowed. Such a finding is
    the veto trigger this session triages.
 
-   Withhold the ledger's loop facts. Tell the critic that a promoted
-   body's `## Notes` section is not plan and yields no finding, which
-   the snapshot already excludes. Brief it with the materiality bar.
+   Withhold the ledger's loop facts. Tell the critic that a leftover
+   `## Notes` section on a promoted body is plan text, graded against
+   the readiness bar like the rest. Brief it with the materiality bar.
    Under that bar, the critic reports a finding only when one of these
    holds:
-   - the finding is build-changing per `critique-plan` → "4. Collect"
+   - the finding is material per `critique-plan` → "4. Collect"
    - the plan's existing class-level actions and verify commands do
      not already cover the finding
 
@@ -246,8 +248,11 @@ because the round pauses before it edits anything.
      treatment where `critique-plan` prescribes it.
    - Every instruction the sweep emits.
    - One that updates the plan's Open questions section to match the
-     ledger. It writes the empty form `write-plan` → "5. Write" owns,
-     so every writer and every reader of the section share one form.
+     ledger. On a body surface, it writes the section only while the
+     ledger holds an open item, and omits the section otherwise. On a
+     comment surface, it writes the empty form `write-plan` →
+     "5. Write" owns when no item is open, so every writer and every
+     reader of the section share one form.
 
    Write the batch to the ledger.
 
@@ -255,7 +260,7 @@ because the round pauses before it edits anything.
    `sweep-consequences` → "Output" owns the triage seat, the finding
    shape, the fold rule, and the refute rule. This seat's own behavior
    is the tally arithmetic:
-   - A `fix`-triaged question counts as an accepted build-changing
+   - A `fix`-triaged question counts as an accepted material
      finding. Record its repo-derived answer in the ledger as a
      vetoable ruling carrying its derivation, marked per `write-plan`
      → "Define the ledger's entry classes". The fold follows the
@@ -283,11 +288,7 @@ because the round pauses before it edits anything.
    content. Never post a new comment. On a body surface:
    1. Run "The body-surface guard".
    2. Re-read the live body.
-   3. Replace the text from `## Problem` to the line before
-      `## Notes`, or to the end of the body when it carries no
-      `## Notes`, per `promote-plan` → "4. Write the plan into the
-      issue body". `## Notes` and everything after it passes through
-      byte for byte unchanged.
+   3. Replace the whole body with the revised draft.
    4. Write the result.
    5. Re-read the body after the write.
 
@@ -304,11 +305,11 @@ Provenance and rulings stay in the state files.
 
 ## 4. Check the stopping rules
 
-A finding is **build-changing** per `critique-plan` → "4. Collect",
-which owns the definition. A finding that names one more site the
-plan's existing class-level action already sweeps is not
-build-changing. Several rules below pivot on this term, so apply the
-bar before you tally a round's findings.
+A finding is **material** per `critique-plan` → "4. Collect",
+which owns the definition. The rules below count a finding that
+names one more site the plan's existing class-level action already
+sweeps as not material, whatever its label. Several rules pivot on
+this term, so apply the bar before you tally a round's findings.
 
 Check these rules in order after each round. Act on the first one
 that matches, except where a rule says otherwise. The blocked rule
@@ -325,16 +326,16 @@ pause resolves.
    exactly as the churn pass's edit does. Critique rounds alone consume
    budget. A consolidation pass and a blocked pause consume none, and a
    resume continues the same count.
-2. **Dry.** The round produced zero accepted build-changing fix
-   findings and zero verified build-changing discuss findings.
+2. **Dry.** The round produced zero accepted material fix findings
+   and zero verified material discuss findings.
    Accepted means verified and past the acceptance bar in "Run a
    round". Text-only fixes may still have landed, and they do not
-   reset dryness. A round carrying build-changing discuss findings is
+   reset dryness. A round carrying material discuss findings is
    not dry, and the blocked rule handles it. Stop and report after K
    consecutive dry rounds.
 3. **Blocked.** The round produced verified discuss findings. A
    `discuss` survivor of the sweep-question triage is one of them, and
-   counts as a verified build-changing discuss finding in every tally.
+   counts as a verified material discuss finding in every tally.
    The round pauses before any edit of the round: at "Run a round"
    step 3 for a finding the critic raised, and at step 4 for a
    surviving sweep question.
@@ -387,11 +388,11 @@ pause resolves.
 
    On a second firing, stop and report.
 5. **Negative value.** The round produced more rejected findings than
-   accepted build-changing ones. Acceptance-bar rejections count
+   accepted material ones. Acceptance-bar rejections count
    toward the rejected total. The denominator is accepted rather than
    verified on purpose. Under a verified denominator, an
    acceptance-bar rejection would raise the rejected total while the
-   finding it rejected still counted as build-changing. The same
+   finding it rejected still counted as material. The same
    finding would then sit on both sides of the comparison. Stop and
    report. The marginal round costs more verification than it
    returns.

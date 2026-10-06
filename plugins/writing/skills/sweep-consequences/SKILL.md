@@ -67,7 +67,7 @@ rather than restating the mechanism. The obligations on a caller are:
 - **`writing:write-plan`'s core-draft seat** passes the interview's
   whole ruling set as the decision set, plus the core draft and the
   ledger by path. The core draft carries the Problem, Scope, Solution,
-  and Acceptance criteria sections and no other, so an instruction
+  and Acceptance sections and no other, so an instruction
   targets those sections by the fixed section names `write-plan` →
   "5. Write" owns. Its instructions land in the revision `write-plan`
   → "Draft the core" runs, before the full plan is drafted.

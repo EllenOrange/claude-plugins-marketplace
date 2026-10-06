@@ -1,6 +1,6 @@
 ---
 name: promote-plan
-description: Move an approved plan out of its issue comment and make it the issue body, carrying the old body's leftover detail into a Notes section. Use when the user asks to promote, adopt, or move a plan into the issue itself, or says the plan should live in the issue body rather than in a comment.
+description: Move an approved plan out of its issue comment and make it the whole issue body, stopping first when the plan fails the sdlc readiness bar. Use when the user asks to promote, adopt, or move a plan into the issue itself, or says the plan should live in the issue body rather than in a comment.
 ---
 
 # promote-plan
@@ -14,10 +14,9 @@ present. Otherwise use the plugin's bundled copy at
 `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 The plan text itself moves verbatim. This skill relocates prose; it
-does not rewrite it. It makes two edits. Step 3 normalizes the plan's
-heading levels. Step 4 gathers what the old body carried and the plan
-does not into a `## Notes` section, the one section this skill
-authors.
+does not rewrite it. Step 3 makes its only edits: it normalizes the
+plan's heading levels, and it drops an empty Open questions section.
+This skill authors no section of its own.
 
 ## 1. Find the plan comment
 
@@ -35,14 +34,12 @@ sections `write-plan` emits:
 - Problem
 - Scope
 - Solution
-- Acceptance criteria, with its Postconditions and Invariants
-  subsections
+- Acceptance, with its Mechanical and Semantic sub-headings
 - Outline
+- Files affected (floor)
 - Open questions
 
-An optional References section may follow them. `write-plan` → "State
-the acceptance criteria" owns each subsection's entry form and the
-Invariants empty form. Then act on what you found:
+Then act on what you found:
 
 - **Exactly one plan comment.** Use it.
 - **Several plan comments.** Show the user the candidates with their
@@ -50,18 +47,17 @@ Invariants empty form. Then act on what you found:
 - **No plan comment.** Say so and stop. Do not write a plan here;
   that is `writing:write-plan`.
 
-## 2. Read both texts verbatim
+## 2. Read the plan verbatim
 
-Fetch the comment body and the current issue body into files. Keep
-both exactly as stored:
+Fetch the comment body into a file, exactly as stored. Step 3 edits
+this file in place, and step 4 writes the issue body from it:
 
 ```bash
-gh issue view <N> --json body --jq .body > "$scratch/body.md"
 gh api repos/{owner}/{repo}/issues/comments/<comment-id> \
   --jq .body > "$scratch/plan.md"
 ```
 
-Write the working files to the session scratchpad if the harness gave
+Write the working file to the session scratchpad if the harness gave
 you one, else to `.claude/tmp/`.
 
 Then read the plan's Open questions section, in the empty form
@@ -72,12 +68,30 @@ questions.
 
 An open question in a promoted plan stops the implementer. The
 implementer stops on a design decision the issue does not answer, and
-the promoted plan is part of the issue body it reads.
+the promoted plan is the issue body it reads.
+
+Then grade the plan against every item of the installed
+`sdlc:orchestrate-readiness` bar. Grade it as step 3 leaves it,
+with its sections at `##` and its unit headers at `###`, however deep
+the comment nests them, and with an Open questions section that reads
+`None.` deleted. Resolve that skill per
+its entry in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Run each
+Mechanical bullet's command against the tree, per that skill's
+executed Mechanical check, and read the issue's edges for the items
+that key on them. The assembled body is this plan and nothing else,
+per step 4, so a gap in the plan is a gap in the body.
+
+- **Any gap.** Stop. Show the user the gaps. Ask whether to promote
+  anyway. Proceed only on a yes. Say in the report that you promoted
+  the plan with bar gaps.
+- **No sdlc install.** When the locator finds no sdlc install, skip
+  the grading. Say in the report that it was skipped.
 
 ## 3. Normalize the plan's headings
 
 The plan becomes the body, so its sections must be `##` and its unit
-headers `###`. Dispatch on the plan text's first heading:
+headers `###`. Make every edit below in `$scratch/plan.md`. Dispatch
+on the plan text's first heading:
 
 - **`## Problem`.** The plan already carries the levels the body
   needs. Change nothing.
@@ -91,42 +105,34 @@ headers `###`. Dispatch on the plan text's first heading:
 Leave headings inside fenced code blocks alone. A `#` line inside a
 fence is code or a comment, not a heading.
 
+Then delete an Open questions section that reads the single line
+`None.`, heading included. A body carries Open questions only while a
+question is open.
+
 ## 4. Write the plan into the issue body
 
-The assembled body is the normalized plan, then at most one `## Notes`
-section. It carries nothing else, and nothing above the plan.
+The assembled body is the normalized plan in `$scratch/plan.md` and
+nothing else. Nothing of the old body carries over.
 
-`## Notes` carries every detail and piece of evidence the old body
-holds that the plan does not state, in the old body's own words, as
-prose or bullets. It carries nothing the plan already states. When the
-old body leaves nothing over, write no `## Notes` section.
-
-Which part of the old body supplies those leftovers depends on the
-body's shape:
-
-- **Its first heading is `## Problem`.** The body is a prior
-  promotion, so the source is its existing `## Notes` section.
-- **It ends in a `## Plan` section.** The body was promoted before
-  this skill wrote whole bodies, so the source is the text above
-  `## Plan`.
-- **Neither.** The source is the whole body.
-
-Assemble the file, then ask once. Show the user the assembled body and
-the comment URL. Ask whether to write the body and delete the comment.
-Deleting a comment is irreversible, so this one question covers both
-acts and step 5 asks no second time. Proceed on a yes. On a no, write
-nothing and stop.
+Ask once. Show the user the assembled body and the comment URL. Ask
+whether to write the body and delete the comment. Deleting a comment
+is irreversible, so this one question covers both acts and step 5
+asks no second time. Proceed on a yes. On a no, write nothing and
+stop.
 
 Update the issue with the assembled file. Prefer an installed issue
 skill, for example `/issues:issue-update`, which replaces the body
 from a file. Otherwise use `gh`:
 
 ```bash
-gh issue edit <N> --body-file "$scratch/body.md"
+gh issue edit <N> --body-file "$scratch/plan.md"
 ```
 
 Then re-read the issue body. Confirm it carries the plan. Do not
 proceed to step 5 until you confirm it.
+
+After the re-read, run `/sdlc:orchestrate-readiness <N>` when the sdlc
+plugin is installed. Carry its verdict into the report.
 
 ## 5. Delete the source comment
 
@@ -141,6 +147,7 @@ gh api --method DELETE \
 
 ## 6. Report
 
-Give the user the issue URL and one sentence on what moved. Say what
-`## Notes` carries, or that the body has no `## Notes` section. Say
-that you promoted the plan with open questions when you did.
+Give the user the issue URL and one sentence on what moved. Give the
+verdict of the `sdlc:orchestrate-readiness` run, or say that the check
+was skipped because no sdlc install was found. Say that you promoted
+the plan with open questions or with bar gaps when you did.

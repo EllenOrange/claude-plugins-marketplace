@@ -45,9 +45,11 @@ Every input is optional. Without them, critique the plan as it stands.
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
   skill it names, or its fallback. Then read the style guides it names,
   with the per-guide fallback it states.
-- Read the neighboring issues the plan's Scope names, and the issue's
-  own edges. Read the edges as `write-plan` → "Derive the scope"
-  prescribes.
+- Resolve `sdlc:orchestrate-readiness` per its entry in
+  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`, and read the
+  installed skill. It owns the readiness bar, and it has no fallback.
+- Read the issue's own edges and the issues they name. Read the edges
+  as `write-plan` → "Derive the scope" prescribes.
 
 ## 2. Check the problem definition
 
@@ -83,8 +85,8 @@ Then hunt for gaps: sub-problems no unit addresses, and actions a unit
 needs but does not contain.
 
 An Open questions section that carries a bullet absent from the
-caller's known-open list is a build-changing finding. Its consequence
-is the implementer's stop. With no caller, every bullet counts. The
+caller's known-open list is a finding. Its consequence is the
+implementer's stop. With no caller, every bullet counts. The
 section's empty form is the one `write-plan` → "5. Write" owns.
 
 ### Run the review's sources
@@ -96,22 +98,36 @@ prescribes, then report the finding that file names for a failing
 answer. That file owns the questions and the findings; restate neither
 here.
 
+### Grade against the readiness bar
+
+Grade the plan against the installed `sdlc:orchestrate-readiness`
+bar:
+
+- Ask each bar item's question of the plan.
+- Run each Mechanical bullet's command against the tree, per that
+  skill's executed Mechanical check.
+- Report each failure as a `readiness-failure` finding whose
+  provenance is the bar item it fails.
+
+When the locator in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`
+finds no sdlc install, skip this grading and say in the report that
+it was skipped.
+
 ### Report a criterion above its altitude
 
 Apply the altitude test that `write-plan` → "State the acceptance
-criteria" owns. A criterion only the implementer needs fails it.
-Report the failure and prescribe moving the text into the Outline.
-This finding is build-changing, because the review grades whatever
-reads as a criterion.
+criteria" owns. An Acceptance bullet only the implementer needs fails
+it. Report the failure and prescribe moving the text into the Outline.
 
 ### Report a budget violation
 
 Each budgeted section names its own budget. `write-plan` → "State the
-acceptance criteria" owns the criteria's size discipline, and
+acceptance criteria" owns the Acceptance bullets' size discipline, and
 `write-plan` → "Derive the scope" owns Scope's. Report a section that
 exceeds the budget its owner states, such as an oversized Scope
-paragraph or a `Check:` clause grown into a procedure. Prescribe the
-delegation that owner sanctions.
+paragraph, a claim that runs past one sentence, or a Mechanical bullet
+that needs more than one command. Prescribe the split or the
+restatement that owner sanctions.
 
 ### Report a compound action
 
@@ -125,12 +141,12 @@ When the plan binds an obligation to a list of sites, fields, or
 rpcs, derive the true set from the code and compare. Enumerate:
 
 - a shared helper's call sites
-- the writes and reads able to violate a stated invariant per
+- the writes and reads able to violate a touched contract's claim, per
   `write-plan` → "State the acceptance criteria"
 - the files that restate a rule the plan changes
 
-A list smaller than the derived set is a build-changing finding even
-when every listed member is correct. Prescribe stating the membership
+A list smaller than the derived set is a finding even when every
+listed member is correct. Prescribe stating the membership
 rule as a class-level sweep action with a verify command. Do not
 prescribe adding the missing member to the list: a grown list is
 still frozen, and it goes stale on the next change.
@@ -145,15 +161,15 @@ a finding unless the plan waives it explicitly:
 - an action that pins the order of checks but not what each check
   evaluates
 
-These findings are build-changing: the implementer reads the silence
-as a decision and builds the gap.
+Each is a finding because the implementer reads the silence as a
+decision and builds the gap.
 
 ### Flag a rule stated twice with no owner
 
 When the plan writes the same rule or derivation into two sites,
 prescribe naming one owning site, with the other site citing it.
-This finding is text-only, and it is still worth reporting: every
-copy is critique surface, and copies drift apart.
+Report it even when the copies agree: every copy is critique
+surface, and copies drift apart.
 
 Check the plan's own actions against the plan's ownership rule. An
 action that prescribes a copy of a fact the plan declares owned
@@ -217,15 +233,22 @@ Note these things per finding as well. They survive into the report.
 - **Provenance.** The file and the ref you verified the finding
   against. For an external claim, note the doc page or source file
   you read. Label a finding with no provenance unverified.
-- **The build-changing label.** This step owns the label's definition.
-  Mark the finding `build-changing` when acting on it changes what the
-  implementer builds, decides, or verifies, or what the reviewer
-  checks. Mark it `text-only` when acting on it changes the plan's
-  prose alone. A contradiction between two of the plan's own
-  statements is build-changing, because the implementer cannot know
-  which statement to follow. A missing or unfalsifiable criterion is
-  build-changing, because the reviewer checks the criteria the plan
-  carries.
+- **The finding label.** This step owns the labels' definitions. Give
+  each finding exactly one of them:
+  - `readiness-failure` when the finding fails an item of the
+    installed `sdlc:orchestrate-readiness` bar. A finding that is both
+    a bar failure and build-changing takes this label.
+  - `build-changing` when acting on it changes what the implementer
+    builds, decides, or verifies, or what the reviewer checks. A
+    contradiction between two of the plan's own statements is
+    build-changing, because the implementer cannot know which
+    statement to follow. A missing or unfalsifiable criterion is
+    build-changing, because the reviewer checks the criteria the plan
+    carries.
+  - `text-only` when the finding is neither.
+
+  A **material** finding is one labeled `build-changing` or
+  `readiness-failure`.
 - **The prior-round-text label.** Mark the finding when it targets
   text a prior fix round added. This needs the prior plan snapshot
   from the Inputs section, so skip the label when the caller passed
@@ -246,7 +269,7 @@ Constrain that pass:
   problem-definition finding sorts to the top on severity.
 - **Carry both axes.** Axis one is the `summarize-findings` triage
   verdict of `fix`, `refute`, or `discuss`. Axis two is the
-  build-changing label. Both ride through `summarize-findings` inside
+  finding label. Both ride through `summarize-findings` inside
   each finding's own sentence.
 - **Skip the pruning under a loop.** When a caller such as
   `writing:converge-plan` runs this critique, tell

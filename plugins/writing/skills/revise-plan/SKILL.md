@@ -72,7 +72,7 @@ these survives with its meaning unchanged:
 - every obligation
 - every membership rule
 - every qualifier
-- every `Check:` command
+- every command an Acceptance bullet names
 
 Read back only the units this skill edited. The rest of the plan is
 the caller's, and this skill grades none of it.
