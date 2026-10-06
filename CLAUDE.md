@@ -58,12 +58,17 @@ same command produce hits.
 
 ## One skill's state directory is another skill's input
 
-`write-plan` writes its ledger and its draft to
-`.claude/tmp/write-plan-<issue>/`, and leaves the directory in place
-after it posts. `converge-plan` reads that same path to seed its own
-ledger and to compare the draft against the live plan surface. The
-path and the filenames `ledger.md` and `draft.md` are a contract
-between them.
+`write-plan` writes its ledger, its draft, and its evidence log to
+this directory, and leaves the directory in place after it posts:
+
+```text
+${XDG_STATE_HOME:-$HOME/.local/state}/writing/<host>/<owner>/<repo>/write-plan-<issue>/
+```
+
+`converge-plan` reads that same path to seed its own ledger and
+evidence log, and to compare the draft against the live plan surface.
+The path and the filenames `ledger.md`, `draft.md`, and `evidence.md`
+are a contract between them.
 
 A rename on either side dangles as silently as a renamed heading. The
 heading sweep above misses it, because the pointer is a path rather
@@ -77,8 +82,9 @@ git grep -nP 'write-plan-<issue>'
 
 `sweep-consequences` and `sweep-style` each carry a "What each caller
 passes" section naming every seat that spawns them and the inputs that
-seat hands over. The spawn sites live in `converge-plan` and
-`write-plan`, so the fact is stated twice and nothing catches drift.
+seat hands over, file paths included. The spawn sites live in
+`converge-plan` and `write-plan`, so the fact is stated twice and
+nothing catches drift.
 
 Changing what a seat passes, adding a seat, or moving one obliges an
 edit to the sweep skill's caller list in the same commit. Find the

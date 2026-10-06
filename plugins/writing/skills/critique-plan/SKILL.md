@@ -27,6 +27,16 @@ such as `writing:converge-plan`, may also pass any of these:
 - **A prior plan snapshot or diff.** The plan as it stood before the
   caller's most recent fix round. Use it for the prior-round-text
   label in the Collect step.
+- **The prior instruction files.** The instruction files the caller
+  applied since the prior snapshot, by path, in the format
+  `sweep-consequences` → "Output" owns. They come only with a prior
+  snapshot. Use them to tell which prior-round text each instruction
+  added.
+- **An evidence file.** The caller's `evidence.md`, by path. It holds
+  the records of the evidence class `write-plan` → "Record evidence
+  before the sentence" defines. With no evidence file passed, verify
+  every claim yourself per "Verify against the ref the plan builds
+  on".
 
 Every input is optional. Without them, critique the plan as it stands.
 
@@ -41,6 +51,10 @@ Every input is optional. Without them, critique the plan as it stands.
   references. Do not read the whole `docs/` tree.
 - Read the code the plan touches. A critique built only on the plan's
   own text repeats the plan's blind spots.
+- When the caller passes an evidence file, read an evidence item's
+  record, where one exists, before you verify the item. Verify an item
+  with no record, or one whose record you doubt, per "Verify against
+  the ref the plan builds on".
 - Resolve the review's sources per
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
   skill it names, or its fallback. Then read the style guides it names,
@@ -177,6 +191,17 @@ elsewhere is a finding. So is a verify command that counts one phrase
 where the fact has more spellings: it reports a passing count while
 the review counts them all.
 
+### Report a record that contradicts its item
+
+Report each of these as a finding, with the record's item text as its
+provenance:
+
+- a record whose quoted lines do not support its behavior claim
+- a record whose lint or compile run failed, or whose command could
+  not run
+- a record whose command, re-run by you, reports output that
+  contradicts the plan's claim
+
 ### Verify against the ref the plan builds on
 
 Verify every claim about the repo against the ref the plan names. When
@@ -250,9 +275,9 @@ Note these things per finding as well. They survive into the report.
   A **material** finding is one labeled `build-changing` or
   `readiness-failure`.
 - **The prior-round-text label.** Mark the finding when it targets
-  text a prior fix round added. This needs the prior plan snapshot
-  from the Inputs section, so skip the label when the caller passed
-  none.
+  text added since the prior snapshot, whatever produced that text.
+  This needs the prior plan snapshot from the Inputs section, so
+  skip the label when the caller passed none.
 
 ## 5. Report
 

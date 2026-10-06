@@ -24,8 +24,9 @@ accumulated context produces.
 
 - **The plan file path.** Required. This skill edits that file in
   place and touches no other file. It never edits an issue surface.
-- **The instruction batch.** Required. Each instruction names the plan
-  section it targets and the change to make there.
+- **The instruction files, by path.** Required. One or more files in
+  the format `sweep-consequences` → "Output" owns. Apply every
+  instruction in every file.
 
 ## Boundaries
 
@@ -33,6 +34,11 @@ This skill performs no discovery, no finding verification, and no
 acceptance-bar judgment. It does not decide whether an instruction is
 worth applying. An instruction it cannot apply comes back unapplied
 with the conflict named, and the caller decides what happens next.
+
+This skill applies no instruction that names a `file:line`, a hunk
+count, or a parameter position. `write-plan` → "Write for the
+implementer" owns these forbidden forms. Such an instruction comes
+back unapplied, with the conflict named.
 
 ## The style authorities
 
@@ -73,6 +79,9 @@ these survives with its meaning unchanged:
 - every membership rule
 - every qualifier
 - every command an Acceptance bullet names
+
+Confirm also that the text this skill wrote carries none of the
+forbidden forms "Boundaries" names.
 
 Read back only the units this skill edited. The rest of the plan is
 the caller's, and this skill grades none of it.

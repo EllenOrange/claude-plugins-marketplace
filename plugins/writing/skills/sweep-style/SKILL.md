@@ -6,8 +6,9 @@ description: Sweep a whole plan against the style authorities and emit the repai
 # sweep-style
 
 Discover the style repairs a whole plan needs and emit them as
-instructions. This skill writes nothing. `writing:revise-plan` applies
-what this skill emits. Write all prose per the communication-style
+instructions. This skill edits no plan, posts nothing, and writes only
+the instruction file it is handed. `writing:revise-plan` applies what
+this skill emits. Write all prose per the communication-style
 rule. Use the installed copy at
 `~/.claude/rules/communication-style.md` if present, else the plugin's
 bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
@@ -30,12 +31,12 @@ assumptions that hid the sibling instances in the first place.
 
 - **The plan text, by path.** Required. This skill sweeps the whole
   plan, so a plan text always exists when it runs.
+- **The instruction-file path.** Required from every caller.
 
 ## Output
 
-A list of edit instructions. Each instruction names the plan section
-it targets and the change to make there. This skill writes no file and
-posts nothing.
+Write the instructions to the instruction file, truncating it first, in
+the format `sweep-consequences` → "Output" owns.
 
 An instruction may prescribe a restructuring move. `revise-plan` →
 "The edit rules" owns those moves.
@@ -47,14 +48,17 @@ agenda, so this skill has nothing to route.
 
 ## What each caller passes
 
+Every path a caller passes sits in its own state directory.
+
 - **`writing:converge-plan`** passes the consolidation pass's fresh
-  draft by path.
+  draft by path, and `batch-<round>-style.md` as the instruction file.
 - **`writing:write-plan`'s core-draft seat** passes the core draft by
-  path. That draft carries the Problem, Scope, Solution, and
-  Acceptance sections and no other, so the whole plan this
-  skill sweeps is the core at that point.
+  path, and `core-style.md` as the instruction file. That draft
+  carries the Problem, Scope, Solution, and Acceptance sections and no
+  other, so the whole plan this skill sweeps is the core at that
+  point.
 - **`writing:write-plan`'s style-pipeline seat** passes the draft by
-  path.
+  path, and `style.md` as the instruction file.
 
 ## The style agenda
 
@@ -62,14 +66,15 @@ Sweep the whole plan against the communication-style rule and
 `write-plan` → "5. Write". Emit an instruction for each repair the
 sweep finds:
 
-- Split a bullet that carries more than one action.
+- Split an Outline bullet that carries more than one action.
 - Convert an inline series of three or more parallel items to a
   vertical list.
-- Collapse a site-enumeration bullet into a class-level sweep action
-  with a verify command.
 - Apply the "Restatements" item from `write-plan`'s self-review.
 - Rewrite a mechanism paragraph that restates a sibling contract, per
   the mechanism-restatement reading `write-plan` → "5. Write" owns.
+
+The sweep repairs form only. It never merges or splits an Acceptance
+bullet, and it never changes what a sentence claims.
 
 Sweep the whole plan, not the units a prior round touched. Drift
 accumulates wherever the loop has edited, and the loop does not record
