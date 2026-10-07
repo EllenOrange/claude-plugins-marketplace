@@ -58,31 +58,29 @@ same command produce hits.
 
 ## One skill's state directory is another skill's input
 
-`write-plan` writes its ledger, its draft, and its evidence log to
-this directory, and leaves the directory in place after it posts:
+`plugins/writing/bin/writing-plan-state` composes every state path of
+the plan loop, and no skill names one. `write-plan` leaves its ledger,
+its draft, and its evidence log in the script's `write-plan` directory
+for the issue. `converge-plan` seeds its own ledger and evidence log
+from there through the script's `seed` mode, and prints the draft to
+compare it against the live plan surface. The script's `--skill`
+values and the filenames `ledger.md`, `draft.md`, and `evidence.md`
+are a contract between the two skills and the script.
 
-```text
-${XDG_STATE_HOME:-$HOME/.local/state}/writing/<host>/<owner>/<repo>/write-plan-<issue>/
-```
-
-`converge-plan` reads that same path to seed its own ledger and
-evidence log, and to compare the draft against the live plan surface.
-The path and the filenames `ledger.md`, `draft.md`, and `evidence.md`
-are a contract between them.
-
-A rename on either side dangles as silently as a renamed heading. The
-heading sweep above misses it, because the pointer is a path rather
-than quoted prose. Sweep for the directory name instead:
+A rename on any side dangles as silently as a renamed heading. The
+heading sweep above misses it, because the pointer is a flag value or
+a filename rather than quoted prose. Sweep for the script's name,
+which every side carries:
 
 ```bash
-git grep -nP 'write-plan-<issue>'
+git grep -nP 'writing-plan-state\b'
 ```
 
 ## A sweep skill lists its own callers
 
 `sweep-consequences` and `sweep-style` each carry a "What each caller
 passes" section naming every seat that spawns them and the inputs that
-seat hands over, file paths included. The spawn sites live in
+seat hands over, state file names included. The spawn sites live in
 `converge-plan` and `write-plan`, so the fact is stated twice and
 nothing catches drift.
 

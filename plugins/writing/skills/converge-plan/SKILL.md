@@ -102,15 +102,13 @@ marker. Fall back to any ref that carries the `issue-` marker and
 
 ## 2. Set up the state
 
-Keep the loop's state in this directory:
-
-```text
-${XDG_STATE_HOME:-$HOME/.local/state}/writing/<host>/<owner>/<repo>/converge-plan-<issue>/
-```
-
-`write-plan` → "The state directory" owns the segment derivation and
-its stop, and this skill applies both before it writes any state.
-Never use the session scratchpad for the state. A loop that pauses for
+Keep the loop's state in the `converge-plan-<issue>` directory that
+`writing-plan-state` holds for the target repo, with `--skill
+converge-plan` in the state handle. Reach every state file per
+`write-plan` → "Reach the state through the script", which owns the
+state handle, the repo value's resolution and its stop, and the
+staging directory. Apply that stop before you write any state. Never
+use the session scratchpad for the state. A loop that pauses for
 rulings can outlive the session, and the state has to survive that
 pause.
 
@@ -122,7 +120,7 @@ The state has these files:
   - every question still open
   - the loop facts a resumed run needs, such as a churn firing
   - the round's verified fix findings, held across a pause
-  - the round's batch, as the path of `batch-<round>.md` plus whether
+  - the round's batch, as the name of `batch-<round>.md` plus whether
     it has been applied to the round's draft. The ledger copies no
     instruction.
   - the plan's word count per snapshot, a measurement for a later
@@ -148,9 +146,9 @@ The state has these files:
   the located surface. The next round overwrites it.
 - **`evidence.md`, the evidence log.** Its record shape is the one
   `write-plan` → "The state directory" owns. Seeding copies it in, and
-  state setup creates it empty when no write-plan directory seeds it.
-  Every later append lands in this copy, and the critic and the sweep
-  receive this copy's path.
+  `--mode init` creates it empty when no write-plan directory seeds
+  it. Every later append lands in this copy, and the critic and the
+  sweep receive it by name under this skill's state handle.
 - **The instruction files.** Each is written by the sweep call it
   belongs to, in the format `sweep-consequences` → "Output" owns:
   - `batch-<round>.md`, the round's `sweep-consequences` instruction
@@ -167,15 +165,16 @@ no round history.
 
 ### Seed the ledger from the write-plan state
 
-Seed `ledger.md` from the `write-plan-<issue>/` directory when that
-directory is present. It sits under the root `write-plan` → "The
-state directory" owns, for the same repo and issue. This bullet owns
-the seeding trigger. Seeding runs only during this state setup, and
-only while this skill's own `ledger.md` does not yet exist. A resumed
-loop never re-seeds, and a loop whose ledger exists but never seeded
-stays unseeded by design.
+Seed `ledger.md` from the `write-plan-<issue>` directory, which the
+script holds for the same repo and issue, with `--mode seed`. The
+script exits 3 when that directory holds no ledger, and the loop then
+runs unseeded. This bullet owns the seeding trigger. Seeding runs only
+during this state setup, and only while this skill's own `ledger.md`
+does not yet exist, which `--mode list` shows. A resumed loop never
+re-seeds, and a loop whose ledger exists but never seeded stays
+unseeded by design. Run `--mode init` after the seed attempt.
 
-Seeding copies `write-plan-<issue>/evidence.md` beside `ledger.md` as
+Seeding copies write-plan's `evidence.md` beside `ledger.md` as
 well.
 
 A seeded ledger arrives with its class marks already present, matching
@@ -183,8 +182,9 @@ the format split `write-plan` → "The state directory" states. It
 arrives with no round-indexed field and no loop fact, so this skill
 initializes its own fields on seeding.
 
-Compare `write-plan-<issue>/draft.md` against the live plan surface
-before you reuse the seed. `draft.md` holds the posted
+Compare write-plan's `draft.md` against the live plan surface before
+you reuse the seed. Print it with `--skill write-plan` in the state
+handle. `draft.md` holds the posted
 full plan, so a byte match is expected and a mismatch means someone
 edited the plan at post time. On a body surface, first apply to a copy
 of `draft.md` the edits `promote-plan` → "3. Normalize the plan's
@@ -227,17 +227,18 @@ because the round pauses before it edits anything.
    body, or the whole promoted body. Record its word count in the
    ledger.
 2. **Critique it in fresh context.** Spawn a general-purpose subagent
-   and instruct it to load `writing:critique-plan`. Pass it:
-   - the round's snapshot as the plan text, by path
-   - the surface the plan lives on
-   - the ledger's rulings and open questions, by path
-   - the known-open list
-   - the evidence copy, by path
+   and instruct it to load `writing:critique-plan`. Pass it the state
+   handle, and these by name:
+   - the round's snapshot as the plan text
+   - the ledger's rulings and open questions
+   - the evidence copy
    - in every round after the first, the previous round's snapshot and
-     the instruction files `revise-plan` applied in that round, by path
-   - `batch-<prev>-style.md` beside them, by path, whenever a
-     consolidation pass ran between the two rounds, where `<prev>` is
-     the previous round
+     the instruction files `revise-plan` applied in that round
+   - `batch-<prev>-style.md` beside them whenever a consolidation pass
+     ran between the two rounds, where `<prev>` is the previous round
+
+   Pass it also the surface the plan lives on and the known-open
+   list.
 
    Tell the critic that a user-ratified ruling is fixed and that a
    finding against a repo-derived one is allowed. Such a finding is
@@ -277,7 +278,8 @@ because the round pauses before it edits anything.
    - the decision set: every finding that clears the bar, carrying the
      delete-and-cite treatment where `critique-plan` prescribes it,
      plus the standing Open questions sync
-   - the round's plan text, the ledger, and the evidence copy, by path
+   - the state handle, with the round's plan text, the ledger, and the
+     evidence copy by name
    - `batch-<round>.md` as its instruction file
 
    The Open questions sync is a standing decision in every round's
@@ -290,7 +292,7 @@ because the round pauses before it edits anything.
 
    The round's batch is the sweep's instruction file. This seat passes
    it to `revise-plan` without adding, removing, or rewording a line,
-   and records its path in the ledger.
+   and records its name in the ledger.
 
    **Triage the sweep's questions** before the Blocked rule fires.
    `sweep-consequences` → "Output" owns the triage seat, the finding
@@ -329,8 +331,8 @@ because the round pauses before it edits anything.
    synthesizing them with the prior rounds' themes.
 6. **Revise the draft.** Write the round's snapshot to `draft.md`.
    Spawn a general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it the draft's path and
-   `batch-<round>.md` by path, plus `batch-<round>-fold.md` when the
+   `writing:revise-plan`, and pass it the state handle, with `draft.md`
+   and `batch-<round>.md` by name, plus `batch-<round>-fold.md` when the
    round's latest sweep call folded. Read the result back when it
    reports.
 
@@ -423,10 +425,10 @@ pause resolves.
    1. Write a fresh draft to `draft.md` from the live surface. Spawn a
       general-purpose subagent on the Opus model, per `sweep-style` →
       "Execution context", instruct it to load `writing:sweep-style`,
-      and pass it that draft by path and `batch-<round>-style.md` in
-      the state directory as its instruction file. Hand that file to
-      `writing:revise-plan` in a further general-purpose subagent,
-      with the same draft passed by path.
+      and pass it the state handle, `draft.md` by name, and
+      `batch-<round>-style.md` as its instruction file. Hand that file
+      to `writing:revise-plan` in a further general-purpose subagent,
+      with the same state handle and `draft.md` by name.
    2. Record the firing as a line in `ledger.md`, so a resumed loop
       still knows of it.
    3. Write the fresh snapshot that "The staleness guard" prescribes

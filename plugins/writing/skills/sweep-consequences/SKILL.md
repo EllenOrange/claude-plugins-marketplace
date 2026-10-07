@@ -33,20 +33,23 @@ assumptions that hid the sibling instances in the first place.
   decision: the round's accepted fix findings, or the rulings the user
   ratified across an interview or a pause. A set of one is the k=1
   case of the same shape.
-- **The plan text, by path.** Optional, and passed whenever a plan
+- **The state handle.** Required from every caller. Reach every file
+  below by its name under that handle, per `write-plan` → "Reach the
+  state through the script".
+- **The plan text, by name.** Optional, and passed whenever a plan
   text exists.
-- **The ledger, by path.** Optional, and passed whenever a ledger
+- **The ledger, by name.** Optional, and passed whenever a ledger
   exists.
-- **The instruction-file path.** Required from every caller.
-- **The evidence-file path.** Required from every caller. It names the
-  caller's `evidence.md`.
+- **The instruction file's name.** Required from every caller.
+- **The evidence file's name.** Required from every caller. It names
+  the caller's `evidence.md`.
 
 ## Output
 
-Write the instructions to the instruction file, truncating it first.
-Append a record to the evidence file for each evidence item an
-instruction adds or changes in meaning, in the record shape
-`write-plan` → "The state directory" owns. Edit no plan and post
+Write the instructions to the instruction file with `--mode put`,
+which replaces it whole. Append a record to the evidence file for each
+evidence item an instruction adds or changes in meaning, in the record
+shape `write-plan` → "The state directory" owns. Edit no plan and post
 nothing. Return any question a behavior walk left unanswered.
 
 This section owns the instruction-file format, and every other site
@@ -92,18 +95,19 @@ rather than restating the mechanism. The obligations on a caller are:
 
 ## What each caller passes
 
-Every path a caller passes sits in its own state directory.
+Every caller passes its own state handle, and names each file under
+it.
 
 - **`writing:converge-plan`** passes the round's accepted batch plus
   the standing Open questions sync as the decision set. The sync
   carries the located plan surface and its form rule. It also passes
-  the round's plan text, the ledger, and its evidence copy by path,
+  the round's plan text, the ledger, and its evidence copy by name,
   and `batch-<round>.md` as the instruction file. A resume re-run's
   decision set also carries the round's verified `fix`-triaged answers
   and the user rulings of every pause the round has taken.
 - **`writing:write-plan`'s core-draft seat** passes the interview's
   whole ruling set as the decision set, plus the core draft, the
-  ledger, and `evidence.md` by path, and `core-batch.md` as the
+  ledger, and `evidence.md` by name, and `core-batch.md` as the
   instruction file. The core draft carries the Problem, Scope,
   Solution, and Acceptance sections and no other, so an instruction
   targets those sections by the fixed section names `write-plan` →
@@ -111,10 +115,10 @@ Every path a caller passes sits in its own state directory.
   → "Draft the core" runs, before the full plan is drafted.
 - **`writing:write-plan`'s human-review seat** passes the requested
   changes as the decision set, plus the draft, the ledger, and
-  `evidence.md` by path, and `review-<n>-batch.md` as the instruction
+  `evidence.md` by name, and `review-<n>-batch.md` as the instruction
   file.
 - **Each caller's fold call** passes the `fix`-triaged answers as the
-  decision set, the same plan text, ledger, and evidence file by path,
+  decision set, the same plan text, ledger, and evidence file by name,
   and the fold file "Output" names as the instruction file.
 
 ## The decision-set agenda

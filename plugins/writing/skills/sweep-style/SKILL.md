@@ -29,14 +29,18 @@ assumptions that hid the sibling instances in the first place.
 
 ## Inputs
 
-- **The plan text, by path.** Required. This skill sweeps the whole
+- **The state handle.** Required from every caller. Reach every file
+  below by its name under that handle, per `write-plan` → "Reach the
+  state through the script".
+- **The plan text, by name.** Required. This skill sweeps the whole
   plan, so a plan text always exists when it runs.
-- **The instruction-file path.** Required from every caller.
+- **The instruction file's name.** Required from every caller.
 
 ## Output
 
-Write the instructions to the instruction file, truncating it first, in
-the format `sweep-consequences` → "Output" owns.
+Write the instructions to the instruction file with `--mode put`,
+which replaces it whole, in the format `sweep-consequences` → "Output"
+owns.
 
 An instruction may prescribe a restructuring move. `revise-plan` →
 "The edit rules" owns those moves.
@@ -48,17 +52,18 @@ agenda, so this skill has nothing to route.
 
 ## What each caller passes
 
-Every path a caller passes sits in its own state directory.
+Every caller passes its own state handle, and names each file under
+it.
 
 - **`writing:converge-plan`** passes the consolidation pass's fresh
-  draft by path, and `batch-<round>-style.md` as the instruction file.
+  draft by name, and `batch-<round>-style.md` as the instruction file.
 - **`writing:write-plan`'s core-draft seat** passes the core draft by
-  path, and `core-style.md` as the instruction file. That draft
+  name, and `core-style.md` as the instruction file. That draft
   carries the Problem, Scope, Solution, and Acceptance sections and no
   other, so the whole plan this skill sweeps is the core at that
   point.
 - **`writing:write-plan`'s style-pipeline seat** passes the draft by
-  path, and `style.md` as the instruction file.
+  name, and `style.md` as the instruction file.
 
 ## The style agenda
 

@@ -13,7 +13,10 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 ## Inputs
 
 The user names the plan. A caller running the critique inside a loop,
-such as `writing:converge-plan`, may also pass any of these:
+such as `writing:converge-plan`, names the plan and each file input
+below as a state file under a state handle. Read each one per
+`write-plan` → "Reach the state through the script". Such a caller may
+pass any of these:
 
 - **A decision ledger.** The rulings the caller has recorded, each
   marked user-ratified or repo-derived. Treat a user-ratified ruling
@@ -28,12 +31,12 @@ such as `writing:converge-plan`, may also pass any of these:
   caller's most recent fix round. Use it for the prior-round-text
   label in the Collect step.
 - **The prior instruction files.** The instruction files the caller
-  applied since the prior snapshot, by path, in the format
+  applied since the prior snapshot, in the format
   `sweep-consequences` → "Output" owns. They come only with a prior
   snapshot. Use them to tell which prior-round text each instruction
   added.
-- **An evidence file.** The caller's `evidence.md`, by path. Its
-  records take the shape `write-plan` → "The state directory" owns.
+- **An evidence file.** The caller's `evidence.md`. Its records take
+  the shape `write-plan` → "The state directory" owns.
   With no evidence file passed, verify every claim yourself per
   "Verify against the ref the plan builds on".
 
@@ -41,8 +44,8 @@ Every input is optional. Without them, critique the plan as it stands.
 
 ## 1. Read
 
-- Read the plan in full, from the file, issue comment, or text the
-  user points at.
+- Read the plan in full, from the file, issue comment, text, or state
+  file the user or the caller points at.
 - Read the originating issue, if the plan has one. It is the source
   the plan's problem definition answers to.
 - Read `CLAUDE.md` and `README.md`. Then read the docs under `docs/`

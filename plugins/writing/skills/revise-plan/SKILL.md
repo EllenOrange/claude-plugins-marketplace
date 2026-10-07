@@ -22,11 +22,16 @@ accumulated context produces.
 
 ## Inputs
 
-- **The plan file path.** Required. This skill edits that file in
-  place and touches no other file. It never edits an issue surface.
-- **The instruction files, by path.** Required. One or more files in
-  the format `sweep-consequences` → "Output" owns. Apply every
-  instruction in every file.
+- **The plan file.** Required. This skill edits that file in place and
+  touches no other file. It never edits an issue surface.
+- **The instruction files.** Required. One or more files in the format
+  `sweep-consequences` → "Output" owns. Apply every instruction in
+  every file.
+
+A caller names each file by path, or by name under a state handle.
+Reach a named file per `write-plan` → "Reach the state through the
+script": print the plan file into the staging directory, edit the
+staged copy, and put it back before you report.
 
 ## Boundaries
 
@@ -96,8 +101,8 @@ Report these lists:
 - the instructions applied
 - the instructions left unapplied, each with its conflict named
 
-The revised file is the other output, on disk at the path the caller
-gave. Post nothing.
+The revised file is the other output, at the path or under the name
+the caller gave. Post nothing.
 
 This section owns the unapplied-instruction resolution rule. The
 caller resolves every instruction this skill reports unapplied, before

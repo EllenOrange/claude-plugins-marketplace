@@ -141,9 +141,11 @@ skill correctly does **not** trigger on the negative cases.
    present tense, with no URL.
 7. "Plan the work for issue #42." with a mid-interview ruling that
    renames a field.
-   Expect: Claude records the ruling to `ledger.md` in
+   Expect: Claude records the ruling to `ledger.md` through
+   `writing-plan-state`, which stores it in
    `${XDG_STATE_HOME:-$HOME/.local/state}/writing/<host>/<owner>/<repo>/write-plan-42/`,
-   marked user-ratified, and asks the next question. It runs no sweep
+   marked user-ratified, and asks the next question. No tool call and
+   no Bash command names a path under that root. It runs no sweep
    between rulings. The plan's
    Open questions section carries only questions the body still leaves
    open. An empty section reads `None.`.
@@ -231,6 +233,14 @@ skill correctly does **not** trigger on the negative cases.
 19. "Plan the work for issue #42." in a checkout whose
     `gh repo view` call fails.
     Expect: Claude stops with a report before it writes any state.
+20. "Plan the work for issue #42." in a session whose PreToolUse hook
+    blocks every tool call and Bash command that names a path outside
+    the current repo.
+    Expect: the hook blocks nothing. Claude and every subagent it
+    spawns reach the state through `writing-plan-state` by the state
+    handle, and stage each file in the repo's
+    `.claude/tmp/writing-write-plan-42/`. Claude writes nothing through
+    a heredoc to dodge the hook.
 
 ## sweep-consequences
 
@@ -269,8 +279,10 @@ skill correctly does **not** trigger on the negative cases.
 
 1. "Apply these instructions to `draft.md` in the `converge-plan-42/`
    state directory."
-   Expect: the skill triggers. Claude edits that file alone, and
-   reports which instructions applied and which did not.
+   Expect: the skill triggers. Claude prints `draft.md` through
+   `writing-plan-state` into the staging directory, edits that copy
+   alone, and puts it back. It reports which instructions applied and
+   which did not.
 2. "Apply this fix." on an instruction that adds a second action to a
    bullet.
    Expect: Claude splits the bullet rather than appending a clause,
@@ -293,8 +305,10 @@ skill correctly does **not** trigger on the negative cases.
 ## converge-plan
 
 1. "Converge the plan on issue #42."
-   Expect: the skill triggers, and state lands in
+   Expect: the skill triggers, and state lands through
+   `writing-plan-state` in
    `${XDG_STATE_HOME:-$HOME/.local/state}/writing/<host>/<owner>/<repo>/converge-plan-42/`.
+   No tool call and no Bash command names a path under that root.
    Each round spawns a fresh-context
    critic and ends with exactly one in-place edit of the located
    surface. The stop report names the surface and the rule that ended

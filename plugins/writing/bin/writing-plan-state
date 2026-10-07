@@ -1,0 +1,220 @@
+#!/usr/bin/env bash
+#
+# writing-plan-state -- hold the state of the writing plugin's plan loop
+# outside every repository, in one directory per skill run on an issue,
+# and move each file of it in and out on a caller's behalf.
+#
+# Every state path is composed here and nowhere else, so no agent ever
+# names a path under the state root in a tool call or a Bash command.
+# A hook that confines tool reads and writes to the current repository
+# therefore never sees one. Content comes in through --from, a file the
+# caller wrote inside its repository, and goes out on stdout.
+#
+# Exit status: 0 on success, 2 on a refused invocation, 3 when --mode
+# print names a file the directory does not hold or --mode seed finds no
+# write-plan state to seed from. A refusal writes nothing.
+set -euo pipefail
+
+readonly PROGRAM=${0##*/}
+
+die() {
+  printf '%s: %s\n' "$PROGRAM" "$1" >&2
+  exit 2
+}
+
+absent() {
+  printf '%s: %s\n' "$PROGRAM" "$1" >&2
+  exit 3
+}
+
+usage() {
+  cat <<EOF
+usage: $PROGRAM --repo <host>/<owner>/<repo> --skill write-plan|converge-plan
+                --issue <n> --mode <mode> [--file <name>] [--from <path>]
+
+modes:
+  init                      create the directory and an empty evidence.md
+  put --file <name> --from <path>
+                            replace <name> with the file at <path>
+  append --file <name> --from <path>
+                            append the file at <path> to <name>
+  print --file <name>       write <name> to stdout
+  list                      list the directory's files, one per line
+  seed                      copy write-plan's ledger.md and evidence.md
+                            into converge-plan's directory
+
+--repo also takes https://<host>/<owner>/<repo>, the form
+gh repo view --json url --jq .url prints.
+EOF
+}
+
+repo_ref=
+skill=
+issue=
+mode=
+file=
+from=
+
+while [ "$#" -gt 0 ]; do
+  flag=$1
+  case "$flag" in
+    --repo|--skill|--issue|--mode|--file|--from)
+      [ "$#" -ge 2 ] || die "$flag needs a value"
+      value=$2
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      die "unknown argument: $flag"
+      ;;
+  esac
+  case "$flag" in
+    --repo)  repo_ref=$value ;;
+    --skill) skill=$value ;;
+    --issue) issue=$value ;;
+    --mode)  mode=$value ;;
+    --file)  file=$value ;;
+    --from)  from=$value ;;
+  esac
+done
+
+case "$mode" in
+  init|put|append|print|list|seed) ;;
+  '') die "--mode is required" ;;
+  *)  die "unknown --mode: $mode" ;;
+esac
+
+# The repository is three segments, each one level of the composed path.
+# A segment holding anything but letters, digits, ., _ and - could add a
+# directory level, and a segment of . or .. could climb out of the level
+# it stands at, so either could compose a path outside the state root.
+[ -n "$repo_ref" ] || die "--repo is required"
+given=${repo_ref#https://}
+given=${given%/}
+bad_repo="--repo takes <host>/<owner>/<repo> or https://<host>/<owner>/<repo>: $repo_ref"
+case "$given" in
+  *://*|*/*/*/*|*//*|/*) die "$bad_repo" ;;
+  ?*/?*/?*) ;;
+  *) die "$bad_repo" ;;
+esac
+host=${given%%/*}
+owner=${given#*/}
+owner=${owner%/*}
+repo=${given##*/}
+for segment in "$host" "$owner" "$repo"; do
+  case "$segment" in
+    *[!A-Za-z0-9._-]*|.|..)
+      die "a repository's segments may hold only letters, digits, ., _ and -, and none may be . or ..: $repo_ref" ;;
+  esac
+done
+
+case "$skill" in
+  write-plan|converge-plan) ;;
+  '') die "--skill is required" ;;
+  *)  die "--skill must be write-plan or converge-plan: $skill" ;;
+esac
+
+case "$issue" in
+  '') die "--issue is required" ;;
+  *[!0-9]*) die "--issue must be a number: $issue" ;;
+esac
+
+# A file name is one path segment, so it names a file in the directory
+# and never a path out of it.
+case "$mode" in
+  put|append|print)
+    [ -n "$file" ] || die "--file is required in --mode $mode"
+    case "$file" in
+      *[!A-Za-z0-9._-]*|.*) die "--file must be a plain name of letters, digits, ., _ and -, not starting with .: $file" ;;
+    esac
+    ;;
+  *)
+    [ -z "$file" ] || die "--file is not accepted in --mode $mode: $file"
+    ;;
+esac
+
+case "$mode" in
+  put|append)
+    [ -n "$from" ] || die "--from is required in --mode $mode"
+    [ -f "$from" ] || die "--from names no file: $from"
+    [ -r "$from" ] || die "--from names a file that cannot be read: $from"
+    ;;
+  *)
+    [ -z "$from" ] || die "--from is not accepted in --mode $mode: $from"
+    ;;
+esac
+
+# The evidence log is a record for the critic and a later postmortem, so
+# a record once appended is never rewritten.
+if [ "$mode" = put ] && [ "$file" = evidence.md ]; then
+  die "evidence.md is appended to and never replaced; use --mode append"
+fi
+
+# An empty append is a staging write that failed, not a record.
+if [ "$mode" = append ] && [ ! -s "$from" ]; then
+  die "--mode append takes records, and $from is empty"
+fi
+
+readonly state_root="${XDG_STATE_HOME:-$HOME/.local/state}/writing"
+readonly repo_dir="$state_root/$host/$owner/$repo"
+readonly dir="$repo_dir/$skill-$issue"
+
+# install_whole <source> <target>: lands <source> under a staging name
+# and renames it into place once whole, so a writer killed mid-copy
+# leaves no fragment under the target's name.
+install_whole() {
+  staged="$2.partial-$$"
+  if ! cp -- "$1" "$staged"; then
+    rm -f -- "$staged"
+    die "could not stage $2"
+  fi
+  mv -- "$staged" "$2"
+}
+
+case "$mode" in
+  init)
+    mkdir -p -- "$dir"
+    [ -e "$dir/evidence.md" ] || : > "$dir/evidence.md"
+    ;;
+  put)
+    mkdir -p -- "$dir"
+    install_whole "$from" "$dir/$file"
+    ;;
+  append)
+    mkdir -p -- "$dir"
+    cat -- "$from" >> "$dir/$file"
+    ;;
+  print)
+    [ -f "$dir/$file" ] || absent "$skill-$issue holds no $file"
+    cat -- "$dir/$file"
+    ;;
+  list)
+    [ -d "$dir" ] || exit 0
+    for found in "$dir"/*; do
+      [ -f "$found" ] || continue
+      case "$found" in
+        *.partial-*) continue ;;
+      esac
+      printf '%s\n' "${found##*/}"
+    done
+    ;;
+  seed)
+    [ "$skill" = converge-plan ] || die "--mode seed takes --skill converge-plan"
+    source_dir="$repo_dir/write-plan-$issue"
+    [ -f "$source_dir/ledger.md" ] || absent "write-plan-$issue holds no ledger.md to seed from"
+    [ ! -e "$dir/ledger.md" ] || die "converge-plan-$issue already holds a ledger.md"
+    if [ -s "$dir/evidence.md" ]; then
+      die "converge-plan-$issue already holds evidence records"
+    fi
+    mkdir -p -- "$dir"
+    if [ -f "$source_dir/evidence.md" ]; then
+      install_whole "$source_dir/evidence.md" "$dir/evidence.md"
+    else
+      : > "$dir/evidence.md"
+    fi
+    install_whole "$source_dir/ledger.md" "$dir/ledger.md"
+    ;;
+esac

@@ -13,33 +13,46 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 ## The state directory
 
-Keep the flow's state in this directory:
+Keep the flow's state in the `write-plan-<issue>` directory that
+`writing-plan-state` holds for the target repo. Never use the session
+scratchpad for it. `writing:converge-plan` seeds its own ledger from
+this directory, so the state has to outlive the session that wrote it.
 
-```text
-${XDG_STATE_HOME:-$HOME/.local/state}/writing/<host>/<owner>/<repo>/write-plan-<issue>/
-```
+### Reach the state through the script
 
-Never use the session scratchpad for it. `writing:converge-plan` seeds
-its own ledger from this directory, so the state has to outlive the
-session that wrote it.
+This plugin ships `writing-plan-state` in its `bin/`, which the
+harness puts on the Bash tool's `PATH` while the plugin is enabled.
+The script composes every state path under the XDG state home, and no
+skill restates that root. This subsection owns how a seat reaches the
+state, and every other site cites it:
 
-This section owns the state root and its derivation. The sites
-permitted to restate the root literal are:
+- Name no path under the state root, in a tool call or in a Bash
+  command. A hook that confines reads and writes to the current repo
+  then never sees one.
+- Name the directory by three flags: `--repo`, `--skill`, and
+  `--issue`. These flags are the state handle. A seat hands a subagent
+  the state handle and the file names it needs, never a path.
+- Read a file with `--mode print --file <name>`, which writes it to
+  stdout. `--mode list` names the files the directory holds.
+- Replace a file with `--mode put --file <name> --from <path>`, and
+  append to one with `--mode append --file <name> --from <path>`. The
+  script refuses a `put` of `evidence.md`.
+- Create the directory and an empty `evidence.md` with `--mode init`.
+- Stage a file in the staging directory
+  `.claude/tmp/writing-<skill>-<issue>/` at the target repo's root,
+  under the name of the state file it feeds. Stage there every file
+  you pass `--from`, and every file you print out to edit or to post.
+  A staged file is a transient copy. Read state only through `print`,
+  never from a file another seat staged.
 
-- this section
-- `converge-plan` → "2. Set up the state"
-- `CLAUDE.md` → "One skill's state directory is another skill's input"
-- `plugins/writing/EVAL.md`
+Pass the target repo's `gh repo view --json url --jq .url` value as
+`--repo`, unchanged. The script refuses a value with no host, and a
+segment it cannot place under the root. Run `--mode init` before any
+other write. Stop and report before you write any state when the `gh`
+call fails or the script refuses the value. No fallback directory
+exists.
 
-Resolve `<host>`, `<owner>`, and `<repo>` from the target repo's
-`gh repo view --json url --jq .url`. The value is that https URL less
-the scheme, as `sdlc:agent-result-persist-interface` → "The
-identifying flags" resolves its repo value. Each segment holds only
-letters, digits, `.`, `_`, and `-`, and no segment is `.` or `..`.
-Stop and report before you write any state when the `gh` call fails,
-when the value has no host, when a segment falls outside that set, or
-when a segment is `.` or `..`.
-No fallback directory exists.
+### The state's files
 
 The state has these files:
 
@@ -225,24 +238,25 @@ evidence recorded per "Record evidence before the sentence". The
 full-plan draft later overwrites `draft.md`, and the core text is not
 retained separately.
 
-Then sweep the core once. Every path below sits in the state
-directory:
+Then sweep the core once. Every file below is a state file, which a
+subagent reaches per "Reach the state through the script":
 
 1. Spawn a general-purpose subagent on the Opus model, per
    `sweep-consequences` → "Execution context". Instruct it to load
    `writing:sweep-consequences`, and pass it the interview's whole
-   ruling set as the decision set. Pass it `draft.md`, `ledger.md`,
-   and `evidence.md` by path, and `core-batch.md` as its instruction
-   file.
+   ruling set as the decision set. Pass it the state handle,
+   `draft.md`, `ledger.md`, and `evidence.md` by name, and
+   `core-batch.md` as its instruction file.
 2. Spawn a second general-purpose subagent on the Opus model, per
    `sweep-style` → "Execution context". Instruct it to load
-   `writing:sweep-style`, and pass it `draft.md` by path and
-   `core-style.md` as its instruction file.
+   `writing:sweep-style`, and pass it the state handle, `draft.md` by
+   name, and `core-style.md` as its instruction file.
 3. Triage every question the consequence sweep returns, per "Triage
    the sweep's questions".
 4. Spawn a third general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it `draft.md`, `core-batch.md`, and
-   `core-style.md` by path, plus `core-batch-fold.md` when a fold ran.
+   `writing:revise-plan`, and pass it the state handle, with
+   `draft.md`, `core-batch.md`, and `core-style.md` by name, plus
+   `core-batch-fold.md` when a fold ran.
    One revision applies them all.
 5. Read the revised file back.
 
@@ -778,11 +792,11 @@ Run the whole-draft style pass once, before anyone sees the file:
 
 1. Spawn a general-purpose subagent on the Opus model, per
    `sweep-style` → "Execution context". Instruct it to load
-   `writing:sweep-style`, and pass it `draft.md` by path and `style.md`
-   in the state directory as its instruction file.
+   `writing:sweep-style`, and pass it the state handle, `draft.md` by
+   name, and `style.md` as its instruction file.
 2. Spawn a second general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it `draft.md` and `style.md` by
-   path.
+   `writing:revise-plan`, and pass it the state handle, with
+   `draft.md` and `style.md` by name.
 3. Read the revised file back.
 
 `revise-plan` → "Output" owns the unapplied-instruction resolution
@@ -802,20 +816,22 @@ derivation. A ruling the user leaves standing carries forward, and
 `writing:converge-plan` inherits it as vetoable when it seeds.
 
 Apply the changes they ask for through this pipeline. On the nth pass
-of this step, every path below sits in the state directory:
+of this step, every file below is a state file, which a subagent
+reaches per "Reach the state through the script":
 
 1. Spawn a general-purpose subagent on the Opus model, per
    `sweep-consequences` → "Execution context". Instruct it to load
    `writing:sweep-consequences`, and pass it the requested changes as
-   the decision set. Pass it `draft.md`, `ledger.md`, and
-   `evidence.md` by path, and `review-<n>-batch.md` as its instruction
-   file.
+   the decision set. Pass it the state handle, `draft.md`,
+   `ledger.md`, and `evidence.md` by name, and `review-<n>-batch.md` as
+   its instruction file.
 2. Triage every question the sweep returns, per "Triage the sweep's
    questions".
 3. Spawn a second general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it `draft.md` and
-   `review-<n>-batch.md` by path, plus `review-<n>-batch-fold.md` when
-   a fold ran. The seat composes no batch of its own.
+   `writing:revise-plan`, and pass it the state handle, with
+   `draft.md` and `review-<n>-batch.md` by name, plus
+   `review-<n>-batch-fold.md` when a fold ran. The seat composes no
+   batch of its own.
 4. Read the revised file back, then show it again.
 
 `revise-plan` → "Output"
@@ -828,12 +844,13 @@ own.
 ## 9. Post
 
 Post `draft.md` from the directory "The state directory" owns as a
-comment on the issue. Every human-review edit lands in that file through
-`revise-plan` before the post, and nothing edits the text at post
-time. Prefer an installed issue skill, for example
-`/issues:issue-comment`, which reads the body from a file. Otherwise
-use `gh issue comment --body-file`. Then report the comment URL to the
-user.
+comment on the issue. Print it into the staging directory and post
+that copy, per "Reach the state through the script". Every
+human-review edit lands in `draft.md` through `revise-plan` before the
+post, and nothing edits the text at post time. Prefer an installed
+issue skill, for example `/issues:issue-comment`, which reads the body
+from a file. Otherwise use `gh issue comment --body-file`. Then report
+the comment URL to the user.
 
 `writing:converge-plan` runs the critique-and-fix loop over the plan.
 It loops over the comment or over the promoted plan in the issue body,
