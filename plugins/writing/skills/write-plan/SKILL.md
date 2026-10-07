@@ -23,8 +23,15 @@ this directory, so the state has to outlive the session that wrote it.
 This plugin ships `writing-plan-state` in its `bin/`, which the
 harness puts on the Bash tool's `PATH` while the plugin is enabled.
 The script composes every state path under the XDG state home, and no
-skill restates that root. This subsection owns how a seat reaches the
-state, and every other site cites it:
+skill restates that root. The root's literal appears in only these
+files:
+
+- the script, `plugins/writing/bin/writing-plan-state`
+- its test, `plugins/writing/test/writing-test.sh`
+- `plugins/writing/EVAL.md`
+
+This subsection owns how a seat reaches the state, and every other
+site cites it:
 
 - Name no path under the state root, in a tool call or in a Bash
   command. A hook that confines reads and writes to the current repo

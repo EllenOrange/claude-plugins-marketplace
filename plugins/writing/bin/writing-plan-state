@@ -199,8 +199,9 @@ case "$mode" in
     [ -d "$dir" ] || exit 0
     for found in "$dir"/*; do
       [ -f "$found" ] || continue
-      # A staging file is a put still in flight, or one killed before
-      # its rename, and is no file of the state.
+      # A staging file is an install_whole copy by put or seed still in
+      # flight, or one killed before its rename, and is no file of the
+      # state.
       case "$found" in
         *.partial-*) continue ;;
       esac
