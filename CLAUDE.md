@@ -16,13 +16,16 @@ copies serving the old cached files after the marketplace updates.
 ## A renamed skill heading dangles in whatever cites it
 
 A skill may cite another skill's section heading verbatim as a prose
-pointer, and a skill may cite one of its own. Renaming a heading
-leaves a dangling reference, and nothing catches it. Treat a heading
-rename as an API change. Find every citation by grep and update it in
-the same commit as the rename. The repo keeps no index of those
-citations, so grep is the whole discovery mechanism. A rename inside
-one file dangles just as silently, so sweep the file you renamed in as
-well as its siblings.
+pointer, and a skill may cite one of its own. The README cites a rule
+a skill owns the same way, as `` `skill` → "Heading" ``, and names the
+rule without restating its content. That heading pointer is
+deliberate here, despite the global rule that a pointer never names a
+heading. Renaming a heading leaves a dangling reference, and nothing
+catches it. Treat a heading rename as an API change. Find every
+citation by grep and update it in the same commit as the rename. The
+repo keeps no index of those citations, so grep is the whole discovery
+mechanism. A rename inside one file dangles just as silently, so sweep
+the file you renamed in as well as its siblings.
 
 Search wrap-tolerantly, because a citation is prose and prose wraps. A
 line-oriented grep for the whole cited text matches only the line the
@@ -31,7 +34,7 @@ lines. Grep instead for one distinctive word from the cited text. A
 single word is the longest fragment a wrap can never split:
 
 ```bash
-grep -rn "<distinctive-word>" plugins/*/skills/*/SKILL.md
+grep -rn "<distinctive-word>" plugins/*/skills/*/SKILL.md README.md
 ```
 
 When the cited text has no distinctive single word, run a multiline
