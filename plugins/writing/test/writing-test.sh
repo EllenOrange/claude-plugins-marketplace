@@ -18,6 +18,8 @@ SANDBOX="$(mktemp -d "${TMPDIR:-/tmp}/writing-test.XXXXXX")"
 trap 'rm -rf "$SANDBOX"' EXIT
 FAILURES=0
 
+# check <actual> <expected> <label>: prints PASS when the two are equal,
+# and otherwise prints both and counts a failure.
 check() {
   if [ "$1" = "$2" ]; then
     echo "PASS  $3"
@@ -29,6 +31,8 @@ check() {
   fi
 }
 
+# check_contains <actual> <needle> <label>: as check, but passes when
+# <actual> holds <needle> anywhere.
 check_contains() {
   case "$1" in
     *"$2"*) echo "PASS  $3" ;;
@@ -59,10 +63,14 @@ state() {
   ERR=$(cat "$CASE/err")
 }
 
+# dir_of <skill>: prints the directory the script composes for <skill>
+# on issue 42 of h.example/o/r under the current case's state root.
 dir_of() {
   printf '%s\n' "$XDG_STATE_HOME/writing/h.example/o/r/$1-42"
 }
 
+# stage <name> <text>: writes <text> and a newline to <name> in the
+# current case's staging directory, for a --from to name.
 stage() {
   printf '%s\n' "$2" >"$CASE/stage/$1"
 }

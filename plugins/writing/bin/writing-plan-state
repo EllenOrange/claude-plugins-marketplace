@@ -10,18 +10,22 @@
 # therefore never sees one. Content comes in through --from, a file the
 # caller wrote inside its repository, and goes out on stdout.
 #
-# Exit status: 0 on success, 2 on a refused invocation, 3 when --mode
-# print names a file the directory does not hold or --mode seed finds no
-# write-plan state to seed from. A refusal writes nothing.
+# Exit status: 0 on success, 2 on a refused invocation or a file that
+# could not be staged, 3 when --mode print names a file the directory
+# does not hold or --mode seed finds no write-plan state to seed from.
+# A refusal writes nothing.
 set -euo pipefail
 
 readonly PROGRAM=${0##*/}
 
+# die <message>: reports <message> on stderr and exits 2.
 die() {
   printf '%s: %s\n' "$PROGRAM" "$1" >&2
   exit 2
 }
 
+# absent <message>: reports <message> on stderr and exits 3, the status
+# for state the caller asked for that does not exist.
 absent() {
   printf '%s: %s\n' "$PROGRAM" "$1" >&2
   exit 3
@@ -195,6 +199,8 @@ case "$mode" in
     [ -d "$dir" ] || exit 0
     for found in "$dir"/*; do
       [ -f "$found" ] || continue
+      # A staging file is a put still in flight, or one killed before
+      # its rename, and is no file of the state.
       case "$found" in
         *.partial-*) continue ;;
       esac
@@ -202,6 +208,10 @@ case "$mode" in
     done
     ;;
   seed)
+    # The draft is not copied: converge-plan prints it from write-plan's
+    # directory. A ledger or an evidence record converge-plan already
+    # holds is its own run's state, so the seed refuses rather than
+    # overwrite it.
     [ "$skill" = converge-plan ] || die "--mode seed takes --skill converge-plan"
     source_dir="$repo_dir/write-plan-$issue"
     [ -f "$source_dir/ledger.md" ] || absent "write-plan-$issue holds no ledger.md to seed from"
