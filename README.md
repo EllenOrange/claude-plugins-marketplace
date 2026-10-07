@@ -64,11 +64,12 @@ Skills:
   text it prescribes verbatim, and every claim about how existing
   code behaves is run or quoted first, and the record is appended to
   an evidence log before the item is written. An item the skill
-  cannot verify lands under Open questions, never as plan text. The
-  skill owns the altitude rule: plan text names no `file:line`, hunk
-  count, or parameter position. The plan carries the sections Problem, Scope,
-  Solution, Acceptance, Outline, Files affected (floor), and Open
-  questions, in the issue-body grammar of `sdlc:orchestrate-readiness`.
+  cannot verify lands under Open questions, never as plan text. Its
+  "Write for the implementer" section owns the altitude rule, which
+  keeps plan text at the level the implementer cannot derive from the
+  tree. The plan carries the sections Problem, Scope, Solution,
+  Acceptance, Outline, Files affected (floor), and Open questions, in
+  the issue-body grammar of `sdlc:orchestrate-readiness`.
   The Acceptance section splits into Mechanical and Semantic claims
   about the merged result, written as the PR reviewer's rubric. Each
   bullet is a bold title and one claim, and each Mechanical claim
@@ -88,21 +89,21 @@ Skills:
   by the target repo's host, owner, and name, so it survives any
   repo-local cleanup and a later postmortem can read the ledger and
   the evidence log.
-- **sweep-consequences**: discover the edits a decision set forces on
-  a plan and emit them as instructions. It enumerates the
-  cross-cutting consequences of the whole set, walks every behavior
-  those decisions alter, and finds each fix's sibling defect
-  instances. It owns the channel that routes a question it cannot
-  settle back through the caller's triage. It writes only the
-  instruction file its caller names, appends only to the evidence file
-  its caller names, and posts nothing. The instruction file carries
-  the primary instruction for every decision that forces an edit, so
-  the caller composes none, and no instruction names a `file:line`, a
-  hunk count, or a parameter position. A fix to a rule stated at
-  several sites emits one instruction naming one owner. The
-  repo-derived answers to a call's `fix`-triaged questions fold
-  through exactly one further call, which writes its own file beside
-  the first and returns a failed answer as a question.
+- **sweep-consequences**: discover the edits a decision set forces on a
+  plan and emit them as instructions. It enumerates the cross-cutting
+  consequences of the whole set, walks every behavior those decisions
+  alter, and finds each fix's sibling defect instances. It owns the
+  channel that routes a question it cannot settle back through the
+  caller's triage. It writes only the instruction file its caller names,
+  appends only to the evidence file its caller names, and posts nothing.
+  The instruction file carries the primary instruction for every
+  decision that forces an edit, so the caller composes none, and every
+  instruction keeps the altitude rule `write-plan` → "Write for the
+  implementer" owns. A fix to a rule stated at several sites emits one
+  instruction naming one owner. The repo-derived answers to a call's
+  `fix`-triaged questions fold through exactly one further call, which
+  writes its own file beside the first and returns a failed answer as a
+  question.
 - **sweep-style**: sweep a whole plan against the communication-style
   rule and `write-plan`'s Write step, and emit the repairs as
   instructions. It emits no question. It writes only the instruction
@@ -111,8 +112,8 @@ Skills:
   sentence claims.
 - **revise-plan**: apply one or more instruction files to one plan
   file in fresh context. It returns unapplied any instruction that
-  names a `file:line`, a hunk count, or a parameter position. It
-  style-sweeps every unit an instruction landed in, then
+  breaks the altitude rule `write-plan` → "Write for the implementer"
+  owns. It style-sweeps every unit an instruction landed in, then
   reads the result back to confirm that every decision, obligation,
   membership rule, qualifier, and check survives unchanged. It owns
   the restructuring moves an instruction may prescribe and the rule
