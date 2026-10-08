@@ -18,7 +18,9 @@
 # Exit status: 0 on success, 2 on a refused invocation, a refused
 # ledger, or a file that could not be staged, 3 when --mode print names
 # a file the directory does not hold or --mode seed finds no write-plan
-# state to seed from. A refusal writes nothing.
+# state to seed from, 130 on an INT and 143 on a TERM. A refusal writes
+# no file, except that a seed which could not stage ledger.md has
+# already put evidence.md in place. A later seed replaces that copy.
 set -euo pipefail
 
 readonly PROGRAM=${0##*/}

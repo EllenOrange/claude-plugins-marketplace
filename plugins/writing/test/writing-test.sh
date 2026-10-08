@@ -222,6 +222,11 @@ check "$OUT" "the ledger" "seed: the later seed lands the ledger"
 state converge-plan --mode list
 check "$OUT" "evidence.md
 ledger.md" "seed: an interrupted seed's staging file is no file of the state"
+check "$(ls -A "$(dir_of converge-plan)")" "evidence.md
+ledger.md
+ledger.md.partial-99999" "seed: the later seed leaves an interrupted seed's staging file in place"
+check "$(cat "$(dir_of converge-plan)/ledger.md.partial-99999")" "half a led" \
+  "seed: the later seed does not write to an interrupted seed's staging file"
 
 # A seed that fails to stage leaves nothing a later seed is refused on.
 new_case seed-failed
