@@ -179,8 +179,9 @@ readonly dir="$repo_dir/$skill-$issue"
 
 # ledger_scan <action> <evidence> <ledger>...: walks the entries of the
 # ledger files, read as one ledger in the order given. An entry is a
-# line opening with "- " and the indented or blank lines under it. A
-# repo-derived entry, one whose first line carries [Repo-derived], is
+# line opening with "- " and the indented or blank lines under it, and
+# a field is one of those lines opening with two spaces and the field's
+# name. A repo-derived entry, one whose first line carries [Repo-derived], is
 # checkable when it holds a non-empty Derivation: field and a check:
 # an Evidence: field, or both a Command: and an Output: field. Every
 # Evidence: field must name a line the <evidence> log holds. With
@@ -304,8 +305,8 @@ case "$mode" in
     [ -d "$dir" ] || exit 0
     for found in "$dir"/*; do
       [ -f "$found" ] || continue
-      # A staging file is an install_whole copy by put or seed still in
-      # flight, or one killed before its rename, and is no file of the
+      # A staging file is a copy put or seed has not yet renamed into
+      # place, or one killed before its rename, and is no file of the
       # state.
       case "$found" in
         *.partial-*) continue ;;
