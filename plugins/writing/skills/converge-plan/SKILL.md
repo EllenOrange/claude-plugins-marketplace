@@ -196,11 +196,18 @@ structure, before round 1, like the staleness guard's resume
 confirmation. "The body-surface guard" discussion in "1. Locate the
 plan" owns which surface is the live one.
 
+The seed never hands on a repo-derived ruling that lacks a checkable
+derivation, as `write-plan` → "Define the ledger's entry classes"
+defines one. It marks each such ruling `[Discuss]` in the seeded
+ledger, and prints the entry's first line as `write-plan` wrote it.
+
 Before round 1, present every seeded repo-derived ruling with its
 derivation, and take the user's vetoes in one batch. Each veto gets
-the treatment "A veto" under the Blocked rule states. This batch veto
-is an interaction outside the round structure, like the seed
-comparison above.
+the treatment "A veto" under the Blocked rule states. Show each ruling
+the seed printed apart from that batch, flagged as reopened because
+it carried no checkable derivation. It is a discuss item and never
+waits on a veto. This batch veto is an interaction outside the round
+structure, like the seed comparison above.
 
 ### The staleness guard
 

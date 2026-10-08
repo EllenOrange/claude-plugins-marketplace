@@ -96,7 +96,8 @@ The state has these files:
 ### Define the ledger's entry classes
 
 Every ruling in the ledger carries one of these class marks. This
-subsection owns the marking, and every other site cites it:
+subsection owns the marking and the entry grammar, and every other
+site cites it:
 
 - **User-ratified.** The user ruled on the question. The mark makes
   the ruling a fixed constraint for every later critic.
@@ -106,10 +107,32 @@ subsection owns the marking, and every other site cites it:
   `evidence.md` record that backs it only when the ruling concerns
   code behavior.
 
+An entry is one bullet. Its first line carries the question's title,
+the mark `[User-ratified]`, `[Repo-derived]`, or `[Discuss]`, and the
+ruling. A `[Discuss]` entry is a question still open. A repo-derived
+entry carries its fields on indented lines under that first line:
+
+```markdown
+- One author row. [Repo-derived] The cards share one author read.
+  Derivation: FetchStoryDetail reads the row through loadAuthors.
+  Evidence: <the opening line of the evidence.md record>
+```
+
+The `Derivation:` field states how the repo answers the question. A
+check follows it. A code-behavior ruling's check is the `Evidence:`
+field, which names its record's opening line verbatim. Any other
+ruling's check is a `Command:` field and an `Output:` field.
+
 A contract-version ruling's derivation records the registry lookup or
 the package-source read in the ledger, with its command and output. A
 command in a derivation that fails, an auth failure included, blocks
-the ruling, and the question stays a `discuss` item.
+the ruling, and the question stays a `discuss` item. A ruling with no
+derivation, and a code-behavior ruling with no `evidence.md` record,
+never enter the ledger as repo-derived. Each stays a `discuss` item,
+as a failed check does. `writing-plan-state` enforces this:
+it refuses a `put` or an `append` that would leave a repo-derived
+entry with no `Derivation:` field, with no check, or with an
+`Evidence:` field that names no line of `evidence.md`.
 
 ### The post-success lifecycle
 

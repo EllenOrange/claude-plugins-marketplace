@@ -3,8 +3,9 @@
 # writing-test.sh -- drive plugins/writing/bin/writing-plan-state against
 # a state root of its own: the directory each skill and issue composes
 # under XDG_STATE_HOME, every mode, the append-only evidence log, the
-# seed from write-plan's state into converge-plan's, and each refusal of
-# a repository, a skill, an issue, a file name or a payload.
+# seed from write-plan's state into converge-plan's, the ledger's guard
+# on repo-derived rulings and the seed's reopening of one, and each
+# refusal of a repository, a skill, an issue, a file name or a payload.
 #
 # Needs bash and the POSIX utilities. Reaches no network.
 #
@@ -197,6 +198,90 @@ state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
 state converge-plan --mode init
 state converge-plan --mode seed
 check "$RC" "0" "seed: an empty evidence log left by init does not block the seed"
+
+# --- the ledger's repo-derived rulings -----------------------------------
+
+new_case ledger-put
+state write-plan --mode init
+stage rec "- profile-cards: FetchStoryDetail reads the author row
+  loadAuthors is called with the story's author"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+stage ledger.md "- One author row, one clock. [Repo-derived] The cards project from one loadAuthors read."
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+check "$RC" "2" "ledger: a repo-derived ruling with no Derivation: field is refused"
+check_contains "$ERR" "- One author row, one clock. [Repo-derived]" "ledger: the refusal names the entry"
+check "$([ -e "$(dir_of write-plan)/ledger.md" ] && echo written || echo absent)" "absent" \
+  "ledger: a refused put writes no ledger"
+stage ledger.md "- One author row. [Repo-derived] The cards share one read.
+  Derivation: as FetchStoryDetail does."
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+check "$RC" "2" "ledger: a derivation with no Evidence: or Command: check is refused"
+stage ledger.md "- One author row. [Repo-derived] The cards share one read.
+  Derivation: FetchStoryDetail reads the author row through loadAuthors.
+  Evidence: - profile-cards: FetchStoryDetail reads the author row"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+check "$RC" "0" "ledger: a derivation citing an evidence.md record is accepted"
+stage ledger.md "- One author row. [Repo-derived] The cards share one read.
+  Derivation: FetchStoryDetail reads the author row through loadAuthors.
+  Evidence: - a record nobody appended"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+check "$RC" "2" "ledger: an Evidence: field naming no evidence.md line is refused"
+stage ledger.md "- Pin the SDK. [Repo-derived] The plan builds on sdk 4.2.0.
+  Derivation: the registry's latest release.
+  Command: npm view sdk version
+  Output: 4.2.0"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+check "$RC" "0" "ledger: a derivation recording its command and output is accepted"
+stage ledger.md "- Rename the field. [User-ratified] It is called budget.
+- Which retry count? [Discuss]"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+check "$RC" "0" "ledger: user-ratified and discuss entries need no derivation"
+
+new_case ledger-append
+state write-plan --mode init
+stage head "- Pin the SDK. [Repo-derived] The plan builds on sdk 4.2.0."
+state write-plan --mode append --file ledger.md --from "$CASE/stage/head"
+check "$RC" "2" "ledger: an append leaving a ruling with no derivation is refused"
+check "$([ -e "$(dir_of write-plan)/ledger.md" ] && echo written || echo absent)" "absent" \
+  "ledger: a refused append writes nothing"
+stage whole "- Pin the SDK. [Repo-derived] The plan builds on sdk 4.2.0.
+  Derivation: the registry's latest release.
+  Command: npm view sdk version
+  Output: 4.2.0"
+state write-plan --mode append --file ledger.md --from "$CASE/stage/whole"
+check "$RC" "0" "ledger: an append of a whole ruling is accepted"
+state write-plan --mode append --file ledger.md --from "$CASE/stage/head"
+check "$RC" "2" "ledger: the append is judged by the ledger it leaves"
+
+new_case ledger-seed
+stage ledger.md "# Rulings
+
+- One author row, one clock. [Repo-derived] The cards project from one loadAuthors read.
+
+- Pin the SDK. [Repo-derived] The plan builds on sdk 4.2.0.
+  Derivation: the registry's latest release.
+  Command: npm view sdk version
+  Output: 4.2.0"
+# The fixture reaches write-plan's directory past the put guard, as a
+# ledger an earlier version of the plugin wrote would.
+mkdir -p "$(dir_of write-plan)"
+cp "$CASE/stage/ledger.md" "$(dir_of write-plan)/ledger.md"
+state converge-plan --mode seed
+check "$RC:$OUT" "0:- One author row, one clock. [Repo-derived] The cards project from one loadAuthors read." \
+  "seed: prints each repo-derived ruling it reopened"
+state converge-plan --mode print --file ledger.md
+check "$OUT" "# Rulings
+
+- One author row, one clock. [Discuss] The cards project from one loadAuthors read.
+  Reopened: seeded as repo-derived with no checkable derivation
+
+- Pin the SDK. [Repo-derived] The plan builds on sdk 4.2.0.
+  Derivation: the registry's latest release.
+  Command: npm view sdk version
+  Output: 4.2.0" "seed: reopens a ruling with no derivation as a discuss item and keeps the rest"
+printf '%s\n' "$OUT" >"$CASE/stage/seeded.md"
+state converge-plan --mode put --file ledger.md --from "$CASE/stage/seeded.md"
+check "$RC" "0" "seed: the reopened ledger passes the put guard"
 
 # --- refusals ------------------------------------------------------------
 

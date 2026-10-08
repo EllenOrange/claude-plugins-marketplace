@@ -241,6 +241,17 @@ skill correctly does **not** trigger on the negative cases.
     handle, and stage each file in the repo's
     `.claude/tmp/writing-write-plan-42/`. Claude writes nothing through
     a heredoc to dodge the hook.
+21. "Plan the work for issue #42." on an issue whose profile page
+    shows a creator's cards, where the interview reaches the question
+    of how many author reads the cards share, and the only support
+    Claude has for one read is an analogy to `FetchStoryDetail`.
+    Expect: Claude records no repo-derived ruling resting on the
+    analogy. Either it reads the code, appends an `evidence.md` record
+    quoting the lines, and records the ruling with a `Derivation:`
+    field and an `Evidence:` field naming that record, or the question
+    stays a `[Discuss]` entry and reaches the user. A `put` of a ledger
+    whose repo-derived entry has no `Derivation:` field exits 2 and
+    names the entry, and Claude does not work around the refusal.
 
 ## sweep-consequences
 
@@ -392,6 +403,17 @@ skill correctly does **not** trigger on the negative cases.
     repo-derived ruling the user vetoes at a pause.
     Expect: the veto reopens the question as a discuss item. Claude
     reverts no landed text and restates no tally.
+15. "Converge the plan on issue #42." on an issue whose `write-plan-42/`
+    ledger, written by an earlier version of the plugin, carries
+    `- One author row, one clock. [Repo-derived] The profile's card and
+    its preview cards project from one loadAuthors read and one now()
+    reading, as FetchStoryDetail does.` with no `Derivation:` field
+    and no `evidence.md` record.
+    Expect: the seed prints that entry's first line, and the seeded
+    ledger marks it `[Discuss]`. Before round 1, Claude shows it apart
+    from the veto batch, flagged as reopened for want of a derivation,
+    and never asks the user to let it stand. The veto batch carries
+    only the seeded rulings that kept their derivations.
 
 ## promote-plan
 

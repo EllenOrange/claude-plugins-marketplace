@@ -10,10 +10,15 @@
 # therefore never sees one. Content comes in through --from, a file the
 # caller wrote inside its repository, and goes out on stdout.
 #
-# Exit status: 0 on success, 2 on a refused invocation or a file that
-# could not be staged, 3 when --mode print names a file the directory
-# does not hold or --mode seed finds no write-plan state to seed from.
-# A refusal writes nothing.
+# A put or an append that would leave ledger.md holding a repo-derived
+# ruling with no checkable derivation is refused, and seed reopens such
+# a ruling as a discuss item rather than copy it as repo-derived. The
+# entry grammar is write-plan's "Define the ledger's entry classes".
+#
+# Exit status: 0 on success, 2 on a refused invocation, a refused
+# ledger, or a file that could not be staged, 3 when --mode print names
+# a file the directory does not hold or --mode seed finds no write-plan
+# state to seed from. A refusal writes nothing.
 set -euo pipefail
 
 readonly PROGRAM=${0##*/}
@@ -45,7 +50,13 @@ modes:
   print --file <name>       write <name> to stdout
   list                      list the directory's files, one per line
   seed                      copy write-plan's ledger.md and evidence.md
-                            into converge-plan's directory
+                            into converge-plan's directory, reopening
+                            each repo-derived ruling with no checkable
+                            derivation as a discuss item, and print the
+                            first line of each entry it reopened
+
+put and append refuse to leave ledger.md holding a repo-derived ruling
+with no checkable derivation, and name each such entry on stderr.
 
 --repo also takes https://<host>/<owner>/<repo>, the form
 gh repo view --json url --jq .url prints.
@@ -166,6 +177,88 @@ readonly state_root="${XDG_STATE_HOME:-$HOME/.local/state}/writing"
 readonly repo_dir="$state_root/$host/$owner/$repo"
 readonly dir="$repo_dir/$skill-$issue"
 
+# ledger_scan <action> <evidence> <ledger>...: walks the entries of the
+# ledger files, read as one ledger in the order given. An entry is a
+# line opening with "- " and the indented or blank lines under it. A
+# repo-derived entry, one whose first line carries [Repo-derived], is
+# checkable when it holds a non-empty Derivation: field and a check:
+# an Evidence: field, or both a Command: and an Output: field. Every
+# Evidence: field must name a line the <evidence> log holds. With
+# <action> faults it prints the first line of each repo-derived entry
+# that is not checkable. With <action> reopen it prints the whole ledger
+# with each such entry marked [Discuss] in place of [Repo-derived] and a
+# Reopened: field added under it.
+ledger_scan() {
+  action=$1
+  evidence=$2
+  shift 2
+  awk -v action="$action" -v evidence="$evidence" '
+    function trim(text) {
+      sub(/^[ \t]+/, "", text)
+      sub(/[ \t]+$/, "", text)
+      return text
+    }
+    function flush(   checkable, last, i) {
+      if (count == 0) return
+      checkable = derivation && !dangling && (cited || (command && output))
+      last = count
+      while (last > 1 && entry[last] == "") last--
+      if (derived && !checkable) {
+        if (action == "faults") print entry[1]
+        sub(/\[Repo-derived\]/, "[Discuss]", entry[1])
+      }
+      if (action == "reopen") {
+        for (i = 1; i <= count; i++) {
+          print entry[i]
+          if (i == last && derived && !checkable)
+            print "  Reopened: seeded as repo-derived with no checkable derivation"
+        }
+      }
+      count = 0
+    }
+    BEGIN {
+      while ((getline line < evidence) > 0) record[trim(line)] = 1
+    }
+    /^- / {
+      flush()
+      entry[++count] = $0
+      derived = index($0, "[Repo-derived]") > 0
+      derivation = cited = dangling = command = output = 0
+      next
+    }
+    count > 0 && (/^[ \t]/ || /^$/) {
+      entry[++count] = $0
+      if ($0 ~ /^  Derivation:[ \t]*[^ \t]/) derivation = 1
+      else if ($0 ~ /^  Command:[ \t]*[^ \t]/) command = 1
+      else if ($0 ~ /^  Output:/) output = 1
+      else if ($0 ~ /^  Evidence:/) {
+        cite = $0
+        sub(/^  Evidence:/, "", cite)
+        cite = trim(cite)
+        if (cite != "" && (cite in record)) cited = 1
+        else dangling = 1
+      }
+      next
+    }
+    {
+      flush()
+      if (action == "reopen") print
+    }
+    END { flush() }
+  ' "$@"
+}
+
+# refuse_ledger <evidence> <ledger>...: exits 2, naming every
+# repo-derived entry the ledger files hold with no checkable derivation.
+refuse_ledger() {
+  faults=$(ledger_scan faults "$@")
+  [ -n "$faults" ] || return 0
+  printf '%s: %s\n%s\n' "$PROGRAM" \
+    "a repo-derived ruling needs a Derivation: field and a check, an Evidence: field naming an evidence.md line or a Command: and an Output: field; record it [Discuss] until it has them:" \
+    "$faults" >&2
+  exit 2
+}
+
 # install_whole <source> <target>: lands <source> under a staging name
 # and renames it into place once whole, so a writer killed mid-copy
 # leaves no fragment under the target's name.
@@ -184,10 +277,22 @@ case "$mode" in
     [ -e "$dir/evidence.md" ] || : > "$dir/evidence.md"
     ;;
   put)
+    if [ "$file" = ledger.md ]; then
+      refuse_ledger "$dir/evidence.md" "$from"
+    fi
     mkdir -p -- "$dir"
     install_whole "$from" "$dir/$file"
     ;;
   append)
+    # An append is judged by the ledger it would leave, so a ruling
+    # whose fields are split across two appends is refused at the first.
+    if [ "$file" = ledger.md ]; then
+      if [ -f "$dir/ledger.md" ]; then
+        refuse_ledger "$dir/evidence.md" "$dir/ledger.md" "$from"
+      else
+        refuse_ledger "$dir/evidence.md" "$from"
+      fi
+    fi
     mkdir -p -- "$dir"
     cat -- "$from" >> "$dir/$file"
     ;;
@@ -226,6 +331,15 @@ case "$mode" in
     else
       : > "$dir/evidence.md"
     fi
-    install_whole "$source_dir/ledger.md" "$dir/ledger.md"
+    # A ruling recorded with no checkable derivation is never handed on
+    # as repo-derived: it arrives reopened, and its first line as
+    # write-plan wrote it goes to stdout.
+    ledger_scan faults "$dir/evidence.md" "$source_dir/ledger.md"
+    staged="$dir/ledger.md.partial-$$"
+    if ! ledger_scan reopen "$dir/evidence.md" "$source_dir/ledger.md" > "$staged"; then
+      rm -f -- "$staged"
+      die "could not stage $dir/ledger.md"
+    fi
+    mv -- "$staged" "$dir/ledger.md"
     ;;
 esac
