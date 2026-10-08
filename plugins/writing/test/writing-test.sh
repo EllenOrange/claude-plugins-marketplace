@@ -46,8 +46,9 @@ check_contains() {
   esac
 }
 
-# Each case gets a state root and a staging directory of its own, so no
-# case reads a file another one wrote.
+# new_case <name>: starts the case <name> with a state root and a
+# staging directory of its own, so no case reads a file another one
+# wrote.
 new_case() {
   CASE="$SANDBOX/$1"
   mkdir -p "$CASE/state" "$CASE/stage"

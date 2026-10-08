@@ -181,14 +181,14 @@ readonly dir="$repo_dir/$skill-$issue"
 # ledger files, read as one ledger in the order given. An entry is a
 # line opening with "- " and the indented or blank lines under it, and
 # a field is one of those lines opening with two spaces and the field's
-# name. A repo-derived entry, one whose first line carries [Repo-derived], is
-# checkable when it holds a non-empty Derivation: field and a check:
-# an Evidence: field, or both a Command: and an Output: field. Every
-# Evidence: field must name a line the <evidence> log holds. With
-# <action> faults it prints the first line of each repo-derived entry
-# that is not checkable. With <action> reopen it prints the whole ledger
-# with each such entry marked [Discuss] in place of [Repo-derived] and a
-# Reopened: field added under it.
+# name. A repo-derived entry, one whose first line carries
+# [Repo-derived], is checkable when it holds a non-empty Derivation:
+# field and a check: an Evidence: field, or both a Command: and an
+# Output: field. Every Evidence: field must name a line the <evidence>
+# log holds. With <action> faults it prints the first line of each
+# repo-derived entry that is not checkable. With <action> reopen it
+# prints the whole ledger with each such entry marked [Discuss] in place
+# of [Repo-derived] and a Reopened: field added under it.
 ledger_scan() {
   action=$1
   evidence=$2
