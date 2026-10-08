@@ -38,6 +38,7 @@ absent() {
   exit 3
 }
 
+# usage: prints the invocation synopsis and each mode's effect on stdout.
 usage() {
   cat <<EOF
 usage: $PROGRAM --repo <host>/<owner>/<repo> --skill write-plan|converge-plan
@@ -252,7 +253,8 @@ ledger_scan() {
 }
 
 # refuse_ledger <evidence> <ledger>...: exits 2, naming every
-# repo-derived entry the ledger files hold with no checkable derivation.
+# repo-derived entry the ledger files hold with no checkable derivation,
+# and returns 0 when they hold none.
 refuse_ledger() {
   faults=$(ledger_scan faults "$@")
   [ -n "$faults" ] || return 0
