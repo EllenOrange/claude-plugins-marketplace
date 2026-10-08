@@ -260,16 +260,33 @@ refuse_ledger() {
   exit 2
 }
 
+# staged names the staging file a write has not yet renamed into place.
+# A failure, an INT or a TERM exits through the EXIT trap, which removes
+# it. A staging file a KILL leaves behind is skipped by list and blocks
+# no later write.
+staged=
+trap '[ -z "$staged" ] || rm -f -- "$staged"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
 # install_whole <source> <target>: lands <source> under a staging name
 # and renames it into place once whole, so a writer killed mid-copy
 # leaves no fragment under the target's name.
 install_whole() {
   staged="$2.partial-$$"
-  if ! cp -- "$1" "$staged"; then
-    rm -f -- "$staged"
-    die "could not stage $2"
-  fi
+  cp -- "$1" "$staged" || die "could not stage $2"
   mv -- "$staged" "$2"
+  staged=
+}
+
+# opens_with <long> <short>: succeeds when <short> is empty or <long>
+# opens with every byte of it. An absent <long> opens with nothing but
+# the empty file.
+opens_with() {
+  size=$(wc -c < "$2" | tr -d ' ')
+  [ "$size" -gt 0 ] || return 0
+  [ -f "$1" ] || return 1
+  head -c "$size" -- "$1" | cmp -s - "$2"
 }
 
 case "$mode" in
@@ -319,12 +336,19 @@ case "$mode" in
     # directory. A ledger or an evidence record converge-plan already
     # holds is its own run's state, so the seed refuses rather than
     # overwrite it.
+    #
+    # The ledger lands last, so a seed that failed or was interrupted
+    # before it left no ledger.md and at most a copy of write-plan's
+    # evidence.md. write-plan only appends to its log, so its current log
+    # still opens with that copy, and replacing the copy loses no record.
+    # An evidence.md holding bytes write-plan's log does not open with is
+    # converge-plan's own, and only that refuses the seed.
     [ "$skill" = converge-plan ] || die "--mode seed takes --skill converge-plan"
     source_dir="$repo_dir/write-plan-$issue"
     [ -f "$source_dir/ledger.md" ] || absent "write-plan-$issue holds no ledger.md to seed from"
     [ ! -e "$dir/ledger.md" ] || die "converge-plan-$issue already holds a ledger.md"
-    if [ -s "$dir/evidence.md" ]; then
-      die "converge-plan-$issue already holds evidence records"
+    if [ -f "$dir/evidence.md" ] && ! opens_with "$source_dir/evidence.md" "$dir/evidence.md"; then
+      die "converge-plan-$issue already holds evidence records write-plan-$issue does not"
     fi
     mkdir -p -- "$dir"
     if [ -f "$source_dir/evidence.md" ]; then
@@ -337,10 +361,9 @@ case "$mode" in
     # write-plan wrote it goes to stdout.
     ledger_scan faults "$dir/evidence.md" "$source_dir/ledger.md"
     staged="$dir/ledger.md.partial-$$"
-    if ! ledger_scan reopen "$dir/evidence.md" "$source_dir/ledger.md" > "$staged"; then
-      rm -f -- "$staged"
+    ledger_scan reopen "$dir/evidence.md" "$source_dir/ledger.md" > "$staged" ||
       die "could not stage $dir/ledger.md"
-    fi
     mv -- "$staged" "$dir/ledger.md"
+    staged=
     ;;
 esac

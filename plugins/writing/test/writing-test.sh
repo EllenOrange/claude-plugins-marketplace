@@ -199,6 +199,46 @@ state converge-plan --mode init
 state converge-plan --mode seed
 check "$RC" "0" "seed: an empty evidence log left by init does not block the seed"
 
+# A seed killed between its two renames leaves write-plan's evidence.md
+# copied and no ledger.md, and one killed mid-stage leaves a staging file.
+new_case seed-interrupted
+stage ledger.md "the ledger"
+stage rec "the record"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+mkdir -p "$(dir_of converge-plan)"
+cp "$(dir_of write-plan)/evidence.md" "$(dir_of converge-plan)/evidence.md"
+printf 'half a led' >"$(dir_of converge-plan)/ledger.md.partial-99999"
+stage more "a later write-plan record"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/more"
+state converge-plan --mode seed
+check "$RC" "0" "seed: an interrupted seed's leftovers do not block a later seed"
+state converge-plan --mode print --file evidence.md
+check "$OUT" "the record
+a later write-plan record" "seed: the later seed copies write-plan's current evidence log"
+state converge-plan --mode print --file ledger.md
+check "$OUT" "the ledger" "seed: the later seed lands the ledger"
+state converge-plan --mode list
+check "$OUT" "evidence.md
+ledger.md" "seed: an interrupted seed's staging file is no file of the state"
+
+# A seed that fails to stage leaves nothing a later seed is refused on.
+new_case seed-failed
+stage ledger.md "the ledger"
+stage rec "the record"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+mkdir -p "$(dir_of converge-plan)"
+chmod 555 "$(dir_of converge-plan)"
+state converge-plan --mode seed
+check "$RC" "2" "seed: a seed that cannot stage exits 2"
+chmod 755 "$(dir_of converge-plan)"
+check "$(ls -A "$(dir_of converge-plan)")" "" "seed: a failed seed leaves no file behind"
+state converge-plan --mode seed
+check "$RC" "0" "seed: a failed seed does not block a later seed"
+state converge-plan --mode print --file ledger.md
+check "$OUT" "the ledger" "seed: the seed after a failure lands the ledger"
+
 # --- the ledger's repo-derived rulings -----------------------------------
 
 new_case ledger-put

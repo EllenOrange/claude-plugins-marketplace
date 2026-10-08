@@ -109,7 +109,10 @@ site cites it:
 
 An entry is one bullet. Its first line carries the question's title,
 the mark `[User-ratified]`, `[Repo-derived]`, or `[Discuss]`, and the
-ruling. A `[Discuss]` entry is a question still open. A repo-derived
+ruling. A `[Discuss]` entry is a question still open. A `[Discuss]`
+entry that `writing-plan-state`'s seed reopened from a repo-derived
+ruling keeps every field that ruling carried, and adds a `Reopened:`
+field stating why the seed reopened it. A repo-derived
 entry carries its fields on indented lines under that first line:
 
 ```markdown
@@ -314,7 +317,8 @@ prescribes. This seat's own behavior is the verdict handling:
   `sweep-consequences` → "What each caller passes" names. Record the
   answer in `ledger.md` as a vetoable ruling, marked per "Define the
   ledger's entry classes", only once the fold call reports its check
-  passed.
+  passed. Its derivation and check fields are the ones the fold call
+  returned for it, as `sweep-consequences` → "Output" states.
 - A fold answer whose check failed, and every question the fold call
   raises, lands in the ledger as a `discuss` item.
 - A `refute` verdict follows the owning Output section.

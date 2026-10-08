@@ -88,8 +88,16 @@ rather than restating the mechanism. The obligations on a caller are:
 - Every question a fold call raises, and every failed answer it
   returns, is a `discuss` item for the caller. No fold call follows a
   fold call.
+- A fold call returns each answer whose check passed with the
+  derivation and check fields `write-plan` → "Define the ledger's
+  entry classes" prescribes for its entry, written out. A
+  code-behavior answer's `Evidence:` field names the opening line of
+  the record the fold call appended for it. Any other answer's
+  `Command:` and `Output:` fields are the command the fold call ran
+  for it and that command's output.
 - The caller records a `fix`-triaged answer as a ruling only after the
-  fold call reports its check passed.
+  fold call reports its check passed. The ruling's entry carries the
+  fields the fold call returned for it, copied verbatim.
 - A `refute`-triaged question drops, with its reason recorded.
 - A `discuss`-triaged question reaches the user.
 

@@ -314,7 +314,9 @@ because the round pauses before it edits anything.
      `batch-<round>-fold.md` as its instruction file. Record the
      answer in the ledger as a vetoable ruling carrying its
      derivation, marked per `write-plan` → "Define the ledger's entry
-     classes", only once the fold call reports its check passed.
+     classes", only once the fold call reports its check passed. Its
+     derivation and check fields are the ones the fold call returned
+     for it, as `sweep-consequences` → "Output" states.
    - A fold answer whose check failed, and every question the fold
      call raises, lands in the ledger as a `discuss` item and pauses
      the round under "Blocked".
