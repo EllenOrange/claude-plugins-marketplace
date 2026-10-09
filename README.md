@@ -36,6 +36,21 @@ where it is inert. The `install-writing-style` skill copies it to
 `~/.claude/CLAUDE.md` so it loads always-on. Running
 `plugins/writing/install-rule.sh` directly does the same thing.
 
+The plan skills keep their state outside the target repo. The plugin
+ships `writing-plan-state` in its `bin/`, which the harness puts on
+`PATH` while the plugin is enabled. The script composes every state
+path under the XDG state home, keyed by the target repo's host, owner,
+and name, so no skill names a path there and a hook that confines
+reads and writes to the current repo never sees one. A seat reaches a
+state file through a state handle, the `--repo`, `--skill`, and
+`--issue` flags, plus the file's name, and hands a subagent the same
+handle and names rather than paths. A file enters the state from a
+staging copy under `.claude/tmp/writing-<skill>-<issue>/` at the
+target repo's root, a transient copy that repo cleanup may remove.
+`plugins/writing/test/writing-test.sh` drives the script against a
+state root of its own, needs only bash and the POSIX utilities, and
+reaches no network.
+
 Skills:
 
 - **install-writing-style**: install the shipped communication-style rule
@@ -50,7 +65,10 @@ Skills:
   runs uninterrupted and records each ruling to a durable ledger,
   marked user-ratified or repo-derived. A repo-derived ruling keeps
   its derivation in the ledger, and a failed command in that
-  derivation blocks the ruling. The Propose step runs in two stages:
+  derivation blocks the ruling. `writing-plan-state` refuses a ledger
+  write that would leave a repo-derived ruling with no derivation or
+  no check, so such a ruling stays a discuss item. The Propose step
+  runs in two stages:
   the framing and the candidate solutions first, then the criteria
   the chosen solution earns. The agreed core is drafted to disk, given
   one `sweep-consequences` pass and one `sweep-style` pass, and
@@ -85,10 +103,9 @@ Skills:
   sweep question passes through `summarize-findings` triage, so only a
   `discuss` verdict reaches the user. It posts the plan as an issue
   comment and leaves its state directory in place for `converge-plan`
-  to seed from. That directory sits under the XDG state home, keyed
-  by the target repo's host, owner, and name, so it survives any
-  repo-local cleanup and a later postmortem can read the ledger and
-  the evidence log.
+  to seed from. `writing-plan-state` holds that directory outside the
+  target repo, so it survives any repo-local cleanup and a later
+  postmortem can read the ledger and the evidence log.
 - **sweep-consequences**: discover the edits a decision set forces on a
   plan and emit them as instructions. It enumerates the cross-cutting
   consequences of the whole set, walks every behavior those decisions
@@ -147,10 +164,13 @@ Skills:
   issue until a stopping rule ends it. The loop keeps a decision
   ledger, an open-issues doc, per-round snapshots, the round's draft,
   an evidence log, and each sweep's instruction file as durable state
-  under the XDG state home, outside the target repo. It seeds the
-  ledger and copies the evidence log from `write-plan`'s own state
-  directory when one is there, and before round 1 presents every
-  seeded repo-derived ruling with its derivation for one batch veto.
+  that `writing-plan-state` holds outside the target repo. It seeds
+  the ledger and copies the evidence log from `write-plan`'s own state
+  directory when one is there. The seed reopens as a discuss item
+  each repo-derived ruling that arrives with no checkable derivation.
+  Before round 1 the loop presents every seeded repo-derived ruling
+  with its derivation for one batch veto, and shows each reopened
+  ruling apart from that batch, flagged, since it waits on no veto.
   It orchestrates rather than edits: it verifies each finding and
   applies the acceptance bar itself, collects the round's edit
   instructions through one `sweep-consequences` call over the round's
