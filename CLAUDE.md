@@ -4,6 +4,19 @@ Personal Claude Code plugin marketplace `ellenorange`. Plugins live
 under `plugins/<name>/` with a `.claude-plugin/plugin.json` manifest
 and skills under `skills/<name>/SKILL.md`.
 
+## Two remotes make a bare checkout ambiguous
+
+The clone carries two remotes, `origin` and `fablegate`, that point at
+the same GitHub repo through different SSH host aliases. A bare
+`git checkout <branch>` therefore fails with "matched multiple (2)
+remote tracking branches". The two remote-tracking refs can also
+disagree, because one is fetched less often than the other.
+
+Check a branch out with `git checkout --track origin/<branch>`, which
+still creates an attached local branch. Push to `origin`. Before you
+trust HEAD as a PR's head, compare it with
+`gh pr view <N> --json headRefOid`.
+
 ## Releasing plugin changes
 
 Bump the plugin's `version` in `.claude-plugin/plugin.json` in the
@@ -31,7 +44,7 @@ lines. Grep instead for one distinctive word from the cited text. A
 single word is the longest fragment a wrap can never split:
 
 ```bash
-grep -rn "<distinctive-word>" plugins/*/skills/*/SKILL.md
+grep -rn "<distinctive-word>" plugins/*/skills/*/SKILL.md README.md
 ```
 
 When the cited text has no distinctive single word, run a multiline
@@ -58,27 +71,31 @@ same command produce hits.
 
 ## One skill's state directory is another skill's input
 
-`write-plan` writes its ledger and its draft to
-`.claude/tmp/write-plan-<issue>/`, and leaves the directory in place
-after it posts. `converge-plan` reads that same path to seed its own
-ledger and to compare the draft against the live plan surface. The
-path and the filenames `ledger.md` and `draft.md` are a contract
-between them.
+`plugins/writing/bin/writing-plan-state` composes every state path of
+the plan loop, and no skill names one. `write-plan` leaves its ledger,
+its draft, and its evidence log in the script's `write-plan` directory
+for the issue. `converge-plan` seeds its own ledger and evidence log
+from there through the script's `seed` mode, and prints the draft to
+compare it against the live plan surface. The script's `--skill`
+values and the filenames `ledger.md`, `draft.md`, and `evidence.md`
+are a contract between the two skills and the script.
 
-A rename on either side dangles as silently as a renamed heading. The
-heading sweep above misses it, because the pointer is a path rather
-than quoted prose. Sweep for the directory name instead:
+A rename on any side dangles as silently as a renamed heading. The
+heading sweep above misses it, because the pointer is a flag value or
+a filename rather than quoted prose. Sweep for the script's name,
+which every side carries:
 
 ```bash
-git grep -nP 'write-plan-<issue>'
+git grep -nP 'writing-plan-state\b'
 ```
 
 ## A sweep skill lists its own callers
 
 `sweep-consequences` and `sweep-style` each carry a "What each caller
 passes" section naming every seat that spawns them and the inputs that
-seat hands over. The spawn sites live in `converge-plan` and
-`write-plan`, so the fact is stated twice and nothing catches drift.
+seat hands over, state file names included. The spawn sites live in
+`converge-plan` and `write-plan`, so the fact is stated twice and
+nothing catches drift.
 
 Changing what a seat passes, adding a seat, or moving one obliges an
 edit to the sweep skill's caller list in the same commit. Find the

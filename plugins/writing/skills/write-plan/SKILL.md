@@ -13,10 +13,53 @@ bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 ## The state directory
 
-Keep the flow's state in `.claude/tmp/write-plan-<issue>/`. Never use
-the session scratchpad for it. `writing:converge-plan` seeds its own
-ledger from this directory, so the state has to outlive the session
-that wrote it.
+Keep the flow's state in the `write-plan-<issue>` directory that
+`writing-plan-state` holds for the target repo. Never use the session
+scratchpad for it. `writing:converge-plan` seeds its own ledger from
+this directory, so the state has to outlive the session that wrote it.
+
+### Reach the state through the script
+
+This plugin ships `writing-plan-state` in its `bin/`, which the
+harness puts on the Bash tool's `PATH` while the plugin is enabled.
+The script composes every state path under the XDG state home, and no
+skill restates that root. The root's literal appears in only these
+files:
+
+- the script, `plugins/writing/bin/writing-plan-state`
+- its test, `plugins/writing/test/writing-test.sh`
+- `plugins/writing/EVAL.md`
+
+This subsection owns how a seat reaches the state, and every other
+site cites it:
+
+- Name no path under the state root, in a tool call or in a Bash
+  command. A hook that confines reads and writes to the current repo
+  then never sees one.
+- Name the directory by three flags: `--repo`, `--skill`, and
+  `--issue`. These flags are the state handle. A seat hands a subagent
+  the state handle and the file names it needs, never a path.
+- Read a file with `--mode print --file <name>`, which writes it to
+  stdout. `--mode list` names the files the directory holds.
+- Replace a file with `--mode put --file <name> --from <path>`, and
+  append to one with `--mode append --file <name> --from <path>`. The
+  script refuses a `put` of `evidence.md`.
+- Create the directory and an empty `evidence.md` with `--mode init`.
+- Stage a file in the staging directory
+  `.claude/tmp/writing-<skill>-<issue>/` at the target repo's root,
+  under the name of the state file it feeds. Stage there every file
+  you pass `--from`, and every file you print out to edit or to post.
+  A staged file is a transient copy. Read state only through `print`,
+  never from a file another seat staged.
+
+Pass the target repo's `gh repo view --json url --jq .url` value as
+`--repo`, unchanged. The script refuses a value with no host, and a
+segment it cannot place under the root. Run `--mode init` before any
+other write. Stop and report before you write any state when the `gh`
+call fails or the script refuses the value. No fallback directory
+exists.
+
+### The state's files
 
 The state has these files:
 
@@ -30,24 +73,78 @@ The state has these files:
 - **`draft.md`, the plan's working copy.** "4. Propose" drafts the
   agreed core into it, and "5. Write" overwrites it with the full
   plan. The post reads this file.
+- **`evidence.md`, the evidence log.** This entry owns the record
+  shape. A record is appended and never edited. It opens with its
+  item's text, then carries:
+  - the `file:symbol` it concerns, for a behavior claim or a
+    prescribed text
+  - the paths the command names, or the tree root when it names none,
+    for a command
+  - the quoted lines, for a behavior claim
+  - the commit the check ran against
+  - each verify command, with at most the first 50 lines of its output
+    and the total line count
+  - the lint or compile run, for a prescribed text
+- **The instruction files.** Each sweep call writes its own file,
+  under a fixed name:
+  - `core-style.md` and `core-batch.md`, for "Draft the core"
+  - `style.md`, for "7. Style pipeline"
+  - `review-<n>-batch.md`, for the nth pass of "8. Human review"
+  - `<file>-fold.md`, beside each `sweep-consequences` instruction file
+    `<file>.md` whose questions folded
 
 ### Define the ledger's entry classes
 
 Every ruling in the ledger carries one of these class marks. This
-subsection owns the marking, and every other site cites it:
+subsection owns the marking and the entry grammar, and every other
+site cites it:
 
 - **User-ratified.** The user ruled on the question. The mark makes
   the ruling a fixed constraint for every later critic.
 - **Repo-derived.** The answer came from the repo rather than the
-  user. The entry records the derivation beside the ruling, so a
-  later reader can test it and veto it.
+  user. The entry keeps its derivation in the ledger beside the
+  ruling, so a later reader can test it and veto it. It cites the
+  `evidence.md` record that backs it only when the ruling concerns
+  code behavior.
+
+An entry is one bullet. Its first line carries the question's title,
+the mark `[User-ratified]`, `[Repo-derived]`, or `[Discuss]`, and the
+ruling. A `[Discuss]` entry is a question still open. A `[Discuss]`
+entry that `writing-plan-state`'s seed reopened from a repo-derived
+ruling keeps every field that ruling carried, and adds a `Reopened:`
+field stating why the seed reopened it. A repo-derived
+entry carries its fields on indented lines under that first line:
+
+```markdown
+- One author row. [Repo-derived] The cards share one author read.
+  Derivation: FetchStoryDetail reads the row through loadAuthors.
+  Evidence: <the opening line of the evidence.md record>
+```
+
+The `Derivation:` field states how the repo answers the question. A
+check follows it. A code-behavior ruling's check is the `Evidence:`
+field, which names its record's opening line verbatim. Any other
+ruling's check is a `Command:` field and an `Output:` field.
+
+A contract-version ruling's derivation records the registry lookup or
+the package-source read in the ledger, with its command and output. A
+command in a derivation that fails, an auth failure included, blocks
+the ruling, and the question stays a `discuss` item. A ruling with no
+derivation, and a code-behavior ruling with no `evidence.md` record,
+never enter the ledger as repo-derived. Each stays a `discuss` item,
+as a failed check does. `writing-plan-state` enforces this:
+it refuses a `put` or an `append` that would leave a repo-derived
+entry with no `Derivation:` field, with no check, or with an
+`Evidence:` field that names no line of `evidence.md`.
 
 ### The post-success lifecycle
 
 A successful post leaves the directory in place, so
 `writing:converge-plan` can seed its ledger from it. Nothing deletes
-the directory, and it persists like every `.claude/tmp/` state
-directory. `converge-plan` owns when seeding fires, and that trigger
+the directory. It sits outside the target repo, so no repo-local
+cleanup indexes it. This skill neither reads nor migrates state from
+the repo-local directory earlier versions used. `converge-plan` owns
+when seeding fires, and that trigger
 makes a stale directory harmless. The reader-side guard for a stale
 directory is `converge-plan`'s seed comparison, cited rather than
 restated here.
@@ -161,30 +258,40 @@ plan file.
 **Stage two. The criteria the chosen solution earns.** Derive the
 Acceptance section's Mechanical and Semantic bullets from the solution
 the user picked. State them in the bullet form "State the acceptance
-criteria" gives. Show them and stop for correction.
+criteria" gives. Record each criterion's evidence per "Record evidence
+before the sentence" before you show it. Show them and stop for
+correction.
 
 ### Draft the core
 
-Draft the agreed core to `.claude/tmp/write-plan-<issue>/draft.md`.
-The core is the Problem, Scope, Solution, and Acceptance sections,
-written as "5. Write" prescribes them. The full-plan draft
-later overwrites `draft.md`, and the core text is not retained
-separately.
+Draft the agreed core to `draft.md` in the directory "The state
+directory" owns. The core is the Problem, Scope, Solution, and
+Acceptance sections, written as "5. Write" prescribes them, with
+evidence recorded per "Record evidence before the sentence". The
+full-plan draft later overwrites `draft.md`, and the core text is not
+retained separately.
 
-Then sweep the core once:
+Then sweep the core once. Every file below is a state file, which a
+subagent reaches per "Reach the state through the script":
 
 1. Spawn a general-purpose subagent on the Opus model, per
    `sweep-consequences` → "Execution context". Instruct it to load
    `writing:sweep-consequences`, and pass it the interview's whole
-   ruling set as the decision set, plus `draft.md` and `ledger.md` by
-   path.
+   ruling set as the decision set. Pass it the state handle,
+   `draft.md`, `ledger.md`, and `evidence.md` by name, and
+   `core-batch.md` as its instruction file.
 2. Spawn a second general-purpose subagent on the Opus model, per
    `sweep-style` → "Execution context". Instruct it to load
-   `writing:sweep-style`, and pass it `draft.md` by path.
-3. Spawn a third general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it `draft.md` by path and both
-   batches as one instruction batch. One revision applies both.
-4. Read the revised file back.
+   `writing:sweep-style`, and pass it the state handle, `draft.md` by
+   name, and `core-style.md` as its instruction file.
+3. Triage every question the consequence sweep returns, per "Triage
+   the sweep's questions".
+4. Spawn a third general-purpose subagent, instruct it to load
+   `writing:revise-plan`, and pass it the state handle, with
+   `draft.md`, `core-batch.md`, and `core-style.md` by name, plus
+   `core-batch-fold.md` when a fold ran.
+   One revision applies them all.
+5. Read the revised file back.
 
 `revise-plan` → "Output" owns the unapplied-instruction resolution
 rule. This seat resolves every unapplied instruction before it drafts
@@ -202,17 +309,30 @@ shape, the fold rule, and the refute rule. Route every question the
 sweep returns through `writing:summarize-findings` as that owner
 prescribes. This seat's own behavior is the verdict handling:
 
-- A `fix` verdict records the repo-derived answer in `ledger.md` as a
-  vetoable ruling, marked per "Define the ledger's entry classes".
-  The fold follows the owning Output section.
+- A `fix` verdict's repo-derived answer goes to the one fold call the
+  owning Output section prescribes. Spawn that call as a
+  general-purpose subagent on the Opus model, per `sweep-consequences`
+  → "Execution context", and instruct it to load
+  `writing:sweep-consequences`. Pass it the fold-call inputs
+  `sweep-consequences` → "What each caller passes" names. Record the
+  answer in `ledger.md` as a vetoable ruling, marked per "Define the
+  ledger's entry classes", only once the fold call reports its check
+  passed. Its derivation and check fields are the ones the fold call
+  returned for it, as `sweep-consequences` → "Output" states.
+- A fold answer whose check failed, and every question the fold call
+  raises, lands in the ledger as a `discuss` item.
 - A `refute` verdict follows the owning Output section.
 - A `discuss` verdict reaches the user, and its ruling lands in the
   ledger user-ratified.
 
+`revise-plan` receives the fold file beside the instruction file
+whenever a fold ran.
+
 ## 5. Write
 
 Draft the full plan in Markdown from the settled core, overwriting
-`.claude/tmp/write-plan-<issue>/draft.md`. You revise this file during
+`draft.md` in the directory "The state directory" owns. You revise
+this file during
 self-review and post it from the Post step, so the reader never sees a
 draft you already rejected. `converge-plan`'s seed comparison reads
 this file, so the posted plan's own text is what stays on disk.
@@ -536,6 +656,35 @@ carry one. Restate the fact you read in the body, in the present
 tense, with no URL. An in-repo authority, such as a dependency's
 source path or a skill name, stays inline.
 
+### Record evidence before the sentence
+
+The evidence class is:
+
+- every command the plan carries, run against the tree with its output
+  recorded
+- every code or config text the plan prescribes verbatim, linted or
+  compiled in the seat that writes it
+- every claim about how existing code behaves, with the quoted lines
+
+A citation of a section or a path, a decision, and an obligation get
+no record.
+
+Write every member of the class from a record appended first to
+`evidence.md`, in the shape "The state directory" owns. An item the
+seat cannot verify lands under Open questions and never as plan text.
+The only unverifiable command is one that cannot run. A command that
+runs and reports the tree's current state records that output, a grep
+with no hit included.
+
+The log is a record for the critic and for a later postmortem. No seat
+matches an item to a record by key. These seats append records while
+drafting:
+
+- "4. Propose" stage two
+- "Draft the core"
+- "5. Write"
+- "6. Self-review"
+
 ### Write for the implementer
 
 The reader is an implementation agent or the engineer in that seat.
@@ -557,6 +706,11 @@ accurately by reading it. Name the change surface at the component
 level in the Outline. The Files affected section is the plan's one
 file list, and "Derive the files affected" owns what it carries.
 
+This section owns the altitude rule's forbidden forms. Plan text names
+no `file:line`, no hunk count, and no parameter position. The sites
+permitted to restate these forms are this section,
+`sweep-consequences` → "Output", and `revise-plan` → "Boundaries".
+
 ## 6. Self-review
 
 Read the file back and check it. This is the step the file exists
@@ -576,9 +730,10 @@ here costs an edit rather than a correction.
   drafted Solution and Outline. Every behavior passes the walk's
   test, or the question it fails on sits under Open questions.
 - **Readiness bar.** Grade the draft against every item of the
-  installed `sdlc:orchestrate-readiness` bar. Run each Mechanical
-  bullet's command against the tree, per that skill's executed
-  Mechanical check. Fix every gap. When the locator in
+  installed `sdlc:orchestrate-readiness` bar. Re-run each command the
+  plan carries against the tree, per that skill's executed Mechanical
+  check, and append each run's record to `evidence.md` per "Record
+  evidence before the sentence". Fix every gap. When the locator in
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` finds no sdlc install,
   skip this item and say in the report that the grading was skipped.
 - **Criteria shape.** Does every Acceptance bullet take the bullet
@@ -595,6 +750,9 @@ here costs an edit rather than a correction.
   claim.
 - **Touched contracts.** Does every existing contract the Outline
   touches have one Acceptance bullet?
+- **Evidence.** Does every member of the evidence class have a record,
+  per "Record evidence before the sentence"? A fix this review makes
+  appends its record as the draft does.
 - **Actions that read as results.** Any outline action stating a claim
   about the merged result. Move it to the Acceptance section, per
   "State the how, never the result".
@@ -668,10 +826,11 @@ Run the whole-draft style pass once, before anyone sees the file:
 
 1. Spawn a general-purpose subagent on the Opus model, per
    `sweep-style` → "Execution context". Instruct it to load
-   `writing:sweep-style`, and pass it `draft.md` by path.
+   `writing:sweep-style`, and pass it the state handle, `draft.md` by
+   name, and `style.md` as its instruction file.
 2. Spawn a second general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it `draft.md` by path and the batch
-   the sweep emitted.
+   `writing:revise-plan`, and pass it the state handle, with
+   `draft.md` and `style.md` by name.
 3. Read the revised file back.
 
 `revise-plan` → "Output" owns the unapplied-instruction resolution
@@ -690,20 +849,26 @@ This step is the veto surface for the repo-derived rulings that
 derivation. A ruling the user leaves standing carries forward, and
 `writing:converge-plan` inherits it as vetoable when it seeds.
 
-Apply the changes they ask for through this pipeline:
+Apply the changes they ask for through this pipeline. On the nth pass
+of this step, every file below is a state file, which a subagent
+reaches per "Reach the state through the script":
 
 1. Spawn a general-purpose subagent on the Opus model, per
    `sweep-consequences` → "Execution context". Instruct it to load
    `writing:sweep-consequences`, and pass it the requested changes as
-   the decision set, plus `draft.md` and `ledger.md` by path.
-2. Spawn a second general-purpose subagent, instruct it to load
-   `writing:revise-plan`, and pass it `draft.md` by path and a batch
-   carrying the requested changes plus every instruction the sweep
-   emitted.
-3. Read the revised file back, then show it again.
+   the decision set. Pass it the state handle, `draft.md`,
+   `ledger.md`, and `evidence.md` by name, and `review-<n>-batch.md` as
+   its instruction file.
+2. Triage every question the sweep returns, per "Triage the sweep's
+   questions".
+3. Spawn a second general-purpose subagent, instruct it to load
+   `writing:revise-plan`, and pass it the state handle, with
+   `draft.md` and `review-<n>-batch.md` by name, plus
+   `review-<n>-batch-fold.md` when a fold ran. The seat composes no
+   batch of its own.
+4. Read the revised file back, then show it again.
 
-Route every question the sweep returns through the channel
-"Triage the sweep's questions" describes. `revise-plan` → "Output"
+`revise-plan` → "Output"
 owns the unapplied-instruction resolution rule, and this seat reports
 to the user a conflict that survives it. The sweep walks every
 behavior the change alters before the edit, and `revise-plan`'s
@@ -712,13 +877,14 @@ own.
 
 ## 9. Post
 
-Post `.claude/tmp/write-plan-<issue>/draft.md` as a comment on the
-issue. Every human-review edit lands in that file through
-`revise-plan` before the post, and nothing edits the text at post
-time. Prefer an installed issue skill, for example
-`/issues:issue-comment`, which reads the body from a file. Otherwise
-use `gh issue comment --body-file`. Then report the comment URL to the
-user.
+Post `draft.md` from the directory "The state directory" owns as a
+comment on the issue. Print it into the staging directory and post
+that copy, per "Reach the state through the script". Every
+human-review edit lands in `draft.md` through `revise-plan` before the
+post, and nothing edits the text at post time. Prefer an installed
+issue skill, for example `/issues:issue-comment`, which reads the body
+from a file. Otherwise use `gh issue comment --body-file`. Then report
+the comment URL to the user.
 
 `writing:converge-plan` runs the critique-and-fix loop over the plan.
 It loops over the comment or over the promoted plan in the issue body,

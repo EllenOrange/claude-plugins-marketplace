@@ -36,6 +36,21 @@ where it is inert. The `install-writing-style` skill copies it to
 `~/.claude/CLAUDE.md` so it loads always-on. Running
 `plugins/writing/install-rule.sh` directly does the same thing.
 
+The plan skills keep their state outside the target repo. The plugin
+ships `writing-plan-state` in its `bin/`, which the harness puts on
+`PATH` while the plugin is enabled. The script composes every state
+path under the XDG state home, keyed by the target repo's host, owner,
+and name, so no skill names a path there and a hook that confines
+reads and writes to the current repo never sees one. A seat reaches a
+state file through a state handle, the `--repo`, `--skill`, and
+`--issue` flags, plus the file's name, and hands a subagent the same
+handle and names rather than paths. A file enters the state from a
+staging copy under `.claude/tmp/writing-<skill>-<issue>/` at the
+target repo's root, a transient copy that repo cleanup may remove.
+`plugins/writing/test/writing-test.sh` drives the script against a
+state root of its own, needs only bash and the POSIX utilities, and
+reaches no network.
+
 Skills:
 
 - **install-writing-style**: install the shipped communication-style rule
@@ -48,14 +63,31 @@ Skills:
 - **write-plan**: read an issue and the foundational docs, then
   interview the user to resolve open design questions. The interview
   runs uninterrupted and records each ruling to a durable ledger,
-  marked user-ratified or repo-derived. The Propose step runs in two
-  stages: the framing and the candidate solutions first, then the
-  criteria the chosen solution earns. The agreed core is drafted to
-  disk, given one `sweep-consequences` pass and one `sweep-style`
-  pass, and revised once through `revise-plan` before the full plan is
-  drafted from it. The plan carries the sections Problem, Scope,
-  Solution, Acceptance, Outline, Files affected (floor), and Open
-  questions, in the issue-body grammar of `sdlc:orchestrate-readiness`.
+  marked user-ratified or repo-derived. A repo-derived ruling keeps
+  its derivation in the ledger, and a failed command in that
+  derivation blocks the ruling. `writing-plan-state` refuses a ledger
+  write that would leave a repo-derived ruling with no derivation or
+  no check, so such a ruling stays a discuss item. The Propose step
+  runs in two stages:
+  the framing and the candidate solutions first, then the criteria
+  the chosen solution earns. The agreed core is drafted to disk, given
+  one `sweep-consequences` pass and one `sweep-style` pass, and
+  revised once through `revise-plan` before the full plan is drafted
+  from it. Each sweep writes its instructions to a file of its own in
+  the state directory, and `revise-plan` applies those files, so the
+  skill composes no instruction itself. The repo-derived answers to a
+  sweep's `fix`-triaged questions go to one fold call of
+  `sweep-consequences`, and each becomes a ruling only after the fold
+  reports its check passed. Every command the plan carries, every
+  text it prescribes verbatim, and every claim about how existing
+  code behaves is run or quoted first, and the record is appended to
+  an evidence log before the item is written. An item the skill
+  cannot verify lands under Open questions, never as plan text. Its
+  "Write for the implementer" section owns the altitude rule, which
+  keeps plan text at the level the implementer cannot derive from the
+  tree. The plan carries the sections Problem, Scope, Solution,
+  Acceptance, Outline, Files affected (floor), and Open questions, in
+  the issue-body grammar of `sdlc:orchestrate-readiness`.
   The Acceptance section splits into Mechanical and Semantic claims
   about the merged result, written as the PR reviewer's rubric. Each
   bullet is a bold title and one claim, and each Mechanical claim
@@ -71,20 +103,34 @@ Skills:
   sweep question passes through `summarize-findings` triage, so only a
   `discuss` verdict reaches the user. It posts the plan as an issue
   comment and leaves its state directory in place for `converge-plan`
-  to seed from.
-- **sweep-consequences**: discover the edits a decision set forces on
-  a plan and emit them as instructions. It enumerates the
-  cross-cutting consequences of the whole set, walks every behavior
-  those decisions alter, and finds each fix's sibling defect
-  instances. It owns the channel that routes a question it cannot
-  settle back through the caller's triage. It writes no file and posts
-  nothing.
+  to seed from. `writing-plan-state` holds that directory outside the
+  target repo, so it survives any repo-local cleanup and a later
+  postmortem can read the ledger and the evidence log.
+- **sweep-consequences**: discover the edits a decision set forces on a
+  plan and emit them as instructions. It enumerates the cross-cutting
+  consequences of the whole set, walks every behavior those decisions
+  alter, and finds each fix's sibling defect instances. It owns the
+  channel that routes a question it cannot settle back through the
+  caller's triage. It writes only the instruction file its caller names,
+  appends only to the evidence file its caller names, and posts nothing.
+  The instruction file carries the primary instruction for every
+  decision that forces an edit, so the caller composes none, and every
+  instruction keeps the altitude rule `write-plan` → "Write for the
+  implementer" owns. A fix to a rule stated at several sites emits one
+  instruction naming one owner. The repo-derived answers to a call's
+  `fix`-triaged questions fold through exactly one further call, which
+  writes its own file beside the first and returns a failed answer as a
+  question.
 - **sweep-style**: sweep a whole plan against the communication-style
   rule and `write-plan`'s Write step, and emit the repairs as
-  instructions. It emits no question. It writes no file and posts
-  nothing.
-- **revise-plan**: apply an instruction batch to one plan file in fresh
-  context. It style-sweeps every unit an instruction landed in, then
+  instructions. It emits no question. It writes only the instruction
+  file it is handed, and posts nothing. It repairs form only: it never
+  merges or splits an Acceptance bullet, and never changes what a
+  sentence claims.
+- **revise-plan**: apply one or more instruction files to one plan
+  file in fresh context. It returns unapplied any instruction that
+  breaks the altitude rule `write-plan` → "Write for the implementer"
+  owns. It style-sweeps every unit an instruction landed in, then
   reads the result back to confirm that every decision, obligation,
   membership rule, qualifier, and check survives unchanged. It owns
   the restructuring moves an instruction may prescribe and the rule
@@ -107,20 +153,37 @@ Skills:
   of the review that will grade the implementation against the plan.
   It reads the style guides that review enforces. It reports a
   criterion above its altitude, a section past its budget, and a
-  compound outline action. It treats a user-ratified ruling as fixed
+  compound outline action. It takes the caller's evidence log as an
+  optional input, reads an item's record before it verifies the item,
+  and reports a record that contradicts its item. An item with no
+  record it verifies itself. It treats a user-ratified ruling as fixed
   and may report a finding against a repo-derived one. Each finding
   states its provenance and carries a second label,
   `readiness-failure`, `build-changing`, or `text-only`.
 - **converge-plan**: run the critique-and-fix loop over a plan on an
   issue until a stopping rule ends it. The loop keeps a decision
-  ledger, an open-issues doc, per-round snapshots, and the round's
-  draft as durable state, seeding the ledger from `write-plan`'s own
-  state directory when one is there. It orchestrates rather than
-  edits: it verifies each finding and applies the acceptance bar
-  itself, collects the round's edit instructions through one
-  `sweep-consequences` call over the round's whole accepted batch, and
-  hands the batch to `revise-plan`. Every sweep question passes
-  through `summarize-findings` triage before the blocked rule fires. A
+  ledger, an open-issues doc, per-round snapshots, the round's draft,
+  an evidence log, and each sweep's instruction file as durable state
+  that `writing-plan-state` holds outside the target repo. It seeds
+  the ledger and copies the evidence log from `write-plan`'s own state
+  directory when one is there. The seed reopens as a discuss item
+  each repo-derived ruling that arrives with no checkable derivation.
+  Before round 1 the loop presents every seeded repo-derived ruling
+  with its derivation for one batch veto, and shows each reopened
+  ruling apart from that batch, flagged, since it waits on no veto.
+  It orchestrates rather than edits: it verifies each finding and
+  applies the acceptance bar itself, collects the round's edit
+  instructions through one `sweep-consequences` call over the round's
+  whole accepted batch, and hands the file that call wrote to
+  `revise-plan` without adding, removing, or rewording a line. A
+  round's `fix`-triaged sweep answers go to one fold call, and a
+  failed fold answer pauses the round as a `discuss` item. Every
+  sweep question passes through `summarize-findings` triage before
+  the blocked rule fires. In every round after the first, the critic
+  receives the previous snapshot and the instruction files that round
+  applied, so the churn rule can fire in any round. Churn counts
+  every finding against text the previous edit or a consolidation
+  pass added, whatever produced that text, a user ruling included. A
   spent budget runs one consolidation pass through `sweep-style`
   before the loop reports. It loops in place over the plan comment or
   over the promoted plan in the issue body, and on a body it

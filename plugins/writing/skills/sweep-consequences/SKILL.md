@@ -6,11 +6,13 @@ description: Sweep a plan for the edits a set of decisions forces, and emit them
 # sweep-consequences
 
 Discover the edits a decision set forces on a plan and emit them as
-instructions. This skill writes nothing. `writing:revise-plan` applies
-what this skill emits. Write all prose per the communication-style
-rule. Use the installed copy at
-`~/.claude/rules/communication-style.md` if present, else the plugin's
-bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
+instructions. This skill edits no plan and posts nothing. It writes
+only the instruction file its caller names, and appends only to the
+evidence file its caller names. `writing:revise-plan` applies what
+this skill emits. Write all prose per the communication-style rule.
+Use the installed copy at `~/.claude/rules/communication-style.md` if
+present, else the plugin's bundled copy at
+`${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
 
 The sibling skill `writing:sweep-style` carries the style agenda.
 
@@ -31,16 +33,37 @@ assumptions that hid the sibling instances in the first place.
   decision: the round's accepted fix findings, or the rulings the user
   ratified across an interview or a pause. A set of one is the k=1
   case of the same shape.
-- **The plan text, by path.** Optional, and passed whenever a plan
+- **The state handle.** Required from every caller. Reach every file
+  below by its name under that handle, per `write-plan` → "Reach the
+  state through the script".
+- **The plan text, by name.** Optional, and passed whenever a plan
   text exists.
-- **The ledger, by path.** Optional, and passed whenever a ledger
+- **The ledger, by name.** Optional, and passed whenever a ledger
   exists.
+- **The instruction file's name.** Required from every caller.
+- **The evidence file's name.** Required from every caller. It names
+  the caller's `evidence.md`.
 
 ## Output
 
-A list of edit instructions, plus any question a behavior walk left
-unanswered. Each instruction names the plan section it targets and the
-change to make there. This skill writes no file and posts nothing.
+Write the instructions to the instruction file with `--mode put`,
+which replaces it whole. Append a record to the evidence file for each
+evidence item an instruction adds or changes in meaning, in the record
+shape `write-plan` → "The state directory" owns. Edit no plan and post
+nothing. Return any question a behavior walk left unanswered.
+
+This section owns the instruction-file format, and every other site
+cites it. The file is a Markdown list with one instruction per item.
+Each instruction names the plan section it targets and the change to
+make there.
+
+Emit the primary instruction for each decision in the set that forces
+an edit, as well as its consequences, so the caller composes no
+instruction of its own.
+
+No instruction names a `file:line`, a hunk count, or a parameter
+position. `write-plan` → "Write for the implementer" owns these
+forbidden forms.
 
 An instruction may prescribe a restructuring move. `revise-plan` →
 "The edit rules" owns those moves.
@@ -54,25 +77,57 @@ rather than restating the mechanism. The obligations on a caller are:
 - The triage runs in the calling seat's own context.
 - A question enters `summarize-findings` as a finding whose Problem
   sentence is the question.
-- A `fix`-triaged question's repo-derived answer folds into the same
-  instruction batch its sweep emitted, with no consequence sweep of
-  its own.
+- The repo-derived answers of the `fix`-triaged questions become the
+  decision set of exactly one fold call of this skill. The fold call
+  takes the same evidence file and writes `<file>-fold.md` beside the
+  instruction file `<file>.md` of the call whose questions it folds.
+  It re-checks each answer against the tree and appends the answer's
+  records. The caller writes no instruction.
+- A fold call writes no instruction for an answer whose check failed,
+  and returns that answer as a question.
+- Every question a fold call raises, and every failed answer it
+  returns, is a `discuss` item for the caller. No fold call follows a
+  fold call.
+- A fold call returns each answer whose check passed with the
+  derivation and check fields `write-plan` → "Define the ledger's
+  entry classes" prescribes for its entry, written out. A
+  code-behavior answer's `Evidence:` field names the opening line of
+  the record the fold call appended for it. Any other answer's
+  `Command:` and `Output:` fields are the command the fold call ran
+  for it and that command's output.
+- The caller records a `fix`-triaged answer as a ruling only after the
+  fold call reports its check passed. The ruling's entry carries the
+  fields the fold call returned for it, copied verbatim.
 - A `refute`-triaged question drops, with its reason recorded.
 - A `discuss`-triaged question reaches the user.
 
 ## What each caller passes
 
-- **`writing:converge-plan`** passes the round's accepted batch, the
-  round's plan text by path, and the ledger by path.
+Every caller passes its own state handle, and names each file under
+it.
+
+- **`writing:converge-plan`** passes the round's accepted batch plus
+  the standing Open questions sync as the decision set. The sync
+  carries the located plan surface and its form rule. It also passes
+  the round's plan text, the ledger, and its evidence copy by name,
+  and `batch-<round>.md` as the instruction file. A resume re-run's
+  decision set also carries the round's verified `fix`-triaged answers
+  and the user rulings of every pause the round has taken.
 - **`writing:write-plan`'s core-draft seat** passes the interview's
-  whole ruling set as the decision set, plus the core draft and the
-  ledger by path. The core draft carries the Problem, Scope, Solution,
-  and Acceptance sections and no other, so an instruction
+  whole ruling set as the decision set, plus the core draft, the
+  ledger, and `evidence.md` by name, and `core-batch.md` as the
+  instruction file. The core draft carries the Problem, Scope,
+  Solution, and Acceptance sections and no other, so an instruction
   targets those sections by the fixed section names `write-plan` →
   "5. Write" owns. Its instructions land in the revision `write-plan`
   → "Draft the core" runs, before the full plan is drafted.
 - **`writing:write-plan`'s human-review seat** passes the requested
-  changes as the decision set, plus the draft and the ledger by path.
+  changes as the decision set, plus the draft, the ledger, and
+  `evidence.md` by name, and `review-<n>-batch.md` as the instruction
+  file.
+- **Each caller's fold call** passes the `fix`-triaged answers as the
+  decision set, the same plan text, ledger, and evidence file by name,
+  and the fold file "Output" names as the instruction file.
 
 ## The decision-set agenda
 
@@ -88,7 +143,8 @@ Look for these affected surfaces:
 Run `write-plan` → "Walk each stated behavior" over each behavior the
 set alters, before any prose changes. Every answer lands in the plan
 at one owning site. A question the walk leaves unanswered leaves this
-skill as a question, per "Output".
+skill as a question, per "Output". So does a fix whose walk needs
+mechanism the plan does not state: it never becomes an instruction.
 
 When a decision is a fix, enumerate every other instance of the same
 defect class in the plan. Each instance becomes its own instruction.
@@ -96,3 +152,13 @@ defect class in the plan. Each instance becomes its own instruction.
 Emit one instruction per consequence and per instance. A consequence
 applied at one site and discovered at five others costs a critique
 round per site.
+
+A fix that touches a rule stated at several sites is the exception.
+It emits one instruction, which names one owner and replaces each
+other site with a citation. The owner is the site `write-plan` →
+"Cite the authority instead of restating it" selects.
+
+An evidence item is a member of the class `write-plan` → "Record
+evidence before the sentence" defines. Append an item's record before
+you emit the instruction that carries the item. A pure reword needs no
+fresh record.
