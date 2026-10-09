@@ -65,6 +65,30 @@ state() {
   ERR=$(cat "$CASE/err")
 }
 
+# state_planted <kind> <target> <skill> <args...>: runs the script as
+# state does, after planting at the staging path the run composes for
+# <target> an empty directory when <kind> is dir, or an empty file when
+# <kind> is locked-file, and then making <target>'s directory read-only.
+# The script is exec'd from the shell that plants, so it runs under the
+# PID the staging path names. A plant that fails exits 99.
+state_planted() {
+  kind=$1
+  target=$2
+  skill=$3
+  shift 3
+  OUT=$(bash -c '
+    case "$1" in
+      dir) mkdir -- "$2.partial-$$" || exit 99 ;;
+      locked-file) { : >"$2.partial-$$" && chmod 555 "${2%/*}"; } || exit 99 ;;
+    esac
+    shift 2
+    exec "$@"
+  ' _ "$kind" "$target" "$STATE" --repo h.example/o/r --skill "$skill" --issue 42 "$@" \
+    2>"$CASE/err" </dev/null)
+  RC=$?
+  ERR=$(cat "$CASE/err")
+}
+
 # dir_of <skill>: prints the directory the script composes for <skill>
 # on issue 42 of h.example/o/r under the current case's state root.
 dir_of() {
@@ -244,6 +268,44 @@ state converge-plan --mode seed
 check "$RC" "0" "seed: a failed seed does not block a later seed"
 state converge-plan --mode print --file ledger.md
 check "$OUT" "the ledger" "seed: the seed after a failure lands the ledger"
+
+# --- a write that cannot stage -------------------------------------------
+
+# A put whose rename into place fails exits 2, as a failed copy does, and
+# removes its staging file.
+new_case put-rename-fails
+stage draft.md "the draft"
+mkdir -p "$(dir_of write-plan)/draft.md"
+chmod 555 "$(dir_of write-plan)/draft.md"
+state write-plan --mode put --file draft.md --from "$CASE/stage/draft.md"
+check "$RC" "2" "stage: a put whose rename fails exits 2"
+chmod 755 "$(dir_of write-plan)/draft.md"
+check "$(ls -A "$(dir_of write-plan)" | grep -c partial)" "0" \
+  "stage: a put whose rename fails leaves no staging file behind"
+
+# A seed whose ledger rename fails exits 2, and keeps that status when the
+# EXIT trap cannot remove the staging file either. The planted staging
+# file and the evidence.md init leaves let the seed write with its
+# directory read-only, so only the rename and the removal fail.
+new_case seed-rename-fails
+stage ledger.md "the ledger"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+state converge-plan --mode init
+state_planted locked-file "$(dir_of converge-plan)/ledger.md" converge-plan --mode seed
+chmod 755 "$(dir_of converge-plan)"
+check "$RC" "2" "stage: a seed whose ledger rename and staging removal fail exits 2"
+check "$([ -e "$(dir_of converge-plan)/ledger.md" ] && echo landed || echo absent)" "absent" \
+  "stage: a seed whose ledger rename fails lands no ledger.md"
+
+# A staging path the EXIT trap cannot remove does not replace the
+# refusal's 2 with the removal's status.
+new_case seed-staging-unremovable
+stage ledger.md "the ledger"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+mkdir -p "$(dir_of converge-plan)"
+state_planted dir "$(dir_of converge-plan)/ledger.md" converge-plan --mode seed
+check "$RC" "2" "stage: a seed that can neither stage nor remove its staging path exits 2"
+check_contains "$ERR" "could not stage" "stage: a seed that cannot stage says so"
 
 # --- the ledger's repo-derived rulings -----------------------------------
 

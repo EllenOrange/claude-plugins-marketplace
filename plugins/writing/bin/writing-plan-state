@@ -266,10 +266,11 @@ refuse_ledger() {
 
 # staged names the staging file a write has not yet renamed into place.
 # A failure, an INT or a TERM exits through the EXIT trap, which removes
-# it. A staging file a KILL leaves behind is skipped by list and blocks
-# no later write.
+# it and exits with the status the trap was entered with, even when the
+# removal fails. A staging file a KILL leaves behind is skipped by list
+# and blocks no later write.
 staged=
-trap '[ -z "$staged" ] || rm -f -- "$staged"' EXIT
+trap 'status=$?; [ -z "$staged" ] || rm -f -- "$staged" || :; exit "$status"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
@@ -279,7 +280,7 @@ trap 'exit 143' TERM
 install_whole() {
   staged="$2.partial-$$"
   cp -- "$1" "$staged" || die "could not stage $2"
-  mv -- "$staged" "$2"
+  mv -- "$staged" "$2" || die "could not stage $2"
   staged=
 }
 
@@ -367,7 +368,7 @@ case "$mode" in
     staged="$dir/ledger.md.partial-$$"
     ledger_scan reopen "$dir/evidence.md" "$source_dir/ledger.md" > "$staged" ||
       die "could not stage $dir/ledger.md"
-    mv -- "$staged" "$dir/ledger.md"
+    mv -- "$staged" "$dir/ledger.md" || die "could not stage $dir/ledger.md"
     staged=
     ;;
 esac
