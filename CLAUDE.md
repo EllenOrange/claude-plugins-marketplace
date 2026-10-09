@@ -4,6 +4,19 @@ Personal Claude Code plugin marketplace `ellenorange`. Plugins live
 under `plugins/<name>/` with a `.claude-plugin/plugin.json` manifest
 and skills under `skills/<name>/SKILL.md`.
 
+## Two remotes make a bare checkout ambiguous
+
+The clone carries two remotes, `origin` and `fablegate`, that point at
+the same GitHub repo through different SSH host aliases. A bare
+`git checkout <branch>` therefore fails with "matched multiple (2)
+remote tracking branches". The two remote-tracking refs can also
+disagree, because one is fetched less often than the other.
+
+Check a branch out with `git checkout --track origin/<branch>`, which
+still creates an attached local branch. Push to `origin`. Before you
+trust HEAD as a PR's head, compare it with
+`gh pr view <N> --json headRefOid`.
+
 ## Releasing plugin changes
 
 Bump the plugin's `version` in `.claude-plugin/plugin.json` in the
