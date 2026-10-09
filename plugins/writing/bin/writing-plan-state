@@ -21,7 +21,8 @@
 # or --mode seed finds no write-plan state to seed from, 130 on an INT
 # and 143 on a TERM. A refusal writes no file. A put or a seed that
 # fails leaves no part of a file under the name it was writing, but a
-# seed which could not stage ledger.md has already put evidence.md in
+# seed which could not read write-plan's ledger.md for its scan, or
+# could not stage its own ledger.md, has already put evidence.md in
 # place, and a later seed replaces that copy. An append that fails part
 # way through its write can leave part of its records appended.
 set -euo pipefail
@@ -374,10 +375,14 @@ case "$mode" in
     source_dir="$repo_dir/write-plan-$issue"
     [ -f "$source_dir/ledger.md" ] || absent "write-plan-$issue holds no ledger.md to seed from"
     [ ! -e "$dir/ledger.md" ] || die "converge-plan-$issue already holds a ledger.md"
-    # Both reads are tried before evidence.md lands, so neither file
-    # being unreadable is a failure that leaves a copy behind, and an
-    # evidence.md the seed cannot read is never taken for an empty one.
+    # Every read is tried before evidence.md lands, so no file being
+    # unreadable is a failure that leaves a copy behind, and an
+    # evidence.md the seed cannot read is never taken for an empty one or
+    # for a log that lacks converge-plan's records.
     { : < "$source_dir/ledger.md"; } 2>/dev/null || die "could not read $source_dir/ledger.md"
+    if [ -f "$source_dir/evidence.md" ]; then
+      { : < "$source_dir/evidence.md"; } 2>/dev/null || die "could not read $source_dir/evidence.md"
+    fi
     if [ -f "$dir/evidence.md" ]; then
       { : < "$dir/evidence.md"; } 2>/dev/null || die "could not read $dir/evidence.md"
       opens_with "$source_dir/evidence.md" "$dir/evidence.md" ||

@@ -413,6 +413,38 @@ check "$(cat "$(dir_of converge-plan)/evidence.md")" "a converge record" \
 check "$([ -e "$(dir_of converge-plan)/ledger.md" ] && echo landed || echo absent)" "absent" \
   "filesystem: a seed that cannot read converge-plan's evidence.md lands no ledger.md"
 
+# A write-plan evidence.md the seed cannot read is named as unreadable,
+# whether or not converge-plan already holds records, rather than read as
+# a log that lacks them or failed on as a copy that could not stage.
+new_case seed-source-evidence-unreadable
+stage ledger.md "the ledger"
+stage rec "the record"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+chmod 000 "$(dir_of write-plan)/evidence.md"
+state converge-plan --mode seed
+chmod 644 "$(dir_of write-plan)/evidence.md"
+check "$RC" "2" "filesystem: a seed that cannot read write-plan's evidence.md exits 2"
+check_contains "$ERR" "could not read $(dir_of write-plan)/evidence.md" \
+  "filesystem: a seed that cannot read write-plan's evidence.md names it"
+check "$([ -e "$(dir_of converge-plan)/evidence.md" ] && echo landed || echo absent)" "absent" \
+  "filesystem: a seed that cannot read write-plan's evidence.md lands no evidence.md"
+
+new_case seed-source-evidence-unreadable-over-records
+stage ledger.md "the ledger"
+stage rec "the record"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+state converge-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+chmod 000 "$(dir_of write-plan)/evidence.md"
+state converge-plan --mode seed
+chmod 644 "$(dir_of write-plan)/evidence.md"
+check "$RC" "2" "filesystem: a seed over records that cannot read write-plan's evidence.md exits 2"
+check_contains "$ERR" "could not read $(dir_of write-plan)/evidence.md" \
+  "filesystem: a seed over records that cannot read write-plan's evidence.md names it"
+check "$(cat "$(dir_of converge-plan)/evidence.md")" "the record" \
+  "filesystem: a seed over records that cannot read write-plan's evidence.md leaves them untouched"
+
 # --- the ledger's repo-derived rulings -----------------------------------
 
 new_case ledger-put
