@@ -291,10 +291,10 @@ install_whole() {
 }
 
 # opens_with <long> <short>: succeeds when <short> is empty or <long>
-# opens with every byte of it. An absent <long> opens with nothing but
-# the empty file.
+# opens with every byte of it, and fails when <short> cannot be read. An
+# absent <long> opens with nothing but the empty file.
 opens_with() {
-  size=$(wc -c < "$2" | tr -d ' ')
+  size=$(wc -c < "$2" | tr -d ' ') || return 1
   [ "$size" -gt 0 ] || return 0
   [ -f "$1" ] || return 1
   head -c "$size" -- "$1" | cmp -s - "$2"
@@ -355,13 +355,20 @@ case "$mode" in
     # evidence.md. write-plan only appends to its log, so its current log
     # still opens with that copy, and replacing the copy loses no record.
     # An evidence.md holding bytes write-plan's log does not open with is
-    # converge-plan's own, and only that refuses the seed.
+    # converge-plan's own and refuses the seed, as does one the seed
+    # cannot read, since it may hold such bytes.
     [ "$skill" = converge-plan ] || die "--mode seed takes --skill converge-plan"
     source_dir="$repo_dir/write-plan-$issue"
     [ -f "$source_dir/ledger.md" ] || absent "write-plan-$issue holds no ledger.md to seed from"
     [ ! -e "$dir/ledger.md" ] || die "converge-plan-$issue already holds a ledger.md"
-    if [ -f "$dir/evidence.md" ] && ! opens_with "$source_dir/evidence.md" "$dir/evidence.md"; then
-      die "converge-plan-$issue already holds evidence records write-plan-$issue does not"
+    # Both reads are tried before evidence.md lands, so neither file
+    # being unreadable is a failure that leaves a copy behind, and an
+    # evidence.md the seed cannot read is never taken for an empty one.
+    { : < "$source_dir/ledger.md"; } 2>/dev/null || die "could not read $source_dir/ledger.md"
+    if [ -f "$dir/evidence.md" ]; then
+      { : < "$dir/evidence.md"; } 2>/dev/null || die "could not read $dir/evidence.md"
+      opens_with "$source_dir/evidence.md" "$dir/evidence.md" ||
+        die "converge-plan-$issue already holds evidence records write-plan-$issue does not"
     fi
     mkdir -p -- "$dir" || die "could not make $dir"
     if [ -f "$source_dir/evidence.md" ]; then

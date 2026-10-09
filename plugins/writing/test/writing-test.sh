@@ -373,6 +373,42 @@ check "$RC" "2" "filesystem: a seed whose source ledger cannot be read exits 2"
 chmod 644 "$(dir_of write-plan)/ledger.md"
 check_contains "$ERR" "could not read" "filesystem: an unreadable ledger is named"
 
+# A seed that cannot read write-plan's ledger is refused before
+# evidence.md lands, so it leaves no copy of the evidence log behind.
+new_case seed-ledger-unreadable
+stage ledger.md "the ledger"
+stage rec "the record"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+chmod 000 "$(dir_of write-plan)/ledger.md"
+state converge-plan --mode seed
+chmod 644 "$(dir_of write-plan)/ledger.md"
+check "$RC" "2" "filesystem: a seed that cannot read write-plan's ledger exits 2"
+check_contains "$ERR" "could not read $(dir_of write-plan)/ledger.md" \
+  "filesystem: a seed that cannot read write-plan's ledger names it"
+check "$([ -e "$(dir_of converge-plan)/evidence.md" ] && echo landed || echo absent)" "absent" \
+  "filesystem: a seed that cannot read write-plan's ledger lands no evidence.md"
+
+# A converge-plan evidence.md the seed cannot read refuses the seed and
+# is left as it was, rather than read as empty and overwritten.
+new_case seed-evidence-unreadable
+stage ledger.md "the ledger"
+stage rec "the record"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+state write-plan --mode append --file evidence.md --from "$CASE/stage/rec"
+stage own "a converge record"
+state converge-plan --mode append --file evidence.md --from "$CASE/stage/own"
+chmod 000 "$(dir_of converge-plan)/evidence.md"
+state converge-plan --mode seed
+chmod 644 "$(dir_of converge-plan)/evidence.md"
+check "$RC" "2" "filesystem: a seed that cannot read converge-plan's evidence.md exits 2"
+check_contains "$ERR" "could not read $(dir_of converge-plan)/evidence.md" \
+  "filesystem: a seed that cannot read converge-plan's evidence.md names it"
+check "$(cat "$(dir_of converge-plan)/evidence.md")" "a converge record" \
+  "filesystem: a seed that cannot read converge-plan's evidence.md leaves it untouched"
+check "$([ -e "$(dir_of converge-plan)/ledger.md" ] && echo landed || echo absent)" "absent" \
+  "filesystem: a seed that cannot read converge-plan's evidence.md lands no ledger.md"
+
 # --- the ledger's repo-derived rulings -----------------------------------
 
 new_case ledger-put
