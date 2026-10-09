@@ -508,8 +508,8 @@ stage ledger.md "# Rulings
   Derivation: the registry's latest release.
   Command: npm view sdk version
   Output: 4.2.0"
-# The fixture reaches write-plan's directory past the put guard, as a
-# ledger an earlier version of the plugin wrote would.
+# The fixture holds a repo-derived ruling with no derivation, which the put
+# guard refuses, so it is copied into write-plan's directory directly.
 mkdir -p "$(dir_of write-plan)"
 cp "$CASE/stage/ledger.md" "$(dir_of write-plan)/ledger.md"
 state converge-plan --mode seed
