@@ -5,7 +5,8 @@
 # under XDG_STATE_HOME, every mode, the append-only evidence log, the
 # seed from write-plan's state into converge-plan's, the ledger's guard
 # on repo-derived rulings and the seed's reopening of one, and each
-# refusal of a repository, a skill, an issue, a file name or a payload.
+# refusal of a repository, a skill, an issue, a file name or a payload,
+# and the exit status of each read or write the filesystem refuses.
 #
 # Needs bash and the POSIX utilities. Reaches no network.
 #
@@ -307,6 +308,70 @@ mkdir -p "$(dir_of converge-plan)"
 state_planted dir "$(dir_of converge-plan)/ledger.md" converge-plan --mode seed
 check "$RC" "2" "stage: a seed that can neither stage nor remove its staging path exits 2"
 check_contains "$ERR" "could not stage" "stage: a seed that cannot stage says so"
+
+# --- a write the filesystem refuses ---------------------------------------
+
+# A regular file where the composed directory belongs fails the mkdir of
+# every mode that makes the directory, and each exits 2.
+new_case mkdir-fails
+stage x "x"
+stage ledger.md "the ledger"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+mkdir -p "$(dirname "$(dir_of converge-plan)")"
+: >"$(dir_of converge-plan)"
+state converge-plan --mode init
+check "$RC" "2" "filesystem: an init that cannot make its directory exits 2"
+state converge-plan --mode put --file draft.md --from "$CASE/stage/x"
+check "$RC" "2" "filesystem: a put that cannot make its directory exits 2"
+state converge-plan --mode append --file evidence.md --from "$CASE/stage/x"
+check "$RC" "2" "filesystem: an append that cannot make its directory exits 2"
+state converge-plan --mode seed
+check "$RC" "2" "filesystem: a seed that cannot make its directory exits 2"
+check_contains "$ERR" "could not make" "filesystem: a failed mkdir says so"
+
+# A read-only directory with no evidence.md fails the empty log init and
+# seed would create, and each exits 2.
+new_case evidence-create-fails
+mkdir -p "$(dir_of write-plan)" "$(dir_of converge-plan)"
+stage ledger.md "the ledger"
+cp "$CASE/stage/ledger.md" "$(dir_of write-plan)/ledger.md"
+chmod 555 "$(dir_of converge-plan)"
+state converge-plan --mode init
+check "$RC" "2" "filesystem: an init that cannot create evidence.md exits 2"
+state converge-plan --mode seed
+check "$RC" "2" "filesystem: a seed that cannot create evidence.md exits 2"
+chmod 755 "$(dir_of converge-plan)"
+check "$(ls -A "$(dir_of converge-plan)")" "" "filesystem: a seed that cannot create evidence.md leaves no file"
+
+# An append whose target cannot be written exits 2.
+new_case append-fails
+stage rec "a record"
+mkdir -p "$(dir_of write-plan)/notes.md"
+state write-plan --mode append --file notes.md --from "$CASE/stage/rec"
+check "$RC" "2" "filesystem: an append that cannot write its target exits 2"
+check_contains "$ERR" "could not append" "filesystem: a failed append says so"
+
+# A print whose file cannot be read exits 2.
+new_case print-fails
+stage draft.md "the draft"
+state write-plan --mode put --file draft.md --from "$CASE/stage/draft.md"
+chmod 000 "$(dir_of write-plan)/draft.md"
+state write-plan --mode print --file draft.md
+chmod 644 "$(dir_of write-plan)/draft.md"
+check "$RC" "2" "filesystem: a print that cannot read its file exits 2"
+check_contains "$ERR" "could not print" "filesystem: a failed print says so"
+
+# A ledger the guard cannot read refuses the write rather than pass it.
+new_case ledger-unreadable
+stage ledger.md "- Which retry count? [Discuss]"
+state write-plan --mode put --file ledger.md --from "$CASE/stage/ledger.md"
+chmod 000 "$(dir_of write-plan)/ledger.md"
+state write-plan --mode append --file ledger.md --from "$CASE/stage/ledger.md"
+check "$RC" "2" "filesystem: an append whose ledger cannot be read exits 2"
+state converge-plan --mode seed
+check "$RC" "2" "filesystem: a seed whose source ledger cannot be read exits 2"
+chmod 644 "$(dir_of write-plan)/ledger.md"
+check_contains "$ERR" "could not read" "filesystem: an unreadable ledger is named"
 
 # --- the ledger's repo-derived rulings -----------------------------------
 

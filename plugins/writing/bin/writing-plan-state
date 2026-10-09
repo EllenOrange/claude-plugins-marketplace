@@ -16,11 +16,14 @@
 # entry grammar is write-plan's "Define the ledger's entry classes".
 #
 # Exit status: 0 on success, 2 on a refused invocation, a refused
-# ledger, or a file that could not be staged, 3 when --mode print names
-# a file the directory does not hold or --mode seed finds no write-plan
-# state to seed from, 130 on an INT and 143 on a TERM. A refusal writes
-# no file, except that a seed which could not stage ledger.md has
-# already put evidence.md in place. A later seed replaces that copy.
+# ledger, or a state directory or file that could not be made, read or
+# written, 3 when --mode print names a file the directory does not hold
+# or --mode seed finds no write-plan state to seed from, 130 on an INT
+# and 143 on a TERM. A refusal writes no file. A put or a seed that
+# fails leaves no part of a file under the name it was writing, but a
+# seed which could not stage ledger.md has already put evidence.md in
+# place, and a later seed replaces that copy. An append that fails part
+# way through its write can leave part of its records appended.
 set -euo pipefail
 
 readonly PROGRAM=${0##*/}
@@ -256,7 +259,7 @@ ledger_scan() {
 # repo-derived entry the ledger files hold with no checkable derivation,
 # and returns 0 when they hold none.
 refuse_ledger() {
-  faults=$(ledger_scan faults "$@")
+  faults=$(ledger_scan faults "$@") || die "could not read the ledger to check it"
   [ -n "$faults" ] || return 0
   printf '%s: %s\n%s\n' "$PROGRAM" \
     "a repo-derived ruling needs a Derivation: field and a check, an Evidence: field naming an evidence.md line or a Command: and an Output: field; record it [Discuss] until it has them:" \
@@ -296,14 +299,16 @@ opens_with() {
 
 case "$mode" in
   init)
-    mkdir -p -- "$dir"
-    [ -e "$dir/evidence.md" ] || : > "$dir/evidence.md"
+    mkdir -p -- "$dir" || die "could not make $dir"
+    if [ ! -e "$dir/evidence.md" ]; then
+      : > "$dir/evidence.md" || die "could not create $dir/evidence.md"
+    fi
     ;;
   put)
     if [ "$file" = ledger.md ]; then
       refuse_ledger "$dir/evidence.md" "$from"
     fi
-    mkdir -p -- "$dir"
+    mkdir -p -- "$dir" || die "could not make $dir"
     install_whole "$from" "$dir/$file"
     ;;
   append)
@@ -316,12 +321,12 @@ case "$mode" in
         refuse_ledger "$dir/evidence.md" "$from"
       fi
     fi
-    mkdir -p -- "$dir"
-    cat -- "$from" >> "$dir/$file"
+    mkdir -p -- "$dir" || die "could not make $dir"
+    cat -- "$from" >> "$dir/$file" || die "could not append to $dir/$file"
     ;;
   print)
     [ -f "$dir/$file" ] || absent "$skill-$issue holds no $file"
-    cat -- "$dir/$file"
+    cat -- "$dir/$file" || die "could not print $dir/$file"
     ;;
   list)
     [ -d "$dir" ] || exit 0
@@ -355,16 +360,17 @@ case "$mode" in
     if [ -f "$dir/evidence.md" ] && ! opens_with "$source_dir/evidence.md" "$dir/evidence.md"; then
       die "converge-plan-$issue already holds evidence records write-plan-$issue does not"
     fi
-    mkdir -p -- "$dir"
+    mkdir -p -- "$dir" || die "could not make $dir"
     if [ -f "$source_dir/evidence.md" ]; then
       install_whole "$source_dir/evidence.md" "$dir/evidence.md"
     else
-      : > "$dir/evidence.md"
+      : > "$dir/evidence.md" || die "could not create $dir/evidence.md"
     fi
     # A ruling recorded with no checkable derivation is never handed on
     # as repo-derived: it arrives reopened, and its first line as
     # write-plan wrote it goes to stdout.
-    ledger_scan faults "$dir/evidence.md" "$source_dir/ledger.md"
+    ledger_scan faults "$dir/evidence.md" "$source_dir/ledger.md" ||
+      die "could not read $source_dir/ledger.md"
     staged="$dir/ledger.md.partial-$$"
     ledger_scan reopen "$dir/evidence.md" "$source_dir/ledger.md" > "$staged" ||
       die "could not stage $dir/ledger.md"
