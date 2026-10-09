@@ -21,10 +21,11 @@
 # or --mode seed finds no write-plan state to seed from, 130 on an INT
 # and 143 on a TERM. A refusal writes no file. A put or a seed that
 # fails leaves no part of a file under the name it was writing, but a
-# seed which could not read write-plan's ledger.md for its scan, or
-# could not stage its own ledger.md, has already put evidence.md in
-# place, and a later seed replaces that copy. An append that fails part
-# way through its write can leave part of its records appended.
+# seed whose scan of write-plan's ledger.md fails after its read check
+# passed, or which could not stage its own ledger.md, has already put
+# evidence.md in place, and a later seed replaces that copy. An append
+# that fails part way through its write can leave part of its records
+# appended.
 set -euo pipefail
 
 readonly PROGRAM=${0##*/}
