@@ -67,8 +67,9 @@ state() {
 
 # state_planted <kind> <target> <skill> <args...>: runs the script as
 # state does, after planting at the staging path the run composes for
-# <target> an empty directory when <kind> is dir, or an empty file when
-# <kind> is locked-file, and then making <target>'s directory read-only.
+# <target> an empty directory when <kind> is dir. When <kind> is
+# locked-file it plants an empty file there instead and then makes
+# <target>'s directory read-only.
 # The script is exec'd from the shell that plants, so it runs under the
 # PID the staging path names. A plant that fails exits 99.
 state_planted() {
