@@ -194,7 +194,9 @@ readonly dir="$repo_dir/$skill-$issue"
 # log holds. With <action> faults it prints the first line of each
 # repo-derived entry that is not checkable. With <action> reopen it
 # prints the whole ledger with each such entry marked [Discuss] in place
-# of [Repo-derived] and a Reopened: field added under it.
+# of [Repo-derived] and a Reopened: field added under it. An <evidence>
+# log it cannot open counts as empty, so every Evidence: field dangles,
+# and a ledger file it cannot read makes it fail.
 ledger_scan() {
   action=$1
   evidence=$2
@@ -257,7 +259,8 @@ ledger_scan() {
 
 # refuse_ledger <evidence> <ledger>...: exits 2, naming every
 # repo-derived entry the ledger files hold with no checkable derivation,
-# and returns 0 when they hold none.
+# and returns 0 when they hold none. A ledger file it cannot read also
+# exits 2, so an unchecked ledger is never written.
 refuse_ledger() {
   faults=$(ledger_scan faults "$@") || die "could not read the ledger to check it"
   [ -n "$faults" ] || return 0
