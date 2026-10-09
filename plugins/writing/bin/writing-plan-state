@@ -276,7 +276,20 @@ refuse_ledger() {
 # removal fails. A staging file a KILL leaves behind is skipped by list
 # and blocks no later write.
 staged=
-trap 'status=$?; [ -z "$staged" ] || rm -f -- "$staged" || :; exit "$status"' EXIT
+
+# remove_staged: the EXIT trap. Removes the staging file, names it on
+# stderr when the removal fails, and exits with the status the trap was
+# entered with. errexit is off here so that a failed report cannot
+# replace that status.
+remove_staged() {
+  status=$?
+  set +e
+  if [ -n "$staged" ] && ! rm -f -- "$staged"; then
+    printf '%s: could not remove staging file %s\n' "$PROGRAM" "$staged" >&2
+  fi
+  exit "$status"
+}
+trap remove_staged EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 

@@ -296,6 +296,8 @@ state converge-plan --mode init
 state_planted locked-file "$(dir_of converge-plan)/ledger.md" converge-plan --mode seed
 chmod 755 "$(dir_of converge-plan)"
 check "$RC" "2" "stage: a seed whose ledger rename and staging removal fail exits 2"
+check_contains "$ERR" "could not remove staging file $(dir_of converge-plan)/ledger.md.partial-" \
+  "stage: a seed whose staging removal fails names the staging file"
 check "$([ -e "$(dir_of converge-plan)/ledger.md" ] && echo landed || echo absent)" "absent" \
   "stage: a seed whose ledger rename fails lands no ledger.md"
 
@@ -308,6 +310,8 @@ mkdir -p "$(dir_of converge-plan)"
 state_planted dir "$(dir_of converge-plan)/ledger.md" converge-plan --mode seed
 check "$RC" "2" "stage: a seed that can neither stage nor remove its staging path exits 2"
 check_contains "$ERR" "could not stage" "stage: a seed that cannot stage says so"
+check_contains "$ERR" "could not remove staging file" \
+  "stage: a seed that cannot remove its staging path says so"
 
 # --- a write the filesystem refuses ---------------------------------------
 
