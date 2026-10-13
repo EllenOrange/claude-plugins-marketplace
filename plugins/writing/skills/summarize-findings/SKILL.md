@@ -6,10 +6,7 @@ description: Report findings as a prioritized numbered list with triage verdicts
 # summarize-findings
 
 Emit the findings from the current review, audit, or investigation as
-a prioritized list. Write all prose per the communication-style rule.
-Use the installed copy at `~/.claude/rules/communication-style.md` if
-present. Otherwise use the plugin's bundled copy at
-`${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
+a prioritized list.
 
 ## Before you write: push back
 
@@ -28,8 +25,8 @@ costs the loop a signal rather than a reader's attention.
 
 ## While you write
 
-The list is the emission, so there is no draft to revise. Apply the
-communication-style rule as you write each line, not after:
+The list is the emission, so there is no draft to revise. Apply these
+rules as you write each line, not after:
 
 - One sentence for Problem. Keep it to about 20 words.
 - One term per concept across the whole list. Use the words the

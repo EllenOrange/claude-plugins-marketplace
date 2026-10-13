@@ -8,15 +8,11 @@ description: Move an approved plan out of its issue comment and make it the whol
 Make one plan the issue body. The comment is the draft surface and the
 body is the durable one. A reader of the issue then finds one problem
 statement and one acceptance list rather than the plan's beside the
-original body's. Write all prose per the communication-style rule. Use
-the installed copy at `~/.claude/rules/communication-style.md` if
-present. Otherwise use the plugin's bundled copy at
-`${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
+original body's.
 
 The plan text itself moves verbatim. This skill relocates prose; it
-does not rewrite it. Step 3 makes its only edits: it normalizes the
-plan's heading levels, and it drops an empty Open questions section.
-This skill authors no section of its own.
+does not rewrite it. Step 3 makes its only edit: it normalizes the
+plan's heading levels. This skill authors no section of its own.
 
 ## 1. Find the plan comment
 
@@ -28,16 +24,9 @@ gh api repos/{owner}/{repo}/issues/<N>/comments \
   --jq '.[] | {id, created_at, html_url, body}'
 ```
 
-Pick the comment that carries the plan. A plan comment holds the
-sections `write-plan` emits:
-
-- Problem
-- Scope
-- Solution
-- Acceptance, with its Mechanical and Semantic sub-headings
-- Outline
-- Files affected (floor)
-- Open questions
+Pick the comment that carries the plan. A plan comment carries the
+sections `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states, in the
+order it states them.
 
 Then act on what you found:
 
@@ -60,38 +49,25 @@ gh api repos/{owner}/{repo}/issues/comments/<comment-id> \
 Write the working file to the session scratchpad if the harness gave
 you one, else to `.claude/tmp/`.
 
-Then read the plan's Open questions section, in the empty form
-`write-plan` → "5. Write" owns. When it carries a bullet, stop. Show
-the user the questions. Ask whether to promote anyway. Proceed only on
-a yes. Say in the report that you promoted the plan with open
-questions.
-
-An open question in a promoted plan stops the implementer. The
-implementer stops on a design decision the issue does not answer, and
-the promoted plan is the issue body it reads.
-
-Then grade the plan against every item of the installed
-`sdlc:orchestrate-readiness` bar. Grade it as step 3 leaves it,
-with its sections at `##` and its unit headers at `###`, however deep
-the comment nests them, and with an Open questions section that reads
-`None.` deleted. Resolve that skill per
-its entry in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Run each
-Mechanical bullet's command against the tree, per that skill's
-executed Mechanical check, and read the issue's edges for the items
-that key on them. The assembled body is this plan and nothing else,
-per step 4, so a gap in the plan is a gap in the body.
+When the sdlc plugin is installed, grade the plan against every item
+of the installed `sdlc:orchestrate-readiness` bar. Grade it as step 3
+leaves it, with its sections at `##` however deep the comment nests
+them. Run each Mechanical bullet's command against the tree, per that
+skill's executed Mechanical check, and read the issue's edges for the
+items that key on them. The assembled body is this plan and nothing
+else, per step 4, so a gap in the plan is a gap in the body.
 
 - **Any gap.** Stop. Show the user the gaps. Ask whether to promote
   anyway. Proceed only on a yes. Say in the report that you promoted
   the plan with bar gaps.
-- **No sdlc install.** When the locator finds no sdlc install, skip
-  the grading. Say in the report that it was skipped.
+- **No sdlc install.** Skip the grading. Say in the report that it was
+  skipped.
 
 ## 3. Normalize the plan's headings
 
-The plan becomes the body, so its sections must be `##` and its unit
-headers `###`. Make every edit below in `$scratch/plan.md`. Dispatch
-on the plan text's first heading:
+The plan becomes the body, so its sections must be `##`. Make every
+edit below in `$scratch/plan.md`. Dispatch on the plan text's first
+heading:
 
 - **`## Problem`.** The plan already carries the levels the body
   needs. Change nothing.
@@ -104,10 +80,6 @@ on the plan text's first heading:
 
 Leave headings inside fenced code blocks alone. A `#` line inside a
 fence is code or a comment, not a heading.
-
-Then delete an Open questions section that reads the single line
-`None.`, heading included. A body carries Open questions only while a
-question is open.
 
 ## 4. Write the plan into the issue body
 
@@ -150,4 +122,4 @@ gh api --method DELETE \
 Give the user the issue URL and one sentence on what moved. Give the
 verdict of the `sdlc:orchestrate-readiness` run, or say that the check
 was skipped because no sdlc install was found. Say that you promoted
-the plan with open questions or with bar gaps when you did.
+the plan with bar gaps when you did.

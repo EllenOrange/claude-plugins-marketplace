@@ -49,50 +49,12 @@ whenever a bare skill name also sits inside a longer word, because
 without it the grep reports that longer word as a hit:
 
 ```bash
-git grep -nP 'sweep-style\b'
+git grep -nP 'critique-plan\b'
 ```
 
 Run such a check once before the rename and confirm it matches. A
 zero-hit result afterwards means something only if you have seen the
 same command produce hits.
-
-## One skill's state directory is another skill's input
-
-`write-plan` writes its ledger and its draft to
-`.claude/tmp/write-plan-<issue>/`, and leaves the directory in place
-after it posts. `converge-plan` reads that same path to seed its own
-ledger and to compare the draft against the live plan surface. The
-path and the filenames `ledger.md` and `draft.md` are a contract
-between them.
-
-A rename on either side dangles as silently as a renamed heading. The
-heading sweep above misses it, because the pointer is a path rather
-than quoted prose. Sweep for the directory name instead:
-
-```bash
-git grep -nP 'write-plan-<issue>'
-```
-
-## A sweep skill lists its own callers
-
-`sweep-consequences` and `sweep-style` each carry a "What each caller
-passes" section naming every seat that spawns them and the inputs that
-seat hands over. The spawn sites live in `converge-plan` and
-`write-plan`, so the fact is stated twice and nothing catches drift.
-
-Changing what a seat passes, adding a seat, or moving one obliges an
-edit to the sweep skill's caller list in the same commit. Find the
-spawn sites by skill name:
-
-```bash
-git grep -nP 'writing:sweep-(consequences|style)\b'
-```
-
-## The review's sources are mirrored by hand
-
-`plugins/writing/docs/review-sources.md` mirrors the sources section
-of `sdlc:theorem-generation`. A human re-syncs it by hand. A change to
-that skill's sources leaves this file stale, and nothing catches it.
 
 ## Markdown
 
@@ -101,10 +63,8 @@ errors before commit.
 
 ## Prose in this repo
 
-This repo's own Markdown follows the communication-style rule it ships at
-`plugins/writing/rules/communication-style.md`. Read that file before
-writing prose here. The rule that bites most often is the ban on
-parentheticals. Do not set prose off with any of these:
+This repo's own Markdown carries no parenthetical. Do not set prose
+off with any of these:
 
 - parentheses
 - paired hyphens
@@ -119,8 +79,7 @@ Choose one of these instead:
 Parentheses that carry technical meaning stay, such as function-call
 syntax or a unit.
 
-This repo adds a convention of its own, on top of the shipped rule:
-no count in front of a self-counting list. Write "The plan has these
+Put no count in front of a self-counting list. Write "The plan has these
 sections:", not "The plan has five sections:".
 
 Quoted material is exempt, including the user prompts in

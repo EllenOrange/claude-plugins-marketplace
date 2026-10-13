@@ -1,107 +1,104 @@
 ---
 name: critique-plan
 description: Critique a plan by listing the parts that fall short or cause problems elsewhere, then listing the gaps. Use whenever the user asks to critique, review, red-team, poke holes in, or find problems with a plan, spec, design doc, brief, or RFC, even when they don't use the word "critique".
+model: fable
 ---
 
 # critique-plan
 
-Critique one plan against the problem it claims to solve.
-Write all prose per the communication-style rule: the installed copy at
-`~/.claude/rules/communication-style.md` if present, else the plugin's
-bundled copy at `${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
+Critique one plan against the problem it claims to solve, and report.
+Do not rewrite the plan.
+
+This skill runs on the model its frontmatter names, at the reasoning
+tier the session has set.
 
 ## Inputs
 
-The user names the plan. A caller running the critique inside a loop,
-such as `writing:converge-plan`, may also pass any of these:
-
-- **A decision ledger.** The rulings the caller has recorded, each
-  marked user-ratified or repo-derived. Treat a user-ratified ruling
-  as a fixed constraint. Do not re-litigate it, and do not report a
-  finding that asks for a different ruling. A repo-derived ruling is
-  open to a finding: report one when the derivation does not hold
-  against the code. The caller triages that finding as the veto
-  trigger.
-- **A known-open list.** The questions the caller already tracks as
-  open. Do not report one of them as a finding.
-- **A prior plan snapshot or diff.** The plan as it stood before the
-  caller's most recent fix round. Use it for the prior-round-text
-  label in the Collect step.
-
-Every input is optional. Without them, critique the plan as it stands.
+The user names the plan: a file, an issue comment, an issue body, or
+text pasted inline. A caller running the critique as one step of a
+larger flow, such as `writing:converge-plan`, may also state that the
+report feeds a verification step rather than a human reader.
 
 ## 1. Read
 
-- Read the plan in full, from the file, issue comment, or text the
-  user points at.
-- Read the originating issue, if the plan has one. It is the source
-  the plan's problem definition answers to.
+- Read the plan in full.
+- Read the originating issue, if the plan has one, and the issues its
+  edges name. The issue is the source the plan's problem answers to.
 - Read `CLAUDE.md` and `README.md`. Then read the docs under `docs/`
   that cover the area the plan touches, and anything the plan
   references. Do not read the whole `docs/` tree.
 - Read the code the plan touches. A critique built only on the plan's
   own text repeats the plan's blind spots.
-- Resolve the review's sources per
-  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. Read the installed
-  skill it names, or its fallback. Then read the style guides it names,
-  with the per-guide fallback it states.
-- Resolve `sdlc:orchestrate-readiness` per its entry in
-  `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`, and read the
-  installed skill. It owns the readiness bar, and it has no fallback.
-- Read the issue's own edges and the issues they name. Read the edges
-  as `write-plan` → "Derive the scope" prescribes.
+- Read `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` when the plan is one
+  `writing:write-plan` produces. It states the format and the style the
+  plan is graded against.
+- Read `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. When the sdlc
+  plugin is installed, also read the installed
+  `sdlc:theorem-generation` skill for what each source means.
+- When the sdlc plugin is installed, read the installed
+  `sdlc:orchestrate-readiness` skill. It owns the readiness bar.
 
-## 2. Check the problem definition
+Count the claims the plan makes as you read. A claim is a sentence
+that states a decision, an outcome, a criterion, or a fact about the
+tree.
+
+## 2. Check the problem
 
 Do this first. A plan aimed at the wrong problem fails whatever its
-solution, so the rest of the critique is worthless until this passes.
+design, so the rest of the critique is worthless until this passes.
 
-- **Does the plan define the problem at all?** A plan that opens on a
-  solution skips the step that makes it judgeable.
-- **Does the problem match the issue?** Compare the plan's problem
-  statement against what the originating issue reports. Name any
-  drift. A narrower problem silently descopes the issue. A wider one
-  smuggles in work nobody asked for.
-- **Does the problem presuppose the solution?** A problem statement
-  that names the fix, the mechanism, or the component to change
-  cannot be judged against any other solution. Test it: could a
-  second, genuinely different solution answer the same sentence? If
-  none could, the sentence is a solution in disguise, and the
-  critique starts by saying so.
-- **Does the plan solve the problem it states?** Every sub-problem
-  needs a unit of work that addresses it.
+- **Does the plan define the problem?** A plan that opens on a design
+  skips the step that makes it judgeable.
+- **Does the problem match the issue?** A narrower problem silently
+  descopes the issue. A wider one adds work nobody asked for.
+- **Does the problem presuppose the design?** Ask whether a second,
+  genuinely different design could answer the same problem. If none
+  could, the problem is a design in disguise.
+- **Does the design answer every part of the problem?** Each part the
+  problem names needs a decision that addresses it.
 
 ## 3. Critique
 
-Judge the plan's solution, and each unit of its outline, against these
-failure modes:
+Judge every decision the plan carries against these failure modes:
 
 - It does not fully address the problem it targets.
-- It causes a problem elsewhere: in other code, other workflows, or
-  later units of the same plan.
-- Its scope disagrees with the plan's own Scope section.
+- It causes a problem elsewhere, in other code, in other workflows, or
+  in another decision of the same plan.
+- It contradicts another statement in the plan.
 
-Then hunt for gaps: sub-problems no unit addresses, and actions a unit
-needs but does not contain.
+Then hunt for gaps: a part of the problem no decision addresses, and a
+decision the implementer cannot make alone that the plan leaves open.
+An open question in the plan is a finding.
 
-An Open questions section that carries a bullet absent from the
-caller's known-open list is a finding. Its consequence is the
-implementer's stop. With no caller, every bullet counts. The
-section's empty form is the one `write-plan` → "5. Write" owns.
+### Check the plan against its style
 
-### Run the review's sources
+Grade the plan against `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` when
+the plan is one `writing:write-plan` produces. Every rule that file
+states yields a finding when the plan breaks it, and these two always
+do:
 
-Run each source the review works, per
-`${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. For each source, ask
-its question of the plan and of the implementation the Outline
-prescribes, then report the finding that file names for a failing
-answer. That file owns the questions and the findings; restate neither
-here.
+- a Design sentence that instructs an edit
+- a claim about existing code or text that is not a verbatim quote
+  with its path
+
+### Check every quote against the tree
+
+Read each quoted passage at its path, at the ref the plan builds on.
+When the plan builds on a branch or a pull request, read the
+post-merge state at that ref, never at main. A quote that does not
+match the tree verbatim is a finding.
+
+### Ask the review's questions
+
+Ask each question in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` of
+the plan and of the implementation it describes. Report the finding
+that file names for a failing answer. When the sdlc plugin is absent,
+ask the questions as that file writes them.
 
 ### Grade against the readiness bar
 
-Grade the plan against the installed `sdlc:orchestrate-readiness`
-bar:
+When the sdlc plugin is installed, grade the plan against the
+installed `sdlc:orchestrate-readiness` bar:
 
 - Ask each bar item's question of the plan.
 - Run each Mechanical bullet's command against the tree, per that
@@ -109,130 +106,47 @@ bar:
 - Report each failure as a `readiness-failure` finding whose
   provenance is the bar item it fails.
 
-When the locator in `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`
-finds no sdlc install, skip this grading and say in the report that
-it was skipped.
-
-### Report a criterion above its altitude
-
-Apply the altitude test that `write-plan` → "State the acceptance
-criteria" owns. An Acceptance bullet only the implementer needs fails
-it. Report the failure and prescribe moving the text into the Outline.
-
-### Report a budget violation
-
-Each budgeted section names its own budget. `write-plan` → "State the
-acceptance criteria" owns the Acceptance bullets' size discipline, and
-`write-plan` → "Derive the scope" owns Scope's. Report a section that
-exceeds the budget its owner states, such as an oversized Scope
-paragraph, a claim that runs past one sentence, or a Mechanical bullet
-that needs more than one command. Prescribe the split or the
-restatement that owner sanctions.
-
-### Report a compound action
-
-`write-plan` → "The outline" owns the one-action-per-line rule. Report
-an outline action that carries more than one thing the implementer
-does, and prescribe splitting it into one action per line.
+With no sdlc install, skip this grading and say in the report that it
+was skipped.
 
 ### Derive each named set from the code
 
 When the plan binds an obligation to a list of sites, fields, or
-rpcs, derive the true set from the code and compare. Enumerate:
+files, derive the true set from the code and compare. A list smaller
+than the derived set is a finding even when every listed member is
+correct. Prescribe stating the rule that generates the set, never
+adding the missing member.
 
-- a shared helper's call sites
-- the writes and reads able to violate a touched contract's claim, per
-  `write-plan` → "State the acceptance criteria"
-- the files that restate a rule the plan changes
+### Verify each external usage
 
-A list smaller than the derived set is a finding even when every
-listed member is correct. Prescribe stating the membership
-rule as a class-level sweep action with a verify command. Do not
-prescribe adding the missing member to the list: a grown list is
-still frozen, and it goes stale on the next change.
+For an external library, SDK, or service, read the docs or the source
+of the version the plan targets. Your own recollection is not an
+authority. A usage the plan states with no source behind it is a
+finding.
 
-### Treat consequential silence as a finding
+## 4. Sweep each defect's class
 
-Compare sibling units the plan treats as parallel. Each of these is
-a finding unless the plan waives it explicitly:
+When you find one instance of a defect, sweep the whole plan for every
+other instance of the same defect before you report. Report the class
+as one finding, and list every member in it. A finding that names one
+member of a larger class leaves the rest for a later reader to find.
 
-- a pattern spelled out in one sibling unit and absent from the other
-- a stated guarantee with no pinning test
-- an action that pins the order of checks but not what each check
-  evaluates
+Prescribe only two moves on a refuted claim: delete it, or generalise
+it to what the tree supports. Never prescribe elaborating it.
 
-Each is a finding because the implementer reads the silence as a
-decision and builds the gap.
+## 5. Collect
 
-### Flag a rule stated twice with no owner
+Write every candidate finding down as rough notes, unordered and
+without verdicts. Collect a superset, including the marginal points.
+The report step decides what survives.
 
-When the plan writes the same rule or derivation into two sites,
-prescribe naming one owning site, with the other site citing it.
-Report it even when the copies agree: every copy is critique
-surface, and copies drift apart.
-
-Check the plan's own actions against the plan's ownership rule. An
-action that prescribes a copy of a fact the plan declares owned
-elsewhere is a finding. So is a verify command that counts one phrase
-where the fact has more spellings: it reports a passing count while
-the review counts them all.
-
-### Verify against the ref the plan builds on
-
-Verify every claim about the repo against the ref the plan names. When
-the plan states that it builds on a branch or a pull request, check
-the post-merge state at that ref, never at main. A confident finding
-verified at the wrong ref is false, and rejecting it costs the caller
-a whole round.
-
-### Verify a cited authority
-
-Read every authority the plan cites, in-repo or external, and verify
-it in both directions.
-
-- **The plan's restatement matches the authority.** A plan that cites
-  a repo rule and restates it short ships the short version, and the
-  implementation inherits it.
-- **The plan enumerates no list beside a citation without marking it
-  illustrative.** An enumeration next to a citation displaces the
-  authority it sits beside. Prescribe marking the named members as
-  illustrations, or stating the membership rule as "Derive each named
-  set from the code" prescribes.
-
-For an external library, SDK, or service, read the docs or source of
-the version the plan targets. Your own recollection is not an
-authority. Read it even when the usage looks familiar.
-
-The same rule runs in reverse. Flag any prescription for an external
-surface that carries no citation. An uncited usage pattern is where a
-guess hides.
-
-### Prescribe delete-and-cite for a wrong restatement
-
-When the plan restates a derivable fact and gets it wrong, prescribe
-deleting the restatement and citing the authority. Do not prescribe
-correcting the copy. A corrected copy preserves the surface that
-produced the finding, and it goes stale again on the next change to
-the authority.
-
-## 4. Collect
-
-Write every candidate finding down as rough notes. Leave them
-unformatted, unordered, and without verdicts. Order and verdicts come
-next, and assigning them now costs you the finding you would
-otherwise have cut.
-
-Collect a superset. Include the marginal points and the ones you
-suspect the author already knows. The report step decides what
-survives, and it decides better over a wide set than a narrow one.
-Note for each: the problem definition, solution, unit, or gap it
-concerns, and the concrete consequence.
-
-Note these things per finding as well. They survive into the report.
+Note these things per finding. They survive into the report.
 
 - **Provenance.** The file and the ref you verified the finding
-  against. For an external claim, note the doc page or source file
-  you read. Label a finding with no provenance unverified.
+  against. For an external claim, the doc page or source file you
+  read. Label a finding with no provenance unverified.
+- **The members.** Every instance of the defect, per "4. Sweep each
+  defect's class".
 - **The finding label.** This step owns the labels' definitions. Give
   each finding exactly one of them:
   - `readiness-failure` when the finding fails an item of the
@@ -241,46 +155,33 @@ Note these things per finding as well. They survive into the report.
   - `build-changing` when acting on it changes what the implementer
     builds, decides, or verifies, or what the reviewer checks. A
     contradiction between two of the plan's own statements is
-    build-changing, because the implementer cannot know which
-    statement to follow. A missing or unfalsifiable criterion is
-    build-changing, because the reviewer checks the criteria the plan
-    carries.
+    build-changing. A missing or unfalsifiable criterion is
+    build-changing.
   - `text-only` when the finding is neither.
 
   A **material** finding is one labeled `build-changing` or
   `readiness-failure`.
-- **The prior-round-text label.** Mark the finding when it targets
-  text a prior fix round added. This needs the prior plan snapshot
-  from the Inputs section, so skip the label when the caller passed
-  none.
 
-## 5. Report
+## 6. Report
 
-Hand the collected notes to the `writing:summarize-findings` skill,
-which ships in this plugin. It prunes, ranks, and formats them into
-one prioritized list.
+Open the report with one line giving the number of claims the plan
+makes, per "1. Read".
 
-Constrain that pass:
+Hand the collected notes to the `writing:summarize-findings` skill. It
+prunes, ranks, and formats them into one prioritized list. Constrain
+that pass:
 
 - **Synthesize only from the notes.** It may drop a finding, merge
   two, or reorder them. It may not invent one you did not collect.
-- **Emit one list.** A single priority order is what the reader acts
-  on. The category still shows in each finding's own sentence, and a
-  problem-definition finding sorts to the top on severity.
-- **Carry both axes.** Axis one is the `summarize-findings` triage
-  verdict of `fix`, `refute`, or `discuss`. Axis two is the
-  finding label. Both ride through `summarize-findings` inside
-  each finding's own sentence.
-- **Skip the pruning under a loop.** When a caller such as
-  `writing:converge-plan` runs this critique, tell
-  `summarize-findings` that the report feeds an automated verification
-  loop, so it emits every finding.
+- **Emit one list.** A problem finding sorts to the top on severity.
+- **Carry both axes.** Each finding carries its `summarize-findings`
+  triage verdict and its finding label, inside its own sentence.
+- **Skip the pruning for a verification step.** When the caller
+  states that the report feeds a verification step, tell
+  `summarize-findings` so, and it emits every finding.
 
 State the provenance, the unverified label where it applies, and the
-prior-round-text label as the final clause of each finding's Problem
+members of the class as the final clause of each finding's Problem
 sentence.
 
-Provenance, labels, and rulings belong to the report. Never add any of
-them to the plan.
-
-Do not rewrite the plan; report and stop.
+Report and stop.
