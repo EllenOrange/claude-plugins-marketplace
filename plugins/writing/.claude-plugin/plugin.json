@@ -1,7 +1,7 @@
 {
   "name": "writing",
   "description": "Concise technical writing helpers. Skills that emit prioritized findings summaries, plans written as decisions and outcomes, and plan critiques, that converge a plan through one critique-and-fix round, and that promote an approved plan into its issue body.",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "author": {
     "name": "Ellen Orange",
     "email": "eleanoruniverse+claude-plugins-marketplace@gmail.com"
