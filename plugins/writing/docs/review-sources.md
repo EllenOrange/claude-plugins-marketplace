@@ -39,8 +39,8 @@ leaves to go stale.
 
 ## Design shape
 
-Ask of the plan: does it settle where the change sits, which file owns
-each fact it adds, and where its work ends and a neighboring issue's
+Ask of the plan: does it settle which component owns each fact other
+code depends on, and where its work ends and a neighboring issue's
 begins?
 
 A failing answer yields one of these findings:
