@@ -104,6 +104,10 @@ installed `sdlc:orchestrate-readiness` bar:
   issue body, so grade a plan on any other surface bullet by bullet,
   as that skill's "The issue-body grammar" states the script grades
   each key.
+- Grade the bar's "No unanswered design decisions" item only on
+  decisions as `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines them.
+  An internal name or a placement in the tree that crosses no boundary
+  never fails it.
 - Report each failure as a `readiness-failure` finding whose
   provenance is the bar item it fails.
 

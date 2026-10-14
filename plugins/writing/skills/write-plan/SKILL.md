@@ -103,8 +103,11 @@ edit rather than a correction.
   bar. Grade the Mechanical bullets per that skill's "The check". Its
   script reads only an issue body, so grade the draft bullet by bullet,
   as that skill's "The issue-body grammar" states the script grades
-  each key. With no sdlc install, skip this item and say in the report
-  that the grading was skipped.
+  each key. Grade the bar's "No unanswered design decisions" item only
+  on decisions as `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines
+  them. An internal name or a placement in the tree that crosses no
+  boundary never fails it. With no sdlc install, skip this item and say
+  in the report that the grading was skipped.
 - **Second-order consequences.** For each decision the plan makes,
   find what in the surrounding code and text depends on what the
   decision changes, such as a caller, a citation, a copy of the same
