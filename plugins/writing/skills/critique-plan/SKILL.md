@@ -30,8 +30,8 @@ report feeds a verification step rather than a human reader.
 - Read the code the plan touches. A critique built only on the plan's
   own text repeats the plan's blind spots.
 - Read `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` when the plan is one
-  `writing:write-plan` produces. It states the format and the style the
-  plan is graded against.
+  `writing:write-plan` produces. It states the format, the length, and
+  the style the plan is graded against.
 - Read `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. When the sdlc
   plugin is installed, also read the installed
   `sdlc:theorem-generation` skill for what each source means.

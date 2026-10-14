@@ -7,9 +7,9 @@ model: opus
 # write-plan
 
 Produce a plan for one issue, and post it as a comment on that issue.
-`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states the format and the
-style of a plan, and is the only authority on either. Read it before
-you draft, and write every sentence of the plan to it.
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states the format, the
+length, and the style of a plan, and is the only authority on them.
+Read it before you draft, and write every sentence of the plan to it.
 
 This skill runs on the model its frontmatter names, at the reasoning
 tier the session has set.
@@ -69,31 +69,26 @@ in the conversation, and `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` →
 "The style" governs what the plan says of them. When one design is
 obviously right, show no candidates.
 
-Then show the framing of the design:
+Then draft the plan's Design section as
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states it, and show it. Show no
+summary of the design and no list of decisions in its place. Before
+you show the draft, check it against every rule of that file, its
+"Length" section included, and fix what fails.
 
-1. A short summary of the design in plain language, a few sentences
-   the user takes in at one reading.
-2. The list of decisions the plan's Design will carry, one plain
-   sentence each. Each is a decision as
-   `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines one.
+Stop for the user's confirmation and correction of the Design, and
+draft nothing else until the user confirms it. Apply each correction
+and show the Design again. A decision you find later, while drafting
+or reviewing, comes back to this step before it enters the draft.
 
-Neither part names anything that file leaves to the implementer. Each
-listed decision becomes one Design paragraph or subheading in the
-draft, and the draft's Design carries no decision the list lacks.
-
-Stop for the user's confirmation and correction of the framing, and
-draft nothing until the user confirms it. Apply each correction and
-show the framing again. A decision you find later, while drafting or
-reviewing, comes back to this step before it enters the draft.
-
-Then derive the acceptance criteria from the confirmed framing. Show
+Then derive the acceptance criteria from the confirmed Design. Show
 them and stop for correction.
 
 ## 4. Draft
 
 Draft the plan into a file in the harness scratchpad. Write it in the
-format and style `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states.
-Nothing outside this skill reads the file.
+format and style `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states. Its
+Design section is the Design the user confirmed in "3. Propose". Nothing
+outside this skill reads the file.
 
 ## 5. Self-review
 
@@ -102,9 +97,12 @@ edit rather than a correction.
 
 - **The format.** Check every section and every sentence against
   `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`.
-- **The confirmed framing.** Each decision the user confirmed in "3.
-  Propose" is one Design paragraph or subheading, and Design carries
-  no other decision.
+- **The length.** Count the draft's words and its Design's words, and
+  hold both to `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "Length".
+- **The confirmed Design.** The draft's Design is the one the user
+  confirmed in "3. Propose", changed only by corrections the user
+  made. A change any other check calls for in Design goes back to "3.
+  Propose" before it enters the draft.
 - **The problem.** Does the problem match what the issue reports? A
   narrower problem descopes the issue, and a wider one adds work
   nobody asked for.

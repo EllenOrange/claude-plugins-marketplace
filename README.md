@@ -29,7 +29,7 @@ Response-template skills for concise technical prose, plus skills
 that write, critique, and fix a plan for an issue. A plan is written
 as decisions and outcomes.
 [`plugins/writing/docs/plan-style.md`](plugins/writing/docs/plan-style.md)
-states the format and the style of a plan. A plan carries the
+states the format, the length, and the style of a plan. A plan carries the
 sections Problem, Design, Acceptance, and Files affected, in that
 order, and nothing else.
 
@@ -42,14 +42,14 @@ Skills:
 - **write-plan**: read an issue, the foundational docs, and the code
   the issue touches, then interview the user until no design question
   is open. When there is a real choice between designs, it shows the
-  candidates and lets the user pick one. It then shows a plain-language
-  summary of the design and the list of decisions the plan will carry,
-  one sentence each, and drafts nothing until the user confirms them.
-  It derives the acceptance criteria from the confirmed framing. It
-  drafts the plan in the harness scratchpad, self-reviews the draft,
-  and shows it to the user. The self-review checks the format, that
-  the Design carries exactly the confirmed decisions, each quote
-  against the tree, the review's questions, the installed
+  candidates and lets the user pick one. It then shows a draft of the
+  plan's Design section, and drafts nothing else until the user
+  confirms that Design. It derives the acceptance criteria from the
+  confirmed Design. It drafts the plan in the harness scratchpad,
+  self-reviews the draft, and shows it to the user. The self-review
+  checks the format, the length, that the Design is the one the user
+  confirmed, each quote against the tree, the review's questions, the
+  installed
   `sdlc:orchestrate-readiness` bar, and the plan's second-order
   consequences for the surrounding code and text. It posts the plan as
   an issue comment once the user approves it. It runs on Opus.

@@ -133,14 +133,13 @@ skill correctly does **not** trigger on the negative cases.
 8. "Plan the work for issue #42."
    Expect: the Propose step shows the problem. It shows candidate
    designs only when there is a real choice between them, and then
-   stops for the user's pick. It shows a short plain-language summary
-   of the design and the list of decisions the plan's Design will
-   carry, one plain sentence each, naming nothing the plan leaves to
-   the implementer. It stops for confirmation and drafts nothing until
-   the user confirms. It then derives the criteria from the confirmed
-   framing and stops for correction. The draft's Design carries each
-   confirmed decision as one paragraph or subheading, and no other
-   decision.
+   stops for the user's pick. It then shows a draft of the plan's
+   Design section, written to `docs/plan-style.md` and within its
+   Design length limit, and no summary or decision list in its place.
+   It stops for confirmation and drafts nothing else until the user
+   confirms. It then derives the criteria from the confirmed Design
+   and stops for correction. The posted plan carries the Design the
+   user confirmed.
 9. "Plan the work for issue #42." on a machine with no sdlc plugin
    installed.
    Expect: Claude proceeds with no error. The report says the
@@ -150,6 +149,11 @@ skill correctly does **not** trigger on the negative cases.
     Expect: Claude fixes every other sentence the change makes wrong
     in the same edit, runs the self-review again, and shows the
     result. Claude writes no state that another skill reads.
+11. "Plan the work for issue #42." on an issue whose plan would run
+    long.
+    Expect: the plan and its Design each stay within the word limits
+    in `docs/plan-style.md` before the user sees them. Claude cuts
+    whole details to meet a limit, and leaves no sentence a fragment.
 
 ## converge-plan
 
