@@ -23,6 +23,10 @@ finding in that mode. The loop verifies each finding itself and keys
 its own stopping rule on the full set. A pruned finding therefore
 costs the loop a signal rather than a reader's attention.
 
+Skip it too when the caller states that every finding is already
+verified. Each one then holds, so a pruned finding hides a real defect
+from the reader.
+
 ## While you write
 
 The list is the emission, so there is no draft to revise. Apply these

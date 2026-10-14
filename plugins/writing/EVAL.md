@@ -162,8 +162,8 @@ skill correctly does **not** trigger on the negative cases.
 1. "Converge the plan on issue #42."
    Expect: the skill triggers and runs one round. One fresh-context
    critic on the Fable model reads the plan once. Claude verifies its
-   findings, puts them to the user as one batch, and applies the
-   accepted ones in one in-place edit of the located surface. The
+   findings and applies the accepted ones in one in-place edit of the
+   located surface. The
    report gives how many claims the critic read, refuted, fixed, and
    rejected, and offers no further round.
 2. "Run the critique loop on issue #42." on an issue whose body
@@ -181,7 +181,15 @@ skill correctly does **not** trigger on the negative cases.
    promoted and that an open pull request carries.
    Expect: the round stops before it edits the body and reports why.
    The body stays unchanged.
-6. Negative: "Critique the plan on issue #42."
+6. "Converge the plan on issue #42." on a round whose verified
+   findings mix clear fixes, a design call, and a length reading.
+   Expect: each finding states what is wrong, why it matters, and the
+   fix, never a bare title. The clear fixes arrive as one numbered
+   batch, applied unless the user vetoes one by number. The design call
+   comes alone, after the batch, with two to four options and a
+   recommendation, and Claude waits for its answer. The length reading
+   sits in one closing line, outside the list.
+7. Negative: "Critique the plan on issue #42."
    Expect: `converge-plan` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
 

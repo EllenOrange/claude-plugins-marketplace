@@ -18,12 +18,11 @@ When neither carries a plan, say so and stop.
 
 ## 2. Critique once
 
-Spawn a fresh-context general-purpose subagent on the model
-`writing:critique-plan`'s frontmatter names. Instruct it to load
-`writing:critique-plan`, and pass it the issue number and the surface
-the plan lives on. Tell it the report feeds a verification step. Fresh
-context is the point: this session's assumptions are what the critic
-must not inherit.
+Spawn a fresh-context general-purpose subagent on the model that
+`writing:critique-plan`'s frontmatter names. Instruct it to load that
+skill, and pass it the issue number and the surface the plan lives on.
+Tell it the report feeds a verification step. Fresh context is the
+point: the critic must not inherit this session's assumptions.
 
 ## 3. Verify each finding
 
@@ -33,9 +32,21 @@ its reason.
 
 ## 4. Put the findings to the user
 
-Show the user every verified finding as one batch, each with its
-proposed fix, and the rejected findings with their reasons. Ask once
-which findings to accept. Do not present them one at a time.
+Hand the verified findings to `writing:summarize-findings`, and tell
+it each one is verified. One it triages `refute` joins the rejected
+findings, its refutation the reason. State each other finding in plain
+terms, never as a bare title: what is wrong, why it matters, the fix.
+
+A finding is an obvious fix when one fix is clearly right and the tree
+or `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` settles it, and a
+decision when more than one fix is reasonable or it is a scope or
+design call. A note is no defect, such as a length reading.
+
+Show the obvious fixes as one numbered batch, the rejected findings with
+their reasons, and the notes in one closing line outside the list. Ask
+once for vetoes by number, and accept every obvious fix not vetoed. Walk
+each decision one at a time, with the problem, two to four options, and
+a recommendation, and await its answer before showing the next.
 
 ## 5. Apply the accepted findings in one edit
 
@@ -83,12 +94,7 @@ plan.
 
 ## 6. Report
 
-Give the user:
-
-- The surface the round ran on, and the leftover comment when both
-  surfaces carried a plan.
-- How many claims the critic read, how many it refuted, how many the
-  edit fixed, and how many were rejected.
-- Each rejected finding with its reason.
-
-Post nothing else.
+Give the user the surface the round ran on, and the leftover comment
+when both surfaces carried a plan. Give how many claims the critic
+read and refuted, how many the edit fixed, and how many were rejected,
+and each rejected finding with its reason. Post nothing else.

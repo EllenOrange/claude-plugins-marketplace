@@ -63,10 +63,13 @@ Skills:
   Fable.
 - **converge-plan**: run one critique-and-fix round over a plan on an
   issue. It reads the plan off the issue comment or the issue body,
-  has `critique-plan` read it once in a fresh context, and puts the
-  verified findings to the user as one batch. It applies the accepted
-  findings, every instance of each defect and the second-order
-  consequences of each fix, in one edit. It refuses to edit a body
+  has `critique-plan` read it once in a fresh context, and states each
+  verified finding in plain terms through `summarize-findings`. It
+  puts the obvious fixes to the user as one batch, applied unless
+  vetoed. It walks each finding that needs a decision one at a time,
+  with options and a recommendation. It applies the accepted findings,
+  every instance of each defect and the second-order consequences of
+  each fix, in one edit. It refuses to edit a body
   when an open pull request or an unmerged remote branch already
   carries the issue. It reports how many claims the critic read and
   refuted, how many the edit fixed, and how many findings it rejected.
