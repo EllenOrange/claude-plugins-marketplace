@@ -42,7 +42,7 @@ skill correctly does **not** trigger on the negative cases.
    Expect the problem check to run first, including the test for a
    problem that presupposes its design.
 3. "Critique this plan. It builds on the branch in PR #77."
-   Expect: Claude verifies every quote and every claim about the repo
+   Expect: Claude verifies every claim about the repo
    at that branch's ref, not at main. Each finding names the file and
    ref Claude verified it against.
 4. "Critique this plan." on a plan that prescribes an AWS SDK call
@@ -53,14 +53,14 @@ skill correctly does **not** trigger on the negative cases.
 5. "Critique this plan." on a plan whose Design section carries a
    sentence telling the implementer which line to add.
    Expect: a finding that the sentence instructs an edit.
-6. "Critique this plan." on a plan that claims how an existing
-   function behaves, with no quote and no path.
-   Expect: a finding that the claim is not a verbatim quote with its
-   path.
-7. "Critique this plan." on a plan that misquotes a file in three
-   places.
-   Expect: one finding that lists all three misquotes as members of
-   one class. Its proposed solution deletes or generalises each claim
+6. "Critique this plan." on a `writing:write-plan` plan whose Design
+   is paragraphs, each opening with a bold phrase.
+   Expect: a finding that the Design is not one summary paragraph
+   followed by a bullet list of decisions and outcomes.
+7. "Critique this plan." on a plan that states three facts about a
+   file that the file contradicts.
+   Expect: one finding that lists all three claims as members of one
+   class. Its proposed solution deletes or generalises each claim
    and elaborates none.
 8. "Critique this plan." on a repo with the sdlc plugin installed.
    Expect: Claude reads `docs/review-sources.md` and the installed
@@ -120,8 +120,10 @@ skill correctly does **not** trigger on the negative cases.
    is true of the merged tree read without the diff. No Design sentence
    names a step or compares against today's code. No Design sentence
    names an internal function, a helper's signature, a module layout,
-   or a call order. Every claim about existing code is a verbatim quote
-   with its path.
+   or a call order. Every claim about existing code states the behavior
+   in plain prose, quotes no code as evidence, and names each path in
+   backticks. The Design is one summary paragraph followed by a bullet
+   list of decisions and outcomes.
 6. "Plan the work for issue #42." on an issue that builds on a
    component sitting on an unmerged branch.
    Expect: Claude reads that component at the branch ref, and turns
@@ -135,7 +137,7 @@ skill correctly does **not** trigger on the negative cases.
    designs only when there is a real choice between them, and then
    stops for the user's pick. It then shows a draft of the plan's
    Design section, written to `docs/plan-style.md` and within its
-   Design length limit, and no summary or decision list in its place.
+   Design length limit, and never a sketch of it in its place.
    It stops for confirmation and drafts nothing else until the user
    confirms. It then derives the criteria from the confirmed Design
    and stops for correction. The posted plan carries the Design the

@@ -78,13 +78,12 @@ Grade the plan against `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` when
 the plan is one `writing:write-plan` produces. Every rule that file
 states yields a finding when the plan breaks it.
 
-### Check every quote against the tree
+### Check every claim about the tree
 
-Read each quoted passage at its path, at the ref the plan builds on.
-When the plan builds on a branch or a pull request, read the
-post-merge state at that ref, never at main. A quote that fails
-`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The quote rule" yields a
-finding.
+Check each claim the plan makes about existing code or text against
+the tree, at the ref the plan builds on. When the plan builds on a
+branch or a pull request, read the post-merge state at that ref, never
+at main. A claim the tree contradicts yields a finding.
 
 ### Ask the review's questions
 

@@ -48,15 +48,14 @@ Skills:
   confirmed Design. It drafts the plan in the harness scratchpad,
   self-reviews the draft, and shows it to the user. The self-review
   checks the format, the length, that the Design is the one the user
-  confirmed, each quote against the tree, the review's questions, the
-  installed
-  `sdlc:orchestrate-readiness` bar, and the plan's second-order
+  confirmed, each claim about the tree, the review's questions, the
+  installed `sdlc:orchestrate-readiness` bar, and the plan's second-order
   consequences for the surrounding code and text. It posts the plan as
   an issue comment once the user approves it. It runs on Opus.
 - **critique-plan**: read a plan, its issue, the foundational docs,
   and the code the plan touches, then report one prioritized list. It
   checks the problem first, then the decisions and the gaps, the plan
-  against its style, each quote against the tree, the questions of the
+  against its style, each claim about the tree, the questions of the
   review that will grade the implementation, and the installed
   readiness bar. A finding names every instance of its defect. Each
   finding states its provenance and carries a label,

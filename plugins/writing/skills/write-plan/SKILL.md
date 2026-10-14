@@ -24,8 +24,7 @@ tier the session has set.
 - Read `CLAUDE.md` and `README.md`. Then read the docs under `docs/`
   that cover the area the issue touches, and any file the issue
   references. Do not read the whole `docs/` tree.
-- Read the code the issue touches. The plan quotes it under
-  `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The quote rule".
+- Read the code the issue touches.
 - Read `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. It holds the
   questions the review that grades the implementation will ask.
 - When the sdlc plugin is installed, read the installed
@@ -70,8 +69,8 @@ in the conversation, and `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` →
 obviously right, show no candidates.
 
 Then draft the plan's Design section as
-`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states it, and show it. Show no
-summary of the design and no list of decisions in its place. Before
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` states it, and show it. The
+draft is the Design the plan will carry, never a sketch of it. Before
 you show the draft, check it against every rule of that file, its
 "Length" section included, and fix what fails.
 
@@ -106,10 +105,9 @@ edit rather than a correction.
 - **The problem.** Does the problem match what the issue reports? A
   narrower problem descopes the issue, and a wider one adds work
   nobody asked for.
-- **The quotes.** Re-read each quoted passage at its path in the tree,
-  and hold it to `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The
-  quote rule". Correct a quote that fails it from the tree, or delete
-  the claim.
+- **The claims about the tree.** Re-read the tree for each claim the
+  draft makes about existing code or text. Correct a claim the tree
+  contradicts, or delete it.
 - **The review's questions.** Ask each question in
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` of the draft, and fix
   every failing answer.

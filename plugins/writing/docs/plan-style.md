@@ -25,15 +25,13 @@ A plan carries these sections, in this order, and no other:
 ### Problem
 
 Problem states what is wrong today, as the current behavior and what
-it costs. It quotes the text that shows the defect under the quote
-rule below, internal code included. Its last sentence states what the
-issue leaves alone.
+it costs. Its last sentence states what the issue leaves alone.
 
 ### Design
 
-Design is prose. Each paragraph opens with a bold phrase that names
-the decision the paragraph carries. Design may use subheadings and
-lists, and each list item is a sentence.
+Design is one short summary paragraph followed by a bullet list of
+decisions and outcomes. Each bullet is one sentence where it can be. A
+large plan may group the bullets under `###` subheadings.
 
 Every Design sentence is a decision or an outcome, and is true of the
 merged tree read without the diff:
@@ -69,38 +67,19 @@ with one criterion or one path per bullet:
 
 A plan poses no question and leaves no decision implicit.
 
-## The quote rule
-
-A claim about how existing code or text behaves is a verbatim quote
-with its repo-relative path, or the plan does not make it. The quote
-is the evidence, and a paraphrase is a claim with none. The quote
-matches the tree, character for character, at the ref the plan builds
-on.
-
-Give the path in backticks, then the quote. Put a short quote in
-double quotation marks inside the sentence, and a quote of more than
-one line in a fenced block.
-
-## Citations
-
-A plan cites a skill section as the skill name in backticks, an arrow,
-and the heading in double quotation marks:
-`` `<plugin>:<skill>` → "<heading>" ``. It cites a path as a
-repo-relative path in backticks.
-
 ## Length
 
 A plan runs about 525 words, and a plan over 800 words is too long.
 Its Design runs about 200 words, and a Design over 300 words is too
-long. Count words as `wc -w` counts them over the Markdown, quotes and
-the Files affected list included. Cut a plan that is too long by whole
-details, never by compressing its sentences.
+long. Count words as `wc -w` counts them over the Markdown, the Files
+affected list included. Cut a plan that is too long by whole details,
+never by compressing its sentences.
 
 ## The style
 
-These rules govern the plan's own prose. A quote, a path, an
-identifier, and a command are exempt. A numeric limit is a target, and
-clarity wins when a target and clarity conflict.
+These rules govern the plan's own prose. A path, an identifier, and a
+command are exempt. A numeric limit is a target, and clarity wins when
+a target and clarity conflict.
 
 - **Most important first.** Each section, paragraph, and sentence
   leads with the decision, the outcome, or the fact it carries.
@@ -120,6 +99,10 @@ clarity wins when a target and clarity conflict.
 - **Plain terms.** A noun cluster is 3 words or fewer, broken apart
   with prepositions when longer. The plan uses one term for each
   concept throughout, because a second term reads as a second thing.
+- **Names in backticks, behavior in prose.** A plan names a path, a
+  skill, or an identifier in backticks, and gives a path relative to
+  the repo root. It states how existing code or text behaves in plain
+  prose, rather than quoting it as evidence.
 - **Short paragraphs and vertical lists.** A paragraph carries one
   topic in 6 sentences or fewer, each following from the one before.
   Put 3 or more parallel items in a vertical list.
