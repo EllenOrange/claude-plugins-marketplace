@@ -19,7 +19,10 @@ skill correctly does **not** trigger on the negative cases.
    numbered list with `fix | refute | discuss` triage verdicts; no
    prose restatement after the list. Each finding carries a plain
    sentence on why it matters, and names only the identifiers the
-   reader needs.
+   reader needs. The `fix` items come first as one batch, then the
+   `discuss` items, then the `refute` items. Each Problem states the
+   defect alone in about 20 words, and no finding carries an
+   `Evidence:` line.
 2. "Audit our error handling in `src/server/` and report what you
    find."
    Expect: the skill triggers, and it drops low-value findings such
@@ -27,8 +30,19 @@ skill correctly does **not** trigger on the negative cases.
 3. "Summarize these findings for an automated verification loop, not
    for me."
    Expect: the skill triggers. Claude skips the pruning step, and
-   every collected finding appears in the list.
-4. Negative: "What does this function do?"
+   every collected finding appears in the list. Each finding's
+   consequence class, evidence, and class members sit on one short
+   `Evidence:` line, never in its Problem.
+4. "Review this diff." on a diff with a defect whose right fix depends
+   on a choice the repo does not settle.
+   Expect: the finding is `discuss`, and its proposed solution gives
+   two to four options and a recommendation, never a question.
+5. "Summarize the findings on this plan." on findings whose proposed
+   fixes name an implementation step and a file placement.
+   Expect: Claude recasts each proposed fix as the decision or outcome
+   the plan carries. No proposed fix names a step, a file placement,
+   or an internal name.
+6. Negative: "What does this function do?"
    Expect: the skill does not trigger; a plain explanation is fine.
 
 ## critique-plan
@@ -37,7 +51,9 @@ skill correctly does **not** trigger on the negative cases.
    Expect: the skill triggers on the Fable model. Claude reads the
    doc, project docs, and touched code. The output opens with the
    number of claims the plan makes, then gives one prioritized list in
-   the summarize-findings format. Claude does not rewrite the plan.
+   the summarize-findings format. Each Problem states the defect alone
+   in about 20 words, and carries no consequence class, provenance, or
+   class members. Claude does not rewrite the plan.
 2. "Here's my migration plan, poke holes in it." with the plan pasted
    inline.
    Expect: the skill triggers on inline text, not only on files.
@@ -51,7 +67,8 @@ skill correctly does **not** trigger on the negative cases.
    pattern with no source behind it.
    Expect: a finding that flags the unsourced external usage. Claude
    checks the plan's stated usage against the docs for the targeted
-   version, not from recollection.
+   version, not from recollection. Its proposed fix states a decision
+   or an outcome, never a step, a file placement, or an internal name.
 5. "Critique this plan." on a plan whose Design section carries a
    sentence telling the implementer which line to add.
    Expect: a finding that the sentence instructs an edit.
@@ -193,9 +210,9 @@ skill correctly does **not** trigger on the negative cases.
    sits in one closing line, outside the list.
 7. "Converge the plan on issue #42." on a round whose critic proposes
    a fix as an implementation step, and another as a file placement.
-   Expect: Claude recasts each proposed fix as the decision or outcome
-   the plan carries before it shows the fix. No proposed fix names a
-   step, a file placement, or an internal name.
+   Expect: each proposed fix the user sees is recast as the decision or
+   outcome the plan carries. No proposed fix names a step, a file
+   placement, or an internal name.
 8. "Converge the plan on issue #42." on a round with a finding that
    offers two fixes, of which only one fits a decision the plan
    already makes.

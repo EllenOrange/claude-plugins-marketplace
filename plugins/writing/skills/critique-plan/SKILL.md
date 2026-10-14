@@ -144,7 +144,8 @@ Write every candidate finding down as rough notes, unordered and
 without verdicts. Collect a superset, including the marginal points.
 The report step decides what survives.
 
-Note these things per finding. They survive into the report.
+Note these things per finding. They become its evidence in the
+report.
 
 - **Provenance.** The file and the ref you verified the finding
   against. For an external claim, the doc page or source file you
@@ -177,15 +178,15 @@ that pass:
 
 - **Synthesize only from the notes.** It may drop a finding, merge
   two, or reorder them. It may not invent one you did not collect.
-- **Emit one list.** A problem finding sorts to the top on severity.
-- **Carry both axes.** Each finding carries its `summarize-findings`
-  triage verdict and its finding label, inside its own sentence.
+- **Emit one list.** A problem finding sorts first within its triage
+  group.
+- **Name the work a plan.** Tell `summarize-findings` that the
+  reviewed work is a plan.
+- **Hand over the evidence.** A finding's label, its provenance, the
+  unverified label where it applies, and the members of its class are
+  its evidence, which `summarize-findings` places.
 - **Skip the pruning for a verification step.** When the caller
   states that the report feeds a verification step, tell
   `summarize-findings` so, and it emits every finding.
-
-State the provenance, the unverified label where it applies, and the
-members of the class as the final clause of each finding's Problem
-sentence.
 
 Report and stop.

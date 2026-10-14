@@ -32,21 +32,16 @@ its reason.
 
 ## 4. Put the findings to the user
 
-Hand the verified findings to `writing:summarize-findings`, and tell
-it each one is verified. Its `fix` is an obvious fix, its `discuss` a
-decision, and its `refute` a rejected finding, the refutation its
-reason. A note is no defect, such as a length reading.
+Hand the verified findings to `writing:summarize-findings`. Tell it
+each one is verified, and that the reviewed work is a plan. Its `fix`
+is an obvious fix, its `discuss` a decision, and its `refute` a
+rejected finding, the refutation its reason. A note is no defect, such
+as a length reading. Show the notes in one closing line outside the
+list.
 
-Every fix you propose meets `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`
-itself: it states a decision at a boundary or an outcome, never a
-step, a file placement, or an internal name. Recast a proposed
-solution that does not before you show it.
-
-Show the obvious fixes as one numbered batch, the rejected findings with
-their reasons, and the notes in one closing line outside the list. Ask
-once for vetoes by number, and accept every obvious fix not vetoed. Walk
-each decision one at a time, with the problem, two to four options, and
-a recommendation, and await its answer before showing the next.
+Ask once for vetoes on the obvious fixes by number, and accept every
+one not vetoed. Walk the decisions one at a time, and await each
+answer before showing the next.
 
 ## 5. Apply the accepted findings in one edit
 

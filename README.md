@@ -36,12 +36,20 @@ order, and nothing else.
 Skills:
 
 - **summarize-findings**: emit review or investigation findings as a
-  prioritized list. Each finding carries a title, a one-sentence
-  problem, a plain sentence on why it matters, a triage verdict of
-  `fix`, `refute`, or `discuss`, and a proposed solution of 1 to 3
-  sentences. A finding is `fix` when the shape of the repo or the
-  decisions the reviewed work already makes settle which fix is right,
-  and `discuss` when neither does.
+  prioritized list. Each finding carries a title, a problem stated as
+  the defect alone in one sentence of about 20 words, a plain sentence
+  on why it matters, a triage verdict of `fix`, `refute`, or
+  `discuss`, and a proposed solution of 1 to 3 sentences. A finding is
+  `fix` when the shape of the repo or the decisions the reviewed work
+  already makes settle which fix is right, and `discuss` when neither
+  does. The `fix` items come first, as one batch the reader can veto
+  item by item, then the `discuss` items, then the `refute` items. A
+  `discuss` item gives two to four options and a recommendation. A
+  finding's consequence class, evidence, and class members sit on one
+  short `Evidence:` line, which a human reader does not get. When the
+  reviewed work is a plan, every proposed fix meets `plan-style.md`,
+  stating a decision or an outcome and never a step, a file placement,
+  or an internal name.
 - **write-plan**: read an issue, the foundational docs, and the code
   the issue touches, then interview the user until no design question
   is open. When there is a real choice between designs, it shows the
@@ -61,18 +69,17 @@ Skills:
   against its style, each claim about the tree, the questions of the
   review that will grade the implementation, and the installed
   readiness bar. A finding names every instance of its defect. Each
-  finding states its provenance and carries a label,
-  `readiness-failure`, `build-changing`, or `text-only`. It runs on
+  finding's evidence is its provenance and its label,
+  `readiness-failure`, `build-changing`, or `text-only`. It hands the
+  findings to `summarize-findings` as findings on a plan. It runs on
   Fable.
 - **converge-plan**: run one critique-and-fix round over a plan on an
   issue. It reads the plan off the issue comment or the issue body,
   has `critique-plan` read it once in a fresh context, and states each
-  verified finding through `summarize-findings`. Every fix it proposes
-  meets `plan-style.md`, stating a decision or an outcome and never a
-  step, a file placement, or an internal name. It puts the obvious
-  fixes to the user as one batch, applied unless vetoed. It walks each
-  finding that needs a decision one at a time, with options and a
-  recommendation. It applies the accepted findings,
+  verified finding through `summarize-findings` as findings on a plan.
+  It applies the obvious fixes unless the user vetoes one by number.
+  It walks each finding that needs a decision one at a time. It
+  applies the accepted findings,
   every instance of each defect and the second-order consequences of
   each fix, in one edit. It refuses to edit a body
   when an open pull request or an unmerged remote branch already

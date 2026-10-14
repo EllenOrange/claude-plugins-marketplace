@@ -32,7 +32,9 @@ from the reader.
 The list is the emission, so there is no draft to revise. Apply these
 rules as you write each line, not after:
 
-- One sentence for Problem. Keep it to about 20 words.
+- One sentence for Problem, stating the defect alone. Keep it to about
+  20 words. A finding's consequence class, its evidence, and the
+  other members of its class never go in it.
 - One term per concept across the whole list. Use the words the
   reviewed work uses.
 - Name the defect, not its category. "The count says four and the
@@ -43,11 +45,16 @@ rules as you write each line, not after:
 
 ## Format
 
-Order findings by priority, most important first. Emit each as:
+Group the findings by triage verdict. The `fix` items come first, as
+one batch the reader can veto item by item. The `discuss` items come
+next, then the `refute` items. Within each group, order by priority,
+most important first. Number the findings straight through the whole
+list. Emit each as:
 
 ```text
 #N. Title
 Problem: one sentence.
+Evidence: one short line.
 Why it matters: one sentence.
 Triage: fix | refute | discuss
 Proposed Solution: 1 to 3 sentences.
@@ -55,6 +62,10 @@ Proposed Solution: 1 to 3 sentences.
 
 - **Title**: a specific, short name for the finding. Not a category.
 - **Problem**: one sentence stating the defect.
+- **Evidence**: the finding's consequence class, its evidence, and the
+  other members of its class, in one short line. A human reader gets
+  no Evidence line, so emit it only when the caller states that the
+  report feeds an automated verification loop.
 - **Why it matters**: one plain sentence stating what the defect costs
   the reader or the work if it stays.
 - **Triage**: pick one.
@@ -67,8 +78,14 @@ Proposed Solution: 1 to 3 sentences.
     repo nor the work's own decisions settle which fix is right; put
     it to the user before anyone acts.
 - **Proposed Solution**: 1 to 3 sentences. For `refute`, give the
-  refutation itself. For `discuss`, give the question to put to the
-  user.
+  refutation itself. For `discuss`, give two to four options and a
+  recommendation, never a question.
+
+When the caller states that the reviewed work is a plan, every fix a
+`fix` or `discuss` item proposes meets
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`. It states a decision at a
+boundary or an outcome, never a step, a file placement, or an internal
+name. Recast a proposed fix that does not before you emit it.
 
 ## After the list
 
