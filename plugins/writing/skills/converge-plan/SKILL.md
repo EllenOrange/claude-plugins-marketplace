@@ -33,14 +33,14 @@ its reason.
 ## 4. Put the findings to the user
 
 Hand the verified findings to `writing:summarize-findings`, and tell
-it each one is verified. One it triages `refute` joins the rejected
-findings, its refutation the reason. State each other finding in plain
-terms, never as a bare title: what is wrong, why it matters, the fix.
+it each one is verified. Its `fix` is an obvious fix, its `discuss` a
+decision, and its `refute` a rejected finding, the refutation its
+reason. A note is no defect, such as a length reading.
 
-A finding is an obvious fix when one fix is clearly right and the tree
-or `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` settles it, and a
-decision when more than one fix is reasonable or it is a scope or
-design call. A note is no defect, such as a length reading.
+Every fix you propose meets `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`
+itself: it states a decision at a boundary or an outcome, never a
+step, a file placement, or an internal name. Recast a proposed
+solution that does not before you show it.
 
 Show the obvious fixes as one numbered batch, the rejected findings with
 their reasons, and the notes in one closing line outside the list. Ask

@@ -17,7 +17,9 @@ skill correctly does **not** trigger on the negative cases.
 1. "Review this diff and tell me what's wrong with it."
    Expect: the skill triggers; findings arrive as a prioritized
    numbered list with `fix | refute | discuss` triage verdicts; no
-   prose restatement after the list.
+   prose restatement after the list. Each finding carries a plain
+   sentence on why it matters, and names only the identifiers the
+   reader needs.
 2. "Audit our error handling in `src/server/` and report what you
    find."
    Expect: the skill triggers, and it drops low-value findings such
@@ -189,7 +191,17 @@ skill correctly does **not** trigger on the negative cases.
    comes alone, after the batch, with two to four options and a
    recommendation, and Claude waits for its answer. The length reading
    sits in one closing line, outside the list.
-7. Negative: "Critique the plan on issue #42."
+7. "Converge the plan on issue #42." on a round whose critic proposes
+   a fix as an implementation step, and another as a file placement.
+   Expect: Claude recasts each proposed fix as the decision or outcome
+   the plan carries before it shows the fix. No proposed fix names a
+   step, a file placement, or an internal name.
+8. "Converge the plan on issue #42." on a round with a finding that
+   offers two fixes, of which only one fits a decision the plan
+   already makes.
+   Expect: the finding arrives in the obvious-fix batch with that fix,
+   not as a decision.
+9. Negative: "Critique the plan on issue #42."
    Expect: `converge-plan` does not trigger; `critique-plan` does,
    and it runs once with no fixes applied.
 

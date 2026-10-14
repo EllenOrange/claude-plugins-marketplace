@@ -37,6 +37,9 @@ rules as you write each line, not after:
   reviewed work uses.
 - Name the defect, not its category. "The count says four and the
   list has five" beats "a consistency issue".
+- Name only the identifiers the reader needs to find the defect or
+  act on it, and say the rest in plain words. A sentence that reads
+  as a run of identifiers is rewritten.
 
 ## Format
 
@@ -45,19 +48,24 @@ Order findings by priority, most important first. Emit each as:
 ```text
 #N. Title
 Problem: one sentence.
+Why it matters: one sentence.
 Triage: fix | refute | discuss
 Proposed Solution: 1 to 3 sentences.
 ```
 
 - **Title**: a specific, short name for the finding. Not a category.
-- **Problem**: one sentence stating the defect and its consequence.
+- **Problem**: one sentence stating the defect.
+- **Why it matters**: one plain sentence stating what the defect costs
+  the reader or the work if it stays.
 - **Triage**: pick one.
-  - `fix`: the finding is correct and the change is mechanical;
-    apply it.
+  - `fix`: the finding is correct, and the overall shape of the repo
+    or the decisions the reviewed work already makes settle which of
+    the available fixes is right; apply it.
   - `refute`: the finding rests on a wrong premise or a defensible
     choice; answer it, change nothing.
-  - `discuss`: a legitimate design issue that needs discussion with
-    the user before anyone acts.
+  - `discuss`: the finding is correct, and neither the shape of the
+    repo nor the work's own decisions settle which fix is right; put
+    it to the user before anyone acts.
 - **Proposed Solution**: 1 to 3 sentences. For `refute`, give the
   refutation itself. For `discuss`, give the question to put to the
   user.
