@@ -40,7 +40,8 @@ Build understanding with plain questions, one at a time. Reserve
 multiple-choice forms for bounded decisions among known options. Do
 not manufacture a question you can settle by reading the repo.
 
-A design question is any decision the implementer cannot make alone.
+A design question is any decision, as
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines one.
 When the sdlc plugin is installed, `sdlc:orchestrate-readiness` → "The
 readiness bar" names such decisions in its item on unanswered design
 decisions, and every one of them is in that set. Settle each one here.

@@ -67,7 +67,8 @@ Judge every decision the plan carries against these failure modes:
 - It contradicts another statement in the plan.
 
 Then hunt for gaps: a part of the problem no decision addresses, and a
-decision the implementer cannot make alone that the plan leaves open.
+decision the plan leaves open. A decision is what
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines as one.
 An open question in the plan is a finding.
 
 ### Check the plan against its style
