@@ -58,22 +58,36 @@ fails `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "A plan is settled".
 
 ## 3. Propose
 
-Show the user the framing before you draft:
+Show the user the problem in one sentence, stated as
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "Problem" states it. It
+names no fix and no mechanism.
 
-1. The problem, in one sentence, stated as
-   `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "Problem" states it. It
-   names no fix and no mechanism.
-2. The candidate designs, one paragraph each, with the pros and cons
-   of each as a bullet list. Propose one design when one is obviously
-   right.
+When there is a real choice between designs, show the candidate
+designs, one paragraph each, with the pros and cons of each as a
+bullet list. Stop and let the user pick one. The rejected designs stay
+in the conversation, and `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` →
+"The style" governs what the plan says of them. When one design is
+obviously right, show no candidates.
 
-Stop and let the user pick a design and correct the framing. The
-rejected designs stay in the conversation, and
-`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The style" governs what
-the plan says of them.
+Then show the framing of the design:
 
-Then derive the acceptance criteria from the design the user picked.
-Show them and stop for correction.
+1. A short summary of the design in plain language, a few sentences
+   the user takes in at one reading.
+2. The list of decisions the plan's Design will carry, one plain
+   sentence each. Each is a decision as
+   `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines one.
+
+Neither part names anything that file leaves to the implementer. Each
+listed decision becomes one Design paragraph or subheading in the
+draft, and the draft's Design carries no decision the list lacks.
+
+Stop for the user's confirmation and correction of the framing, and
+draft nothing until the user confirms it. Apply each correction and
+show the framing again. A decision you find later, while drafting or
+reviewing, comes back to this step before it enters the draft.
+
+Then derive the acceptance criteria from the confirmed framing. Show
+them and stop for correction.
 
 ## 4. Draft
 
@@ -88,6 +102,9 @@ edit rather than a correction.
 
 - **The format.** Check every section and every sentence against
   `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`.
+- **The confirmed framing.** Each decision the user confirmed in "3.
+  Propose" is one Design paragraph or subheading, and Design carries
+  no other decision.
 - **The problem.** Does the problem match what the issue reports? A
   narrower problem descopes the issue, and a wider one adds work
   nobody asked for.

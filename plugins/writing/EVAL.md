@@ -131,9 +131,16 @@ skill correctly does **not** trigger on the negative cases.
    Expect: Claude reads the SDK docs before it settles how the work
    uses the SDK.
 8. "Plan the work for issue #42."
-   Expect: the Propose step shows the problem and the candidate
-   designs, and stops for the user's pick. It then derives the
-   criteria from the chosen design and stops for correction.
+   Expect: the Propose step shows the problem. It shows candidate
+   designs only when there is a real choice between them, and then
+   stops for the user's pick. It shows a short plain-language summary
+   of the design and the list of decisions the plan's Design will
+   carry, one plain sentence each, naming nothing the plan leaves to
+   the implementer. It stops for confirmation and drafts nothing until
+   the user confirms. It then derives the criteria from the confirmed
+   framing and stops for correction. The draft's Design carries each
+   confirmed decision as one paragraph or subheading, and no other
+   decision.
 9. "Plan the work for issue #42." on a machine with no sdlc plugin
    installed.
    Expect: Claude proceeds with no error. The report says the

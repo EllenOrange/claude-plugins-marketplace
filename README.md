@@ -41,11 +41,15 @@ Skills:
   proposed solution of 1 to 3 sentences.
 - **write-plan**: read an issue, the foundational docs, and the code
   the issue touches, then interview the user until no design question
-  is open. It proposes the framing and the candidate designs, lets the
-  user pick one, and derives the acceptance criteria from it. It
+  is open. When there is a real choice between designs, it shows the
+  candidates and lets the user pick one. It then shows a plain-language
+  summary of the design and the list of decisions the plan will carry,
+  one sentence each, and drafts nothing until the user confirms them.
+  It derives the acceptance criteria from the confirmed framing. It
   drafts the plan in the harness scratchpad, self-reviews the draft,
-  and shows it to the user. The self-review checks the format, each
-  quote against the tree, the review's questions, the installed
+  and shows it to the user. The self-review checks the format, that
+  the Design carries exactly the confirmed decisions, each quote
+  against the tree, the review's questions, the installed
   `sdlc:orchestrate-readiness` bar, and the plan's second-order
   consequences for the surrounding code and text. It posts the plan as
   an issue comment once the user approves it. It runs on Opus.
