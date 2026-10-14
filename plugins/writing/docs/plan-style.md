@@ -1,8 +1,8 @@
 # Plan style
 
 This file states the format and the style of a plan. A plan is the
-spec for one issue. It carries the decisions the implementer cannot
-make alone and the outcomes the merged tree shows, and nothing else.
+spec for one issue. It carries the decisions that cross a boundary
+and the outcomes the merged tree shows, and nothing else.
 
 ## The sections
 
@@ -30,20 +30,31 @@ rule below. Its last sentence states what the issue leaves alone.
 
 ### Design
 
-Design is prose paragraphs, with no list and no subheading. Each
-paragraph opens with a bold phrase that names the decision the
-paragraph carries.
+Design is prose. Each paragraph opens with a bold phrase that names
+the decision the paragraph carries. Design may use subheadings and
+lists. Every sentence in it is a full sentence a human reads without
+effort, and its paragraphs flow from one sentence to the next. A list
+item is a readable sentence, never a fragment.
 
 Every Design sentence is a decision or an outcome:
 
-- A **decision** is one the implementer cannot make alone, such as a
-  name, a placement, a contract, or the fate of what the change
-  subsumes.
-- An **outcome** is a property the merged tree shows.
+- A **decision** settles something that crosses a boundary: something
+  a user, another component, another repo, or a reviewer depends on.
+  Behavior users see, an interface other code calls, a data format, a
+  name or a path another tool reads, and the fate of what the change
+  subsumes are decisions.
+- An **outcome** is a property the merged tree shows at such a
+  boundary.
 
-A sentence that tells the implementer which section to edit, which
-line to add, or which command to run is neither, and a plan does not
-carry it.
+Internal names, helper functions, module layout, and call order are
+the implementer's. Design states none of them, as a decision or as an
+outcome. Problem still quotes whatever text shows the defect, internal
+code included.
+
+A Design sentence is true of the merged tree read without the diff. A
+sentence that names a step, such as an edit to make or a command to
+run, or that compares the merged tree against today's code, is an
+instruction, however it is phrased. A plan does not carry it.
 
 ### Acceptance
 

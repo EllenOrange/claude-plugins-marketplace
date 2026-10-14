@@ -81,6 +81,17 @@ skill correctly does **not** trigger on the negative cases.
 12. Negative: "Critique the naming in this function."
     Expect: the skill does not trigger; it is scoped to plans and
     specs.
+13. "Critique this plan." on a `writing:write-plan` plan whose Design
+    carries "The bump is the catalog edit plus `pnpm install`" and
+    "`PlayPage.tsx` renders the hook's balance in place of the account
+    read it holds today".
+    Expect: one finding that lists both sentences as instructions. The
+    first names a step, and the second compares against today's code.
+14. "Critique this plan." on a `writing:write-plan` plan whose Design
+    names helper functions, their signatures, the module each sits in,
+    and the order they are called.
+    Expect: a finding that the Design pins choices that are the
+    implementer's, listing every such sentence.
 
 ## write-plan
 
@@ -105,10 +116,12 @@ skill correctly does **not** trigger on the negative cases.
    Every Mechanical bullet opens with a check key. No question is left
    open.
 5. "Plan the work for issue #42."
-   Expect: every Design sentence is a decision or an outcome. No
-   sentence tells the implementer which section to edit, which line to
-   add, or which command to run. Every claim about existing code is a
-   verbatim quote with its path.
+   Expect: every Design sentence is a decision or an outcome, and each
+   is true of the merged tree read without the diff. No Design sentence
+   names a step or compares against today's code. No Design sentence
+   names an internal function, a helper's signature, a module layout,
+   or a call order. Every claim about existing code is a verbatim quote
+   with its path.
 6. "Plan the work for issue #42." on an issue that builds on a
    component sitting on an unmerged branch.
    Expect: Claude reads that component at the branch ref, and turns
