@@ -68,8 +68,9 @@ Judge every decision the plan carries against these failure modes:
 
 Then hunt for gaps: a part of the problem no decision addresses, and a
 decision the plan leaves open. A decision is what
-`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines as one.
-An open question in the plan is a finding.
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines as one. A plan that
+fails `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "A plan is settled"
+yields a finding.
 
 ### Check the plan against its style
 
@@ -81,8 +82,9 @@ states yields a finding when the plan breaks it.
 
 Read each quoted passage at its path, at the ref the plan builds on.
 When the plan builds on a branch or a pull request, read the
-post-merge state at that ref, never at main. A quote that does not
-match the tree verbatim is a finding.
+post-merge state at that ref, never at main. A quote that fails
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The quote rule" yields a
+finding.
 
 ### Ask the review's questions
 

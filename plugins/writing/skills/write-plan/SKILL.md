@@ -24,8 +24,8 @@ tier the session has set.
 - Read `CLAUDE.md` and `README.md`. Then read the docs under `docs/`
   that cover the area the issue touches, and any file the issue
   references. Do not read the whole `docs/` tree.
-- Read the code the issue touches. Every claim the plan makes about
-  existing code or text rests on a passage you read here.
+- Read the code the issue touches. The plan quotes it under
+  `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The quote rule".
 - Read `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md`. It holds the
   questions the review that grades the implementation will ask.
 - When the sdlc plugin is installed, read the installed
@@ -55,21 +55,24 @@ When the plan depends on an external SDK, library, or service, read
 its docs or its source before you decide how the work uses it. A usage
 decision made from memory is a guess.
 
-The interview ends when no question is open. A plan with an open
-question is never posted.
+The interview ends when no question is open. Never post a plan that
+fails `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "A plan is settled".
 
 ## 3. Propose
 
 Show the user the framing before you draft:
 
-1. The problem, in one sentence, stated as the current behavior and
-   what it costs. It names no fix and no mechanism.
+1. The problem, in one sentence, stated as
+   `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "Problem" states it. It
+   names no fix and no mechanism.
 2. The candidate designs, one paragraph each, with the pros and cons
    of each as a bullet list. Propose one design when one is obviously
    right.
 
 Stop and let the user pick a design and correct the framing. The
-rejected designs stay in the conversation and never enter the plan.
+rejected designs stay in the conversation, and
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The style" governs what
+the plan says of them.
 
 Then derive the acceptance criteria from the design the user picked.
 Show them and stop for correction.
@@ -90,9 +93,10 @@ edit rather than a correction.
 - **The problem.** Does the problem match what the issue reports? A
   narrower problem descopes the issue, and a wider one adds work
   nobody asked for.
-- **The quotes.** Re-read each quoted passage at its path in the tree.
-  A quote that does not match the tree verbatim is wrong. Correct it
-  from the tree, or delete the claim.
+- **The quotes.** Re-read each quoted passage at its path in the tree,
+  and hold it to `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "The
+  quote rule". Correct a quote that fails it from the tree, or delete
+  the claim.
 - **The review's questions.** Ask each question in
   `${CLAUDE_PLUGIN_ROOT}/docs/review-sources.md` of the draft, and fix
   every failing answer.
