@@ -45,6 +45,12 @@ instance of the same defect, and fix every instance in the same edit.
 Act on a refuted claim by one of two moves only: delete it, or
 generalise it to what the tree supports. Never elaborate it.
 
+Check each fix's second-order consequences before the edit. Find what
+in the surrounding code and text depends on what the fix changes, such
+as a caller, a citation, or a contract another component reads. Fix
+in the same edit every sentence the fix leaves wrong, or inconsistent
+with the tree or the rest of the plan.
+
 Every fix leaves the plan reading as if the text had always been
 right. The plan records no history of the round, no ruling, and no
 earlier wording.

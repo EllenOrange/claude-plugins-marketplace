@@ -52,9 +52,11 @@ you one, else to `.claude/tmp/`.
 When the sdlc plugin is installed, grade the plan against every item
 of the installed `sdlc:orchestrate-readiness` bar. Grade it as step 3
 leaves it, with its sections at `##` however deep the comment nests
-them. Run each Mechanical bullet's command against the tree, per that
-skill's executed Mechanical check, and read the issue's edges for the
-items that key on them. The assembled body is this plan and nothing
+them. Grade the Mechanical bullets per that skill's "The check". Its
+script reads only an issue body, and the plan is not the body yet, so
+grade them bullet by bullet, as that skill's "The issue-body grammar"
+states the script grades each key. Read the issue's edges for the bar
+items that key on edges. The assembled body is this plan and nothing
 else, per step 4, so a gap in the plan is a gap in the body.
 
 - **Any gap.** Stop. Show the user the gaps. Ask whether to promote

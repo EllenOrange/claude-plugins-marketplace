@@ -41,9 +41,9 @@ multiple-choice forms for bounded decisions among known options. Do
 not manufacture a question you can settle by reading the repo.
 
 A design question is any decision the implementer cannot make alone.
-When the sdlc plugin is installed, the decisions in the "No unanswered
-design decisions" item of its readiness bar are all in that set. Settle
-each one here.
+When the sdlc plugin is installed, `sdlc:orchestrate-readiness` → "The
+readiness bar" names such decisions in its item on unanswered design
+decisions, and every one of them is in that set. Settle each one here.
 
 When the plan builds on a component that sits on an unmerged branch,
 read that component at the branch's ref, never at main. Each gap
@@ -97,9 +97,17 @@ edit rather than a correction.
   every failing answer.
 - **The readiness bar.** When the sdlc plugin is installed, grade the
   draft against every item of the installed `sdlc:orchestrate-readiness`
-  bar. Run each Mechanical bullet's command against the tree, per that
-  skill's executed Mechanical check. With no sdlc install, skip this
-  item and say in the report that the grading was skipped.
+  bar. Grade the Mechanical bullets per that skill's "The check". Its
+  script reads only an issue body, so grade the draft bullet by bullet,
+  as that skill's "The issue-body grammar" states the script grades
+  each key. With no sdlc install, skip this item and say in the report
+  that the grading was skipped.
+- **Second-order consequences.** For each decision the plan makes,
+  find what in the surrounding code and text depends on what the
+  decision changes, such as a caller, a citation, a copy of the same
+  rule, or a contract another component reads. A decision that leaves
+  any of them wrong, or inconsistent with the plan, is a defect. Settle
+  it in the plan as a decision or an outcome, or ask the user.
 - **Every instance.** When you find one instance of a defect, search
   the draft for every other instance and fix them all in the same
   edit.

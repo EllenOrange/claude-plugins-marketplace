@@ -74,12 +74,7 @@ An open question in the plan is a finding.
 
 Grade the plan against `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` when
 the plan is one `writing:write-plan` produces. Every rule that file
-states yields a finding when the plan breaks it, and these two always
-do:
-
-- a Design sentence that instructs an edit
-- a claim about existing code or text that is not a verbatim quote
-  with its path
+states yields a finding when the plan breaks it.
 
 ### Check every quote against the tree
 
@@ -101,8 +96,11 @@ When the sdlc plugin is installed, grade the plan against the
 installed `sdlc:orchestrate-readiness` bar:
 
 - Ask each bar item's question of the plan.
-- Run each Mechanical bullet's command against the tree, per that
-  skill's executed Mechanical check.
+- Grade the Mechanical bullets per the installed
+  `sdlc:orchestrate-readiness` → "The check". Its script reads only an
+  issue body, so grade a plan on any other surface bullet by bullet,
+  as that skill's "The issue-body grammar" states the script grades
+  each key.
 - Report each failure as a `readiness-failure` finding whose
   provenance is the bar item it fails.
 

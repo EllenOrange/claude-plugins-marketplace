@@ -1,6 +1,6 @@
 {
   "name": "ellenorange",
-  "description": "Ellen Orange's Claude Code plugins: concise technical writing, with response-template skills for findings, plans, plan critiques, and one-round plan convergence, plus promotion of an approved plan into its issue body.",
+  "description": "Ellen Orange's Claude Code plugins: concise technical writing, with response-template skills for findings, plans, plan critiques, and a one-round plan critique-and-fix pass, plus promotion of an approved plan into its issue body.",
   "owner": {
     "name": "Ellen Orange",
     "email": "eleanoruniverse+claude-plugins-marketplace@gmail.com"
