@@ -79,24 +79,11 @@ draft nothing else until the user confirms it. Apply each correction
 and show the Design again. A decision you find later, while drafting
 or reviewing, comes back to this step before it enters the draft.
 
-Then derive the acceptance criteria from the confirmed Design, and
-place each one as you derive it:
-
-- A criterion goes under `### Mechanical` only when a key that the
-  installed `sdlc:orchestrate-readiness` → "The issue-body grammar"
-  lists settles it. Its bullet opens with that key. Never coin a key,
-  and never stretch a key past the claim the grammar gives it.
-- `[no-match]` is the only key that matches a pattern against a file,
-  and it asserts absence. A claim that content is present, added, or emitted
-  is therefore never Mechanical.
-- Every other criterion goes under `### Semantic`. Its bullet names
-  the artifact it is about, such as the file, the section, or the
-  output that carries the content.
-- With no sdlc install, no key can be checked against its grammar, so
-  every criterion goes under `### Semantic`.
-- When no criterion goes under `### Mechanical`, omit that heading.
-
-Show the criteria and stop for correction.
+Then derive the acceptance criteria from the confirmed Design. Place
+each one as you derive it, as
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` → "Acceptance and Files
+affected" places a criterion. Show the criteria and stop for
+correction.
 
 ## 4. Draft
 
@@ -132,10 +119,10 @@ edit rather than a correction.
   bar. Grade the Mechanical bullets per that skill's "The check". Its
   script reads only an issue body, so grade the draft bullet by bullet,
   as that skill's "The issue-body grammar" states the script grades
-  each key. A bullet whose key that grammar does not list fails. Move
-  it to `### Semantic` as "3. Propose" places a criterion, and never
-  repair it by choosing another key the claim does not fit. Grade the
-  bar's "No unanswered design decisions" item only on decisions as
+  each key. A bullet whose key that grammar does not list fails. Place
+  it again as `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` places a
+  criterion. Grade the bar's "No unanswered design decisions" item
+  only on decisions as
   `${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md` defines them. An internal
   name or a placement in the tree that crosses no boundary never fails
   it. With no sdlc install, skip this item and say in the report that

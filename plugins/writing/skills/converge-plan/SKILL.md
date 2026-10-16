@@ -21,8 +21,8 @@ When neither carries a plan, say so and stop.
 Spawn a fresh-context general-purpose subagent on the model that
 `writing:critique-plan`'s frontmatter names. Instruct it to load that
 skill, and pass it the issue number and the surface the plan lives on.
-Tell it the report feeds a verification step. Fresh context is the
-point: the critic must not inherit this session's assumptions.
+Tell it the report feeds an automated verification loop. Fresh context
+is the point: the critic must not inherit this session's assumptions.
 
 ## 3. Verify each finding
 

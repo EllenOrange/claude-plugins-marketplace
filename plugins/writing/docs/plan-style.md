@@ -22,6 +22,9 @@ A plan carries these sections, in this order, and no other:
 ## Files affected (floor)
 ```
 
+A plan omits `### Mechanical` when no criterion goes under it. It
+omits no other section.
+
 ### Problem
 
 Problem states what is wrong today, as the current behavior and what
@@ -55,10 +58,19 @@ is an instruction however it is phrased. A plan does not carry it.
 Both follow the issue-body grammar of the orchestration readiness bar,
 with one criterion or one path per bullet:
 
-- A `### Mechanical` bullet opens with one of that grammar's check
-  keys, followed by its arguments, and carries no command.
-- A `### Semantic` bullet is one claim about the delivered change that
-  a reviewer can attempt to disprove against the diff.
+- A criterion goes under `### Mechanical` only when a check key that
+  grammar defines settles it. Its bullet opens with that key, followed
+  by its arguments, and carries no command. A plan never coins a key,
+  and never stretches a key past the claim the grammar gives it.
+- `[no-match]` is the only key that matches a pattern against a file,
+  and it asserts absence. A claim that content is present, added, or
+  emitted therefore goes under `### Semantic`.
+- Every other criterion goes under `### Semantic`. Its bullet is one
+  claim about the delivered change that a reviewer can attempt to
+  disprove against the diff. It names the artifact it is about, such
+  as the file, the section, or the output that carries the content.
+- Where the readiness bar is not installed, no key can be checked
+  against its grammar, so every criterion goes under `### Semantic`.
 - A Files affected bullet is one repo-relative path in backticks and
   one tag. The list is a floor: it names every path the plan knows the
   change touches.

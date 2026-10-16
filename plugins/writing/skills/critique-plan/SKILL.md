@@ -17,7 +17,8 @@ tier the session has set.
 The user names the plan: a file, an issue comment, an issue body, or
 text pasted inline. A caller running the critique as one step of a
 larger flow, such as `writing:converge-plan`, may also state that the
-report feeds a verification step rather than a human reader.
+report feeds an automated verification loop rather than a human
+reader.
 
 ## 1. Read
 
@@ -185,8 +186,8 @@ that pass:
 - **Hand over the evidence.** A finding's label, its provenance, the
   unverified label where it applies, and the members of its class are
   its evidence, which `summarize-findings` places.
-- **Skip the pruning for a verification step.** When the caller
-  states that the report feeds a verification step, tell
-  `summarize-findings` so, and it emits every finding.
+- **Skip the pruning for an automated verification loop.** When the
+  caller states that the report feeds an automated verification loop,
+  tell `summarize-findings` so, and it emits every finding.
 
 Report and stop.

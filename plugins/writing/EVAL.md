@@ -60,9 +60,10 @@ skill correctly does **not** trigger on the negative cases.
    Expect the problem check to run first, including the test for a
    problem that presupposes its design.
 3. "Critique this plan. It builds on the branch in PR #77."
-   Expect: Claude verifies every claim about the repo
-   at that branch's ref, not at main. Each finding names the file and
-   ref Claude verified it against.
+   Expect: Claude verifies every claim about the repo at that branch's
+   ref, not at main. A claim true at main and false at that ref yields
+   a finding, and a claim false at main and true at that ref yields
+   none.
 4. "Critique this plan." on a plan that prescribes an AWS SDK call
    pattern with no source behind it.
    Expect: a finding that flags the unsourced external usage. Claude
@@ -78,9 +79,9 @@ skill correctly does **not** trigger on the negative cases.
    followed by a bullet list of decisions and outcomes.
 7. "Critique this plan." on a plan that states three facts about a
    file that the file contradicts.
-   Expect: one finding that lists all three claims as members of one
-   class. Its proposed solution deletes or generalises each claim
-   and elaborates none.
+   Expect: one finding covers all three claims, and no other finding
+   repeats any of them. Its proposed solution deletes or generalises
+   each of the three claims and elaborates none.
 8. "Critique this plan." on a repo with the sdlc plugin installed.
    Expect: Claude reads `docs/review-sources.md` and the installed
    `sdlc:theorem-generation` skill, and asks each source's question of
@@ -91,8 +92,9 @@ skill correctly does **not** trigger on the negative cases.
    readiness-bar grading was skipped.
 10. "Critique this plan." on a repo with the sdlc plugin installed, on
     a plan with no Acceptance section.
-    Expect: a `readiness-failure` finding whose provenance names the
-    bar item that requires an `## Acceptance` section.
+    Expect: a finding that the plan fails the readiness bar because it
+    carries no `## Acceptance` section. The finding carries no
+    `Evidence:` line.
 11. "Critique this plan." on a plan that binds an obligation to a list
     of call sites smaller than the set the code holds.
     Expect: a finding that prescribes stating the rule that generates

@@ -83,9 +83,8 @@ Proposed Solution: 1 to 3 sentences.
 
 When the caller states that the reviewed work is a plan, every fix a
 `fix` or `discuss` item proposes meets
-`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`. It states a decision at a
-boundary or an outcome, never a step, a file placement, or an internal
-name. Recast a proposed fix that does not before you emit it.
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`. Recast a proposed fix that
+does not before you emit it.
 
 ## After the list
 
