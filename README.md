@@ -25,110 +25,73 @@ Then enable the plugin in `enabledPlugins`:
 
 ## The `writing` plugin
 
-Response-template skills for concise technical prose, plus a bounded
-loop that drives a plan to convergence. Each skill styles its output
-per an always-on communication-style rule. The rule is based on
-ASD-STE100, Simplified Technical English, Issue 9, 2025. The rule
-ships with the plugin at
-[`plugins/writing/rules/communication-style.md`](plugins/writing/rules/communication-style.md),
-where it is inert. The `install-writing-style` skill copies it to
-`~/.claude/rules/communication-style.md` and wires it into
-`~/.claude/CLAUDE.md` so it loads always-on. Running
-`plugins/writing/install-rule.sh` directly does the same thing.
+Response-template skills for concise technical prose, plus skills
+that write, critique, and fix a plan for an issue. A plan is written
+as decisions and outcomes.
+[`plugins/writing/docs/plan-style.md`](plugins/writing/docs/plan-style.md)
+states the format, the length, and the style of a plan. A plan carries the
+sections Problem, Design, Acceptance, and Files affected, in that
+order, and nothing else.
 
 Skills:
 
-- **install-writing-style**: install the shipped communication-style rule
-  into `~/.claude/rules/` and add the `@~/` load line to
-  `~/.claude/CLAUDE.md`.
 - **summarize-findings**: emit review or investigation findings as a
-  prioritized list. Each finding carries a title, a one-sentence
-  problem, a triage verdict of `fix`, `refute`, or `discuss`, and a
-  proposed solution of 1 to 3 sentences.
-- **write-plan**: read an issue and the foundational docs, then
-  interview the user to resolve open design questions. The interview
-  runs uninterrupted and records each ruling to a durable ledger,
-  marked user-ratified or repo-derived. The Propose step runs in two
-  stages: the framing and the candidate solutions first, then the
-  criteria the chosen solution earns. The agreed core is drafted to
-  disk, given one `sweep-consequences` pass and one `sweep-style`
-  pass, and revised once through `revise-plan` before the full plan is
-  drafted from it. The plan carries the sections Problem, Scope,
-  Solution, Acceptance, Outline, Files affected (floor), and Open
-  questions, in the issue-body grammar of `sdlc:orchestrate-readiness`.
-  The Acceptance section splits into Mechanical and Semantic claims
-  about the merged result, written as the PR reviewer's rubric. Each
-  bullet is a bold title and one claim, and each Mechanical claim
-  names one read-only command. Self-review grades the draft against
-  the installed readiness bar, and reports the grading as skipped when
-  the sdlc plugin is absent. The skill walks the plan's dependencies
-  at the ref the plan builds on, and walks every behavior the plan
-  states against the repo's rule for that kind of behavior, or against
-  a completeness test of its own where the repo states no such rule.
-  It derives the plan's scope from the repo's sweep sections, and
-  describes the bordering work it rules out without naming an issue
-  number. It cites its authorities instead of restating them. Every
-  sweep question passes through `summarize-findings` triage, so only a
-  `discuss` verdict reaches the user. It posts the plan as an issue
-  comment and leaves its state directory in place for `converge-plan`
-  to seed from.
-- **sweep-consequences**: discover the edits a decision set forces on
-  a plan and emit them as instructions. It enumerates the
-  cross-cutting consequences of the whole set, walks every behavior
-  those decisions alter, and finds each fix's sibling defect
-  instances. It owns the channel that routes a question it cannot
-  settle back through the caller's triage. It writes no file and posts
-  nothing.
-- **sweep-style**: sweep a whole plan against the communication-style
-  rule and `write-plan`'s Write step, and emit the repairs as
-  instructions. It emits no question. It writes no file and posts
-  nothing.
-- **revise-plan**: apply an instruction batch to one plan file in fresh
-  context. It style-sweeps every unit an instruction landed in, then
-  reads the result back to confirm that every decision, obligation,
-  membership rule, qualifier, and check survives unchanged. It owns
-  the restructuring moves an instruction may prescribe and the rule
-  for resolving an instruction it could not apply. It reverts an edit
-  whose read-back finds changed meaning, and reports every unapplied
-  instruction with the conflict named.
+  prioritized list. Each finding carries a title, a problem stated as
+  the defect alone in one sentence of about 20 words, a plain sentence
+  on why it matters, a triage verdict of `fix`, `refute`, or
+  `discuss`, and a proposed solution of 1 to 3 sentences. A finding is
+  `fix` when the shape of the repo or the decisions the reviewed work
+  already makes settle which fix is right, and `discuss` when neither
+  does. The `fix` items come first, as one batch the reader can veto
+  item by item, then the `discuss` items, then the `refute` items. A
+  `discuss` item gives two to four options and a recommendation. A
+  finding's consequence class, evidence, and class members sit on one
+  short `Evidence:` line, which a human reader does not get. When the
+  reviewed work is a plan, every proposed fix meets `plan-style.md`,
+  stating a decision or an outcome and never a step, a file placement,
+  or an internal name.
+- **write-plan**: read an issue, the foundational docs, and the code
+  the issue touches, then interview the user until no design question
+  is open. When there is a real choice between designs, it shows the
+  candidates and lets the user pick one. It then shows a draft of the
+  plan's Design section, and drafts nothing else until the user
+  confirms that Design. It derives the acceptance criteria from the
+  confirmed Design. It drafts the plan in the harness scratchpad,
+  self-reviews the draft, and shows it to the user. The self-review
+  checks the format, the length, that the Design is the one the user
+  confirmed, each claim about the tree, the review's questions, the
+  installed `sdlc:orchestrate-readiness` bar, and the plan's second-order
+  consequences for the surrounding code and text. It posts the plan as
+  an issue comment once the user approves it. It runs on Opus.
+- **critique-plan**: read a plan, its issue, the foundational docs,
+  and the code the plan touches, then report one prioritized list. It
+  checks the problem first, then the decisions and the gaps, the plan
+  against its style, each claim about the tree, the questions of the
+  review that will grade the implementation, and the installed
+  readiness bar. A finding names every instance of its defect. Each
+  finding's evidence is its provenance and its label,
+  `readiness-failure`, `build-changing`, or `text-only`. It hands the
+  findings to `summarize-findings` as findings on a plan. It runs on
+  Fable.
+- **converge-plan**: run one critique-and-fix round over a plan on an
+  issue. It reads the plan off the issue comment or the issue body,
+  has `critique-plan` read it once in a fresh context, and states each
+  verified finding through `summarize-findings` as findings on a plan.
+  It applies the obvious fixes unless the user vetoes one by number.
+  It walks each finding that needs a decision one at a time. It
+  applies the accepted findings,
+  every instance of each defect and the second-order consequences of
+  each fix, in one edit. It refuses to edit a body
+  when an open pull request or an unmerged remote branch already
+  carries the issue. It reports how many claims the critic read and
+  refuted, how many the edit fixed, and how many findings it rejected.
 - **promote-plan**: move an approved plan out of its issue comment and
   make it the whole issue body. It recognizes a plan comment by the
-  sections `write-plan` emits. The body it writes is the plan and
-  nothing else, with an Open questions section reading `None.`
-  dropped. It asks first when the plan's Open questions section is
-  not empty, and when the plan fails an item of the installed
-  `sdlc:orchestrate-readiness` bar. One question covers the body write
-  and the comment deletion together. After the write it runs the sdlc
-  readiness check and reports its verdict.
-- **critique-plan**: read a plan and the foundational docs, then
-  report one prioritized list. The list carries the decisions that
-  fail to fully address the identified problems, the decisions that
-  cause problems elsewhere, and the gaps. The skill runs the sources
-  of the review that will grade the implementation against the plan.
-  It reads the style guides that review enforces. It reports a
-  criterion above its altitude, a section past its budget, and a
-  compound outline action. It treats a user-ratified ruling as fixed
-  and may report a finding against a repo-derived one. Each finding
-  states its provenance and carries a second label,
-  `readiness-failure`, `build-changing`, or `text-only`.
-- **converge-plan**: run the critique-and-fix loop over a plan on an
-  issue until a stopping rule ends it. The loop keeps a decision
-  ledger, an open-issues doc, per-round snapshots, and the round's
-  draft as durable state, seeding the ledger from `write-plan`'s own
-  state directory when one is there. It orchestrates rather than
-  edits: it verifies each finding and applies the acceptance bar
-  itself, collects the round's edit instructions through one
-  `sweep-consequences` call over the round's whole accepted batch, and
-  hands the batch to `revise-plan`. Every sweep question passes
-  through `summarize-findings` triage before the blocked rule fires. A
-  spent budget runs one consolidation pass through `sweep-style`
-  before the loop reports. It loops in place over the plan comment or
-  over the promoted plan in the issue body, and on a body it
-  snapshots and edits the whole body. A body carries the Open
-  questions section only while the ledger holds an open item. It
-  refuses to edit a body when an open pull request or an unmerged
-  remote branch already carries the issue.
-  A round budget caps how many critique rounds the loop runs.
+  sections `plan-style.md` states. The body it writes is the plan and
+  nothing else. It asks first when the plan fails an item of the
+  installed `sdlc:orchestrate-readiness` bar. One question covers the
+  body write and the comment deletion together. After the write it
+  runs the sdlc readiness check and reports its verdict.
 
 ## License
 

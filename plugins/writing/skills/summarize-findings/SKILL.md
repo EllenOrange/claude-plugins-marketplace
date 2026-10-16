@@ -6,10 +6,7 @@ description: Report findings as a prioritized numbered list with triage verdicts
 # summarize-findings
 
 Emit the findings from the current review, audit, or investigation as
-a prioritized list. Write all prose per the communication-style rule.
-Use the installed copy at `~/.claude/rules/communication-style.md` if
-present. Otherwise use the plugin's bundled copy at
-`${CLAUDE_PLUGIN_ROOT}/rules/communication-style.md`.
+a prioritized list.
 
 ## Before you write: push back
 
@@ -26,40 +23,68 @@ finding in that mode. The loop verifies each finding itself and keys
 its own stopping rule on the full set. A pruned finding therefore
 costs the loop a signal rather than a reader's attention.
 
+Skip it too when the caller states that every finding is already
+verified. Each one then holds, so a pruned finding hides a real defect
+from the reader.
+
 ## While you write
 
-The list is the emission, so there is no draft to revise. Apply the
-communication-style rule as you write each line, not after:
+The list is the emission, so there is no draft to revise. Apply these
+rules as you write each line, not after:
 
-- One sentence for Problem. Keep it to about 20 words.
+- One sentence for Problem, stating the defect alone. Keep it to about
+  20 words. A finding's consequence class, its evidence, and the
+  other members of its class never go in it.
 - One term per concept across the whole list. Use the words the
   reviewed work uses.
 - Name the defect, not its category. "The count says four and the
   list has five" beats "a consistency issue".
+- Name only the identifiers the reader needs to find the defect or
+  act on it, and say the rest in plain words. A sentence that reads
+  as a run of identifiers is rewritten.
 
 ## Format
 
-Order findings by priority, most important first. Emit each as:
+Group the findings by triage verdict. The `fix` items come first, as
+one batch the reader can veto item by item. The `discuss` items come
+next, then the `refute` items. Within each group, order by priority,
+most important first. Number the findings straight through the whole
+list. Emit each as:
 
 ```text
 #N. Title
 Problem: one sentence.
+Evidence: one short line.
+Why it matters: one sentence.
 Triage: fix | refute | discuss
 Proposed Solution: 1 to 3 sentences.
 ```
 
 - **Title**: a specific, short name for the finding. Not a category.
-- **Problem**: one sentence stating the defect and its consequence.
+- **Problem**: one sentence stating the defect.
+- **Evidence**: the finding's consequence class, its evidence, and the
+  other members of its class, in one short line. A human reader gets
+  no Evidence line, so emit it only when the caller states that the
+  report feeds an automated verification loop.
+- **Why it matters**: one plain sentence stating what the defect costs
+  the reader or the work if it stays.
 - **Triage**: pick one.
-  - `fix`: the finding is correct and the change is mechanical;
-    apply it.
+  - `fix`: the finding is correct, and the overall shape of the repo
+    or the decisions the reviewed work already makes settle which of
+    the available fixes is right; apply it.
   - `refute`: the finding rests on a wrong premise or a defensible
     choice; answer it, change nothing.
-  - `discuss`: a legitimate design issue that needs discussion with
-    the user before anyone acts.
+  - `discuss`: the finding is correct, and neither the shape of the
+    repo nor the work's own decisions settle which fix is right; put
+    it to the user before anyone acts.
 - **Proposed Solution**: 1 to 3 sentences. For `refute`, give the
-  refutation itself. For `discuss`, give the question to put to the
-  user.
+  refutation itself. For `discuss`, give two to four options and a
+  recommendation, never a question.
+
+When the caller states that the reviewed work is a plan, every fix a
+`fix` or `discuss` item proposes meets
+`${CLAUDE_PLUGIN_ROOT}/docs/plan-style.md`. Recast a proposed fix that
+does not before you emit it.
 
 ## After the list
 
