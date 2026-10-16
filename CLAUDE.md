@@ -13,6 +13,16 @@ Installed plugins cache by version, under
 content change without a version bump can therefore leave installed
 copies serving the old cached files after the marketplace updates.
 
+## A plugin's `docs/` file a skill loads is Instruction Markdown
+
+A file under `plugins/<plugin>/docs/` that a skill reads through
+`${CLAUDE_PLUGIN_ROOT}/docs/<file>` is Instruction Markdown, though a
+path-based classifier calls it Documentation. Implement, style-check,
+and review it inside the review loop as code, and leave it out of the
+docs-writer pass. Before treating such a file as Documentation, grep
+the plugin's skills for `docs/<file>`. The repo root `README.md` stays
+Documentation.
+
 ## A renamed skill heading dangles in whatever cites it
 
 A skill may cite another skill's section heading verbatim as a prose
