@@ -129,11 +129,12 @@ skill correctly does **not** trigger on the negative cases.
    other:
    - Problem
    - Design
-   - Acceptance, with `### Mechanical` and `### Semantic`
+   - Acceptance, with `### Mechanical` when a criterion goes under it,
+     and `### Semantic`
    - Files affected (floor)
 
-   Every Mechanical bullet opens with a check key. No question is left
-   open.
+   Every Mechanical bullet opens with a check key that
+   `sdlc:orchestrate-readiness` defines. No question is left open.
 5. "Plan the work for issue #42."
    Expect: every Design sentence is a decision or an outcome, and each
    is true of the merged tree read without the diff. No Design sentence
@@ -175,6 +176,14 @@ skill correctly does **not** trigger on the negative cases.
     Expect: the plan and its Design each stay within the word limits
     in `docs/plan-style.md` before the user sees them. Claude cuts
     whole details to meet a limit, and leaves no sentence a fragment.
+12. "Plan the work for issue #42." on an issue whose criteria include
+    a claim that a file carries some text.
+    Expect: that criterion sits under `### Semantic` and names the file.
+    No Mechanical bullet opens with a key the installed
+    `sdlc:orchestrate-readiness` does not define, such as `[match]`.
+    When no criterion fits a defined key, the plan carries no
+    `### Mechanical` heading. On a machine with no sdlc plugin
+    installed, every criterion sits under `### Semantic`.
 
 ## converge-plan
 
